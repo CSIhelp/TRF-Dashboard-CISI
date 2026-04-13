@@ -131,7 +131,7 @@ td.actions-cell{overflow:visible;max-width:none}
 .benefits-table tr:last-child td{border-bottom:none}
 .benefits-table .amount{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent);text-align:right}
 .section-title{grid-column:span 2;font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:1px solid var(--border);margin-top:4px}
-/* Liabilities */
+/* Lists */
 .liability-list{grid-column:span 2;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
 .liability-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12.5px}
 .liability-item-info strong{font-weight:600;display:block}
@@ -195,7 +195,7 @@ td.actions-cell{overflow:visible;max-width:none}
         <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
       </div>
     </div>
-    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
+    <a class="nav-item" href="employee_form.html" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
@@ -213,6 +213,7 @@ td.actions-cell{overflow:visible;max-width:none}
         <input type="text" class="search-input" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
         <button class="btn" onclick="loadEmployees()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
         <button class="btn primary" onclick="openModal()">+ Add New</button>
+        <button class="btn" style="background:#1a1a2e; color:#fff;" onclick="openInviteModal()">💌 Invite New Hire</button>
       </div>
     </div>
 
@@ -253,7 +254,7 @@ td.actions-cell{overflow:visible;max-width:none}
           <tbody id="body-liabilities"><tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
         <table id="tab-cip" style="display:none">
-          <thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>CIP Notes</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>Issued Property</th><th>Actions</th></tr></thead>
           <tbody id="body-cip"><tr><td colspan="7" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
         <table id="tab-files" style="display:none">
@@ -291,7 +292,7 @@ td.actions-cell{overflow:visible;max-width:none}
     <div class="modal-body active" id="m-personal">
       <input type="hidden" id="f_id">
       <div class="form-group"><label>First Name<span class="req-star">*</span></label><input type="text" id="f_fn" placeholder="John"></div>
-      <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="A."></div>
+      <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="e.g. Santos"></div>
       <div class="form-group"><label>Last Name<span class="req-star">*</span></label><input type="text" id="f_ln" placeholder="Doe"></div>
       <div class="form-group"><label>PIN<span class="req-star">*</span></label><input type="text" id="f_pin" placeholder="e.g. 1099"></div>
       <div class="form-group"><label>Personal Email</label><input type="email" id="f_personal_email" placeholder="john@gmail.com"></div>
@@ -299,9 +300,22 @@ td.actions-cell{overflow:visible;max-width:none}
       <div class="form-group"><label>Birthdate</label><input type="date" id="f_birthdate"></div>
       <div class="form-group"><label>Gender</label><select id="f_gender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
       <div class="form-group"><label>Civil Status</label><select id="f_civil_status"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Widowed</option><option>Separated</option></select></div>
-      <div class="form-group"><label>Dependents</label><input type="number" id="f_dependents" placeholder="0" min="0"></div>
       <div class="form-group full"><label>Address</label><textarea id="f_address" placeholder="Full address"></textarea></div>
       <div class="form-group full"><label>Emergency Contact</label><input type="text" id="f_emergency_contact" placeholder="Name — Relationship — Number"></div>
+      
+      <div class="section-title">Dependents (Children / Senior Parents)</div>
+      <div class="form-group full">
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input type="text" id="dep_name" placeholder="Full Name" style="flex:2">
+          <input type="number" id="dep_age" placeholder="Age" style="flex:1" min="0">
+        </div>
+        <div style="display:flex;gap:6px;">
+          <input type="date" id="dep_birthdate" style="flex:2">
+          <button class="btn" type="button" onclick="addDependent()" style="flex:1; justify-content:center">+ Add</button>
+        </div>
+      </div>
+      <div class="liability-list" id="dependentsList"></div>
+
     </div>
 
     <div class="modal-body" id="m-company">
@@ -323,9 +337,12 @@ td.actions-cell{overflow:visible;max-width:none}
         <label>Status</label>
         <select id="f_status">
           <option value="">— Select —</option>
-          <option value="Regular">Regular</option>
           <option value="Probationary">Probationary</option>
+          <option value="Regular">Regular</option>
+          <option value="Project-Based">Project-Based</option>
+          <option value="Part-time">Part-time</option>
           <option value="Resigned">Resigned</option>
+          <option value="Terminated">Terminated</option>
         </select>
       </div>
       <div class="form-group"><label>Start Date</label><input type="date" id="f_start_date"></div>
@@ -356,7 +373,16 @@ td.actions-cell{overflow:visible;max-width:none}
       <div class="form-group"><label>CIP Status</label>
         <select id="f_cip_status"><option value="">— Select —</option><option value="Pending">Pending</option><option value="Compliant">Compliant</option><option value="Non-Compliant">Non-Compliant</option><option value="Waived">Waived</option></select>
       </div>
-      <div class="form-group"><label>CIP Notes</label><textarea id="f_cip_notes" placeholder="Notes about CIP compliance..."></textarea></div>
+      
+      <div class="section-title">Issued Equipment</div>
+      <div class="form-group full">
+        <div style="display:flex;gap:6px;">
+          <input type="text" id="cip_item" placeholder="Item Name (e.g. Laptop)" style="flex:2">
+          <input type="text" id="cip_sn" placeholder="Serial Number" style="flex:2">
+          <button class="btn" type="button" onclick="addCIP()" style="flex:1; justify-content:center">+ Add</button>
+        </div>
+      </div>
+      <div class="liability-list" id="cipList"></div>
     </div>
 
     <div class="modal-body" id="m-benefits">
@@ -382,6 +408,28 @@ td.actions-cell{overflow:visible;max-width:none}
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn primary" id="saveBtn" onclick="saveEmployee()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="inviteModal">
+  <div class="modal" style="width: 440px;">
+    <div class="modal-header">
+      <h2 style="font-size:16px;">Generate Invite Link</h2>
+      <button class="modal-close" onclick="closeInviteModal()">✕</button>
+    </div>
+    <div class="modal-body active" style="display: flex; flex-direction: column; gap: 16px;">
+      <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">Generate a secure, single-use onboarding link to send to a new hire. This link will automatically expire in 7 days.</p>
+      
+      <button class="btn primary" id="generateLinkBtn" onclick="generateInviteToken()" style="justify-content:center; padding: 12px;">Generate Link</button>
+      
+      <div id="inviteResult" style="display: none; flex-direction: column; gap: 8px;">
+        <label style="font-size: 12px; font-weight: 700; color: var(--accent);">Share this link with the candidate:</label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="generatedLink" readonly style="flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; background: #f9fafb; color: var(--text-secondary);">
+          <button class="btn primary" onclick="copyInviteLink()">Copy</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -415,8 +463,122 @@ const URL_LIABILITIES   = 'https://primary-production-a810.up.railway.app/webhoo
 const URL_ADD_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/add-liability';
 const URL_DEL_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/delete-liability';
 
+// New Endpoint for Invites
+const URL_GENERATE_TOKEN = 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
+
+// Automatically builds the link based on where your HR panel is hosted
+const ONBOARDING_BASE_URL = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/employee_form.html';
+
 let employeesData=[],filteredData=[],currentPage=1,currentTab='personal';
 let currentEmpFilter='regular', currentEmpId=null;
+
+// State Arrays for Modal
+let currentDependents = [];
+let currentCIP = [];
+
+function safeParse(val) {
+  if (!val) return [];
+  if (typeof val === 'object') return val;
+  try { return JSON.parse(val); } catch(e) { return []; }
+}
+
+// ── Invite Logic ──
+function openInviteModal() {
+  document.getElementById('inviteModal').classList.add('active');
+  document.getElementById('inviteResult').style.display = 'none';
+  document.getElementById('generateLinkBtn').style.display = 'flex';
+  document.getElementById('generatedLink').value = '';
+}
+
+function closeInviteModal() {
+  document.getElementById('inviteModal').classList.remove('active');
+}
+
+async function generateInviteToken() {
+  const btn = document.getElementById('generateLinkBtn');
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(URL_GENERATE_TOKEN, { method: 'POST' });
+    const data = await res.json();
+    
+    if (data.token) {
+      // Combines your base URL with the secure token
+      const fullLink = `${ONBOARDING_BASE_URL}?token=${data.token}`;
+      document.getElementById('generatedLink').value = fullLink;
+      document.getElementById('inviteResult').style.display = 'flex';
+      btn.style.display = 'none';
+      showToast('Invite link generated!', 'success');
+    } else {
+      showToast('Failed to generate token.', 'error');
+    }
+  } catch (e) {
+    showToast('Network error.', 'error');
+  } finally {
+    btn.innerHTML = 'Generate Link';
+    btn.disabled = false;
+  }
+}
+
+function copyInviteLink() {
+  const linkInput = document.getElementById('generatedLink');
+  linkInput.select();
+  document.execCommand('copy');
+  showToast('Copied to clipboard!', 'success');
+}
+
+// ── Dependents Logic ──
+function renderDependents() {
+  const list = document.getElementById('dependentsList');
+  if(!currentDependents.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">No dependents added.</p>'; return; }
+  list.innerHTML = currentDependents.map((d, i) => `
+    <div class="liability-item">
+      <div class="liability-item-info">
+        <strong>${d.name}</strong>
+        <span>Age: ${d.age || '—'} · DOB: ${fmtDate(d.birthdate)}</span>
+      </div>
+      <button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeDependent(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function addDependent() {
+  const name = document.getElementById('dep_name').value.trim();
+  const age = document.getElementById('dep_age').value.trim();
+  const bd = document.getElementById('dep_birthdate').value;
+  if(!name) { showToast('Dependent name is required.', 'error'); return; }
+  currentDependents.push({ name, age, birthdate: bd });
+  document.getElementById('dep_name').value = '';
+  document.getElementById('dep_age').value = '';
+  document.getElementById('dep_birthdate').value = '';
+  renderDependents();
+}
+function removeDependent(idx) { currentDependents.splice(idx, 1); renderDependents(); }
+
+// ── CIP Equipment Logic ──
+function renderCIP() {
+  const list = document.getElementById('cipList');
+  if(!currentCIP.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">No equipment issued.</p>'; return; }
+  list.innerHTML = currentCIP.map((c, i) => `
+    <div class="liability-item">
+      <div class="liability-item-info">
+        <strong>${c.item}</strong>
+        <span>S/N: ${c.sn || 'N/A'}</span>
+      </div>
+      <button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeCIP(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function addCIP() {
+  const item = document.getElementById('cip_item').value.trim();
+  const sn = document.getElementById('cip_sn').value.trim();
+  if(!item) { showToast('Item name is required.', 'error'); return; }
+  currentCIP.push({ item, sn });
+  document.getElementById('cip_item').value = '';
+  document.getElementById('cip_sn').value = '';
+  renderCIP();
+}
+function removeCIP(idx) { currentCIP.splice(idx, 1); renderCIP(); }
 
 // ── Toast ──
 function showToast(msg,type='success'){
@@ -489,14 +651,8 @@ function v(x){return x||'—'}
 // ── Gov't Benefits calculation (2026 PH tables) ──
 function calcSSS(salary){
   const s = Number(salary) || 0;
-  // 2026 SSS MSC brackets (min 5000, max 35000)
   const msc = Math.min(Math.max(Math.floor((s - 250) / 500) * 500 + 500, 5000), 35000);
-  
-  // 2026 Rate: 5% Employee Share, 10% Employer Share
-  return { 
-    ee: Math.round(msc * 0.05 * 100) / 100, 
-    er: Math.round(msc * 0.10 * 100) / 100 
-  };
+  return { ee: Math.round(msc * 0.05 * 100) / 100, er: Math.round(msc * 0.10 * 100) / 100 };
 }
 function calcPhilHealth(salary){
   const s=Number(salary)||0;
@@ -550,21 +706,21 @@ async function saveNewRole(){
 // ── Liabilities ──
 async function loadLiabilities(empId){
   const list=document.getElementById('liabilityList');
+  if(!empId || empId === 'undefined') {
+    list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">Save the employee first to manage liabilities.</p>';
+    return;
+  }
   list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">Loading...</p>';
   try{
     const res=await fetch(`${URL_LIABILITIES}?employee_id=${empId}`);
     const raw=await res.json();
-    
-    // Extract items AND filter out empty/invalid objects (e.g. if the API returns [{}])
     const items = Array.isArray(raw) 
         ? raw.map(i => i.json ?? i).filter(l => l && Object.keys(l).length > 0 && l.amount !== undefined) 
         : [];
-
     if(!items.length){
         list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';
         return;
     }
-
     list.innerHTML=items.map(l=>`
       <div class="liability-item">
         <div class="liability-item-info">
@@ -602,6 +758,7 @@ async function addLiability(){
     ['l_type','l_desc','l_amount','l_balance','l_notes'].forEach(id=>document.getElementById(id).value='');
     loadLiabilities(currentEmpId);
     showToast('Liability added!','success');
+    loadEmployees();
   }catch(e){showToast('Failed to add liability.','error');}
   finally{btn.textContent='+ Add Liability';btn.disabled=false;}
 }
@@ -610,6 +767,7 @@ async function deleteLiability(id){
   try{
     await fetch(URL_DEL_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
     loadLiabilities(currentEmpId);showToast('Liability deleted.','success');
+    loadEmployees();
   }catch(e){showToast('Failed to delete.','error');}
 }
 
@@ -637,8 +795,7 @@ function populateSupervisorDropdown(currentSupId){
   employeesData.filter(e=>e.status!=='Resigned').forEach(emp=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
     const o=document.createElement('option');
-    o.value=emp.id;
-    o.textContent=fn; // PIN removed from here
+    o.value=emp.id; o.textContent=fn; 
     sel.appendChild(o);
   });
   if(currentSupId!=null&&currentSupId!=='') sel.value=String(currentSupId);
@@ -652,18 +809,33 @@ async function loadEmployees(){
     if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell"><span class="spinner"></span> Loading...</td></tr>`;
   });
   document.getElementById('paginationBar').style.display='none';
+  
   try{
-    const res=await fetch(URL_GET);
-    const raw=await res.json();
-    let rawData=Array.isArray(raw)?raw.map(i=>i.json??i):[];
+    const [empRes, liabRes] = await Promise.all([ fetch(URL_GET), fetch(URL_LIABILITIES) ]);
+    const rawEmp = await empRes.json();
+    let rawData = Array.isArray(rawEmp) ? rawEmp.map(i => i.json ?? i) : [];
+
+    let allLiabilities = [];
+    if(liabRes.ok) {
+       const rawLiab = await liabRes.json();
+       allLiabilities = Array.isArray(rawLiab)
+         ? rawLiab.map(i => i.json ?? i).filter(l => l && Object.keys(l).length > 0 && l.amount !== undefined)
+         : [];
+    }
+
+    rawData.forEach(emp => {
+       emp.liabilities = allLiabilities.filter(l => String(l.employee_id) === String(emp.id));
+    });
+
     rawData.sort((a,b)=>{
       const oa=a.sort_order!=null?Number(a.sort_order):9999;
       const ob=b.sort_order!=null?Number(b.sort_order):9999;
       return oa-ob;
     });
+    
     employeesData=rawData;
     filterTable();
-  }catch(e){
+  } catch(e) {
     allTabs.forEach(t=>{
       const b=document.getElementById('body-'+t);
       if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell" style="color:#dc2626">Failed to connect.</td></tr>`;
@@ -723,10 +895,11 @@ function renderTable(){
 
   document.getElementById('body-personal').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    const deps = safeParse(emp.dependents);
     return btr(`<td class="emp-name" title="${fn}">${fn}</td>
       <td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td>${v(emp.contact)}</td><td>${fmtDate(emp.birthdate)}</td><td>${calcAge(emp.birthdate)}</td>
-      <td>${v(emp.gender)}</td><td>${v(emp.civil_status)}</td><td>${v(emp.dependents)}</td>
+      <td>${v(emp.gender)}</td><td>${v(emp.civil_status)}</td><td>${deps.length}</td>
       <td title="${emp.personal_email||''}">${v(emp.personal_email)}</td>
       <td>${v(emp.emergency_contact)}</td><td title="${emp.address||''}">${v(emp.address)}</td>
       <td>${v(emp.sss)}</td><td>${v(emp.pagibig)}</td><td>${v(emp.philhealth)}</td>
@@ -767,20 +940,58 @@ function renderTable(){
       <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-liabilities').innerHTML=items.map((emp,idx)=>{
-    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return btr(`<td class="emp-name">${fn}</td>
-      <td><span class="emp-pin">${emp.pin||'—'}</span></td>
-      <td colspan="5" style="color:var(--text-muted);font-size:12px">Open Edit to manage liabilities</td>
-      <td class="actions-cell">${ab(emp)}</td>`,idx);
+  document.getElementById('body-liabilities').innerHTML = items.map((emp, idx) => {
+    const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ') || '—';
+    const dIdx = start + idx;
+    const liabs = emp.liabilities || []; 
+
+    if (liabs.length === 0) {
+      return btr(`<td class="emp-name">${fn}</td>
+        <td><span class="emp-pin">${emp.pin||'—'}</span></td>
+        <td colspan="5" style="color:var(--text-muted);font-size:12.5px;text-align:center">No active liabilities</td>
+        <td class="actions-cell">${ab(emp)}</td>`, idx);
+    }
+
+    let rows = '';
+    liabs.forEach((l, i) => {
+      const isFirst = i === 0;
+      const isLast = i === liabs.length - 1;
+      const btmBorder = isLast ? 'border-bottom:1px solid var(--border)' : 'border-bottom:1px dashed #e5e7eb';
+
+      rows += `<tr ${isFirst ? `class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)"` : ''}>`;
+
+      if (isFirst) {
+        rows += `<td class="emp-name" rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)">${fn}</td>`;
+        rows += `<td rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)"><span class="emp-pin">${emp.pin||'—'}</span></td>`;
+      }
+
+      rows += `
+        <td style="${btmBorder}">${l.type || '—'}</td>
+        <td style="${btmBorder}">${l.description || '—'}</td>
+        <td style="${btmBorder}">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</td>
+        <td style="color:#dc2626;font-weight:600; ${btmBorder}">₱${Number(l.balance).toLocaleString('en-PH',{minimumFractionDigits:2})}</td>
+        <td style="${btmBorder}">${fmtDate(l.date_added)}</td>
+      `;
+
+      if (isFirst) {
+        rows += `<td class="actions-cell" rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)">${ab(emp)}</td>`;
+      }
+
+      rows += `</tr>`;
+    });
+
+    return rows;
   }).join('');
 
   document.getElementById('body-cip').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    const cips = safeParse(emp.cip_notes);
+    const cipText = cips.length > 0 ? cips.map(c => `${c.item} (${c.sn||'N/A'})`).join(', ') : '—';
+
     return btr(`<td class="emp-name">${fn}</td>
       <td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td>${v(emp.department_name)}</td><td>${v(emp.role_name)}</td>
-      <td>${v(emp.cip_status)}</td><td>${v(emp.cip_notes)}</td>
+      <td>${v(emp.cip_status)}</td><td title="${cipText}" style="max-width:250px">${cipText}</td>
       <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
@@ -790,13 +1001,10 @@ function renderTable(){
     const id=emp.id;
     return btr(`<td class="emp-name">${fn}</td>
       <td><div class="file-dropdown-wrap">
-        <button class="file-dropdown-btn" onclick="toggle201(${id})">Dropdown ↓</button>
+        <button class="file-dropdown-btn" onclick="toggle201(${id})">Drive Links ↓</button>
         <div class="file-dropdown-menu" id="menu-${id}">
-          <div class="file-dropdown-item">${fileIcon} Resume / CV</div>
-          <div class="file-dropdown-item">${fileIcon} Employment Contract</div>
-          <div class="file-dropdown-item">${fileIcon} NBI Clearance</div>
-          <div class="file-dropdown-item">${fileIcon} SSS Form</div>
-          <div class="file-dropdown-item">${fileIcon} BIR Form 2316</div>
+          <div class="file-dropdown-item">${fileIcon} Company Documents</div>
+          <div class="file-dropdown-item">${fileIcon} Disciplinary Actions</div>
         </div>
       </div></td>`,idx);
   }).join('');
@@ -872,11 +1080,17 @@ function openModal(index=-1){
     document.getElementById('modalTitle').innerText=isArchive?'View Archived Record':currentEmpFilter==='intern'?'Edit Intern':'Edit Employee';
     document.getElementById('saveBtn').style.display=isArchive?'none':'inline-flex';
     
+    // Load Dynamic Arrays
+    currentDependents = safeParse(e.dependents);
+    currentCIP = safeParse(e.cip_notes);
+    renderDependents();
+    renderCIP();
+
     const s=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val??'';};
     s('f_id',e.id);s('f_pin',e.pin);s('f_fn',e.fn);s('f_mn',e.mn);s('f_ln',e.ln);
     s('f_email',e.email);s('f_personal_email',e.personal_email);s('f_contact',e.contact);
     s('f_birthdate',e.birthdate?e.birthdate.split('T')[0]:'');
-    s('f_gender',e.gender);s('f_civil_status',e.civil_status);s('f_dependents',e.dependents);
+    s('f_gender',e.gender);s('f_civil_status',e.civil_status);
     s('f_address',e.address);s('f_emergency_contact',e.emergency_contact);
     s('f_dep_id',e.department_name);s('f_role_id',e.role_name);s('f_status',e.status);
     s('f_start_date',e.start_date?e.start_date.split('T')[0]:'');
@@ -885,7 +1099,7 @@ function openModal(index=-1){
     s('f_sil_balance',e.sil_balance);s('f_parental_leave',e.parental_leave_balance);
     s('f_sss',e.sss);s('f_pagibig',e.pagibig);s('f_philhealth',e.philhealth);
     s('f_tin',e.tin);s('f_payroll',e.payroll);
-    s('f_cip_status',e.cip_status);s('f_cip_notes',e.cip_notes);
+    s('f_cip_status',e.cip_status);
   }else{
     currentEmpId=null;
     document.getElementById('modalTitle').innerText=currentEmpFilter==='intern'?'Add New Intern':'Add New Employee';
@@ -893,6 +1107,11 @@ function openModal(index=-1){
     document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea').forEach(el=>el.value='');
     document.getElementById('f_sil_balance').value='0';
     document.getElementById('saveBtn').style.display='inline-flex';
+    
+    currentDependents = [];
+    currentCIP = [];
+    renderDependents();
+    renderCIP();
   }
 }
 function closeModal(){
@@ -909,12 +1128,17 @@ async function saveEmployee(){
   const btn=document.getElementById('saveBtn');
   btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
   const rawId=g('f_id'),supId=g('f_supervisor_id');
+  
   const payload={
     id:rawId?Number(rawId):null,pin,fn,mn:g('f_mn'),ln,
     email:g('f_email')||null,personal_email:g('f_personal_email')||null,
     contact:g('f_contact'),birthdate:g('f_birthdate')||null,
     gender:g('f_gender'),civil_status:g('f_civil_status'),
-    dependents:Number(g('f_dependents'))||0,
+    
+    // Serialized Arrays
+    dependents: JSON.stringify(currentDependents),
+    cip_notes: JSON.stringify(currentCIP),
+    
     address:g('f_address'),emergency_contact:g('f_emergency_contact'),
     dep_id:g('f_dep_id'),role_id:g('f_role_id'),status:g('f_status'),
     start_date:g('f_start_date')||null,regularization_date:g('f_regularization_date')||null,
@@ -924,9 +1148,10 @@ async function saveEmployee(){
     parental_leave_balance:Number(g('f_parental_leave'))||0,
     sss:g('f_sss'),pagibig:g('f_pagibig'),philhealth:g('f_philhealth'),
     tin:g('f_tin'),payroll:g('f_payroll'),
-    cip_status:g('f_cip_status'),cip_notes:g('f_cip_notes'),
+    cip_status:g('f_cip_status'),
     supervisor_id:supId?Number(supId):null
   };
+  
   try{
     const res=await fetch(rawId?URL_UPDATE:URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(res.ok){showToast(rawId?'Saved successfully!':'Added successfully!','success');closeModal();loadEmployees();}
