@@ -137,8 +137,8 @@ td.actions-cell{overflow:visible;max-width:none}
 .liability-item-info strong{font-weight:600;display:block}
 .liability-item-info span{color:var(--text-muted);font-size:11.5px}
 .liability-amount{font-family:'DM Mono',monospace;font-weight:700;color:#dc2626}
-/* Delete modal */
-.delete-modal{background:#fff;width:400px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease}
+/* Delete & Invite Modal */
+.small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease}
 @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
 .delete-modal-icon{width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .delete-modal-body{padding:28px 28px 20px;text-align:center}
@@ -195,7 +195,7 @@ td.actions-cell{overflow:visible;max-width:none}
         <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
       </div>
     </div>
-    <a class="nav-item" href="employee_form.html" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
+    <a class="nav-item" href="employee-form.html" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
@@ -413,7 +413,7 @@ td.actions-cell{overflow:visible;max-width:none}
 </div>
 
 <div class="modal-overlay" id="inviteModal">
-  <div class="modal" style="width: 440px;">
+  <div class="small-modal">
     <div class="modal-header">
       <h2 style="font-size:16px;">Generate Invite Link</h2>
       <button class="modal-close" onclick="closeInviteModal()">✕</button>
@@ -466,8 +466,10 @@ const URL_DEL_LIABILITY = 'https://primary-production-a810.up.railway.app/webhoo
 // New Endpoint for Invites
 const URL_GENERATE_TOKEN = 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
 
-// Automatically builds the link based on where your HR panel is hosted
-const ONBOARDING_BASE_URL = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '') + '/employee_form.html';
+// Automatically builds the correct link regardless of what page/subfolder you are on
+const currentPath = window.location.pathname.split('/');
+currentPath.pop(); 
+const ONBOARDING_BASE_URL = window.location.origin + currentPath.join('/') + '/employee-form.html';
 
 let employeesData=[],filteredData=[],currentPage=1,currentTab='personal';
 let currentEmpFilter='regular', currentEmpId=null;
@@ -489,22 +491,17 @@ function openInviteModal() {
   document.getElementById('generateLinkBtn').style.display = 'flex';
   document.getElementById('generatedLink').value = '';
 }
-
 function closeInviteModal() {
   document.getElementById('inviteModal').classList.remove('active');
 }
-
 async function generateInviteToken() {
   const btn = document.getElementById('generateLinkBtn');
   btn.innerHTML = '<span class="spinner"></span> Generating...';
   btn.disabled = true;
-
   try {
     const res = await fetch(URL_GENERATE_TOKEN, { method: 'POST' });
     const data = await res.json();
-    
     if (data.token) {
-      // Combines your base URL with the secure token
       const fullLink = `${ONBOARDING_BASE_URL}?token=${data.token}`;
       document.getElementById('generatedLink').value = fullLink;
       document.getElementById('inviteResult').style.display = 'flex';
@@ -520,7 +517,6 @@ async function generateInviteToken() {
     btn.disabled = false;
   }
 }
-
 function copyInviteLink() {
   const linkInput = document.getElementById('generatedLink');
   linkInput.select();
@@ -598,11 +594,9 @@ function setEmpFilter(type,btn){
   currentEmpFilter=type;
   document.querySelectorAll('.sub-nav-item').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  
   if(type==='intern') document.getElementById('viewSubtitle').innerText='Manage intern records and details.';
   else if(type==='archive') document.getElementById('viewSubtitle').innerText='View resigned and archived employee records.';
   else document.getElementById('viewSubtitle').innerText='Manage employee records, roles, and access.';
-  
   document.getElementById('archiveBanner').classList.toggle('show', type==='archive');
   filterTable();
 }
