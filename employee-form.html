@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Onboarding | CrowdSource</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #f4f5f7; color: #1a1a2e; line-height: 1.6; padding: 40px 20px; display: flex; justify-content: center; }
+  .form-container { background: #fff; max-width: 600px; width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden; }
+  .form-header { background: #1a1a2e; color: #fff; padding: 30px; text-align: center; }
+  .form-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+  .form-header p { font-size: 14px; color: #a0a0ab; }
+  .form-body { padding: 30px; display: flex; flex-direction: column; gap: 24px; }
+  
+  .section-title { font-size: 14px; font-weight: 700; color: #1565c0; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e8f0fe; padding-bottom: 6px; margin-bottom: 16px; }
+  
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
+  
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; font-weight: 600; color: #4b5563; }
+  .form-group input, .form-group select, .form-group textarea { padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s; width: 100%; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1565c0; }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .req { color: #dc2626; margin-left: 3px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #1565c0; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+  .btn:hover { background: #0f4c92; }
+  .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+  .btn-outline { background: #fff; color: #1565c0; border: 1.5px solid #1565c0; width: auto; padding: 8px 16px; font-size: 13px; }
+  .btn-outline:hover { background: #e8f0fe; }
+
+  .dependent-item { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
+  .dependent-info strong { display: block; font-size: 14px; }
+  .dependent-info span { font-size: 12px; color: #6b7280; }
+  .remove-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+  .success-screen { display: none; text-align: center; padding: 60px 30px; }
+  .success-screen h2 { color: #16a34a; font-size: 24px; margin-bottom: 10px; }
+  
+  .error-screen { display: none; text-align: center; padding: 60px 30px; }
+  .error-screen h2 { color: #dc2626; font-size: 24px; margin-bottom: 10px; }
+  
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="form-container" id="mainContainer">
+  <div class="form-header">
+    <h1>CrowdSource Onboarding</h1>
+    <p>Please complete your personal and government details securely.</p>
+  </div>
+
+  <form class="form-body" id="onboardingForm" onsubmit="submitForm(event)">
+    
+    <div>
+      <div class="section-title">Personal Information</div>
+      <div class="grid-2">
+        <div class="form-group"><label>First Name <span class="req">*</span></label><input type="text" id="f_fn" required></div>
+        <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="e.g. Santos"></div>
+        <div class="form-group"><label>Last Name <span class="req">*</span></label><input type="text" id="f_ln" required></div>
+        <div class="form-group"><label>Date of Birth <span class="req">*</span></label><input type="date" id="f_birthdate" required></div>
+        <div class="form-group"><label>Gender</label><select id="f_gender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+        <div class="form-group"><label>Civil Status</label><select id="f_civil_status"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Widowed</option><option>Separated</option></select></div>
+        <div class="form-group"><label>Personal Email <span class="req">*</span></label><input type="email" id="f_personal_email" required></div>
+        <div class="form-group"><label>Contact Number <span class="req">*</span></label><input type="text" id="f_contact" required></div>
+        <div class="form-group full"><label>Complete Address</label><textarea id="f_address" rows="2"></textarea></div>
+        <div class="form-group full"><label>Emergency Contact</label><input type="text" id="f_emergency_contact" placeholder="Name — Relationship — Number"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Dependents</div>
+      <p style="font-size: 13px; color: #6b7280; margin-bottom: 12px;">Only children and senior citizen parents.</p>
+      
+      <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 12px;">
+        <div class="grid-2" style="margin-bottom: 10px;">
+          <div class="form-group full"><label>Full Name</label><input type="text" id="dep_name"></div>
+          <div class="form-group"><label>Age</label><input type="number" id="dep_age" min="0"></div>
+          <div class="form-group"><label>Birthdate</label><input type="date" id="dep_birthdate"></div>
+        </div>
+        <button type="button" class="btn-outline" onclick="addDependent()">+ Add Dependent</button>
+      </div>
+
+      <div id="dependentsList"></div>
+    </div>
+
+    <div>
+      <div class="section-title">Government Contributions & Banking</div>
+      <div class="grid-2">
+        <div class="form-group"><label>SSS Number</label><input type="text" id="f_sss" placeholder="XX-XXXXXXX-X"></div>
+        <div class="form-group"><label>Pag-IBIG Number</label><input type="text" id="f_pagibig" placeholder="XXXX-XXXX-XXXX"></div>
+        <div class="form-group"><label>PhilHealth Number</label><input type="text" id="f_philhealth" placeholder="XX-XXXXXXXXX-X"></div>
+        <div class="form-group"><label>TIN</label><input type="text" id="f_tin" placeholder="XXX-XXX-XXX-XXX"></div>
+        <div class="form-group full"><label>Payroll Bank Account</label><input type="text" id="f_payroll" placeholder="Bank Name — Account Number"></div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">Submit Record</button>
+  </form>
+
+  <div class="success-screen" id="successScreen">
+    <h2>Submission Successful</h2>
+    <p style="color: #6b7280; margin-top: 8px;">Your records have been sent securely to the HR Department. You may now close this window.</p>
+  </div>
+
+  <div class="error-screen" id="errorScreen">
+    <h2>Invalid Link</h2>
+    <p style="color: #6b7280; margin-top: 8px;" id="errorText">This onboarding link is missing, expired, or has already been used. Please contact HR for a new link.</p>
+  </div>
+</div>
+
+<script>
+  let dependents = [];
+  
+  // 1. Check for token on page load
+  const urlParams = new URLSearchParams(window.location.search);
+  const inviteToken = urlParams.get('token');
+
+  window.onload = () => {
+    // If someone just opens employee_form.html without a token, hide the form!
+    if (!inviteToken) {
+      document.getElementById('onboardingForm').style.display = 'none';
+      document.getElementById('errorScreen').style.display = 'block';
+    }
+  };
+
+  // 2. Dependents Logic
+  function addDependent() {
+    const name = document.getElementById('dep_name').value.trim();
+    const age = document.getElementById('dep_age').value.trim();
+    const bd = document.getElementById('dep_birthdate').value;
+    
+    if(!name) return alert('Please enter the dependent\'s name.');
+    
+    dependents.push({ name, age, birthdate: bd });
+    
+    document.getElementById('dep_name').value = '';
+    document.getElementById('dep_age').value = '';
+    document.getElementById('dep_birthdate').value = '';
+    renderDependents();
+  }
+
+  function removeDependent(idx) {
+    dependents.splice(idx, 1);
+    renderDependents();
+  }
+
+  function renderDependents() {
+    const list = document.getElementById('dependentsList');
+    list.innerHTML = dependents.map((d, i) => `
+      <div class="dependent-item">
+        <div class="dependent-info">
+          <strong>${d.name}</strong>
+          <span>Age: ${d.age || '—'} · DOB: ${d.birthdate || '—'}</span>
+        </div>
+        <button class="remove-btn" type="button" onclick="removeDependent(${i})">Remove</button>
+      </div>
+    `).join('');
+  }
+
+  // 3. Submit Form Logic
+  async function submitForm(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span class="spinner"></span> Submitting...';
+    btn.disabled = true;
+
+    // Build the payload mapping to your database columns
+    const payload = {
+      token: inviteToken, // Passes the secure token to n8n
+      fn: document.getElementById('f_fn').value.trim(),
+      mn: document.getElementById('f_mn').value.trim(),
+      ln: document.getElementById('f_ln').value.trim(),
+      birthdate: document.getElementById('f_birthdate').value || null,
+      gender: document.getElementById('f_gender').value,
+      civil_status: document.getElementById('f_civil_status').value,
+      personal_email: document.getElementById('f_personal_email').value.trim(),
+      contact: document.getElementById('f_contact').value.trim(),
+      address: document.getElementById('f_address').value.trim(),
+      emergency_contact: document.getElementById('f_emergency_contact').value.trim(),
+      
+      // JSON Stringified Array for Database
+      dependents: JSON.stringify(dependents),
+
+      sss: document.getElementById('f_sss').value.trim(),
+      pagibig: document.getElementById('f_pagibig').value.trim(),
+      philhealth: document.getElementById('f_philhealth').value.trim(),
+      tin: document.getElementById('f_tin').value.trim(),
+      payroll: document.getElementById('f_payroll').value.trim(),
+
+      // Default statuses for a new onboarding record
+      status: 'Probationary',
+      cip_status: 'Pending'
+    };
+
+    try {
+      const WEBHOOK_URL = 'https://primary-production-a810.up.railway.app/webhook/employee-onboarding';
+      
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Handle specific backend responses
+      if(res.ok) {
+        document.getElementById('onboardingForm').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+      } else if (res.status === 401 || res.status === 403) {
+        document.getElementById('onboardingForm').style.display = 'none';
+        document.getElementById('errorScreen').style.display = 'block';
+        document.getElementById('errorText').innerText = "This invite link is invalid or has already been used.";
+      } else {
+        alert('Submission failed. Please try again.');
+        btn.innerHTML = 'Submit Record';
+        btn.disabled = false;
+      }
+    } catch(err) {
+      alert('Network error. Please check your connection and try again.');
+      btn.innerHTML = 'Submit Record';
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
