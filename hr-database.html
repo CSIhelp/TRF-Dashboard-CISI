@@ -360,7 +360,7 @@ td.actions-cell{overflow:visible;max-width:none}
     </div>
 
     <div class="modal-body" id="m-benefits">
-      <p style="grid-column:span 2;font-size:12.5px;color:var(--text-muted)">Auto-calculated from Basic Salary using 2024 PH contribution tables.</p>
+      <p style="grid-column:span 2;font-size:12.5px;color:var(--text-muted)">Auto-calculated from Basic Salary using 2026 PH contribution tables.</p>
       <table class="benefits-table">
         <thead><tr><th>Benefit</th><th style="text-align:right">Employee Share</th><th style="text-align:right">Employer Share</th></tr></thead>
         <tbody id="benefitsTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px">Enter a salary in the Company tab first.</td></tr></tbody>
@@ -486,12 +486,17 @@ function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-
 function fmtPeso(n){return n?'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2}):'—';}
 function v(x){return x||'—'}
 
-// ── Gov't Benefits calculation (2024 PH tables) ──
+// ── Gov't Benefits calculation (2026 PH tables) ──
 function calcSSS(salary){
-  const s=Number(salary)||0;
-  // Exact 2024 SSS MSC brackets (min 4000, max 30000)
-  const msc = Math.min(Math.max(Math.floor((s - 250) / 500) * 500 + 500, 4000), 30000);
-  return{ee:Math.round(msc*0.045*100)/100,er:Math.round(msc*0.095*100)/100};
+  const s = Number(salary) || 0;
+  // 2026 SSS MSC brackets (min 5000, max 35000)
+  const msc = Math.min(Math.max(Math.floor((s - 250) / 500) * 500 + 500, 5000), 35000);
+  
+  // 2026 Rate: 5% Employee Share, 10% Employer Share
+  return { 
+    ee: Math.round(msc * 0.05 * 100) / 100, 
+    er: Math.round(msc * 0.10 * 100) / 100 
+  };
 }
 function calcPhilHealth(salary){
   const s=Number(salary)||0;
