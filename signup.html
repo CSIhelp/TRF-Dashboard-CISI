@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — Stewrd</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --brand: #2FAAE1;
+    --bg: #f4f9fc;
+    --card-bg: #ffffff;
+    --text-primary: #0d2d3a;
+    --input-bg: #f0f8fd;
+    --input-border: #b8dff0;
+  }
+  body.dark {
+    --bg: #071820;
+    --card-bg: #0d2535;
+    --text-primary: #e0f4fd;
+    --input-bg: #071820;
+    --input-border: #1a3f55;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .login-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .login-card img {
+    height: 40px;
+    margin-bottom: 20px;
+  }
+  h2 { margin-bottom: 6px; }
+  input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    color: var(--text-primary);
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  input:focus { border-color: var(--brand); }
+  .password-wrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+  .password-wrap input {
+    margin-bottom: 0;
+    padding-right: 60px;
+  }
+  button.toggle-btn {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: gray;
+    width: auto;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.toggle-btn:hover { color: var(--brand); }
+  button.primary-btn {
+    width: 100%;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 4px;
+  }
+  button.primary-btn:hover { opacity: 0.9; }
+  button.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .back-link {
+    display: block;
+    margin-top: 18px;
+    font-size: 13px;
+    color: gray;
+    text-decoration: none;
+  }
+  .back-link span { color: var(--brand); font-weight: 600; cursor: pointer; }
+  .back-link span:hover { text-decoration: underline; }
+  .success-box {
+    display: none;
+    background: #e6f9f0;
+    border: 1px solid #6ee7b7;
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 16px;
+    color: #065f46;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .divider {
+    height: 1px;
+    background: var(--input-border);
+    margin: 18px 0;
+    opacity: 0.4;
+  }
+  .field-label {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: gray;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .field-group { margin-bottom: 2px; }
+</style>
+</head>
+<body class="dark">
+  <div class="login-card">
+    <img src="stewrd-logo.png" alt="Stewrd Logo" onerror="this.style.display='none'">
+    <h2>Create Account</h2>
+    <p style="font-size: 13px; color: gray; margin-bottom: 24px;">Register a new HR Admin user</p>
+
+    <div class="field-group">
+      <div class="field-label">Full Name</div>
+      <input type="text" id="fullname" placeholder="e.g. Maria Santos">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Email Address</div>
+      <input type="email" id="email" placeholder="admin@crowdsource.com">
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Password</div>
+      <div class="password-wrap">
+        <input type="password" id="password" placeholder="Min. 8 characters">
+        <button type="button" class="toggle-btn" id="togglePassword">Show</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Confirm Password</div>
+      <div class="password-wrap">
+        <input type="password" id="confirmPassword" placeholder="Re-enter password">
+        <button type="button" class="toggle-btn" id="toggleConfirm">Show</button>
+      </div>
+    </div>
+
+    <button onclick="signUp()" id="signupBtn" class="primary-btn">Create Account</button>
+    <p id="errorMsg" style="color:#dc2626;font-size:12px;margin-top:12px;display:none;"></p>
+
+    <div class="success-box" id="successBox">
+      ✅ Account created! Check your email to confirm your address, then sign in.
+    </div>
+
+    <a class="back-link">Already have an account? <span onclick="window.location.href='index.html'">Sign In</span></a>
+  </div>
+
+  <script>
+    const supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
+    const supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // ── Show/Hide Password ──
+    function setupToggle(inputId, btnId) {
+      const input = document.getElementById(inputId);
+      const btn   = document.getElementById(btnId);
+      btn.addEventListener('click', () => {
+        const isHidden = input.type === 'password';
+        input.type  = isHidden ? 'text' : 'password';
+        btn.textContent = isHidden ? 'Hide' : 'Show';
+      });
+    }
+    setupToggle('password', 'togglePassword');
+    setupToggle('confirmPassword', 'toggleConfirm');
+
+    // ── Sign Up ──
+    async function signUp() {
+      const fullname = document.getElementById('fullname').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirmPassword').value;
+      const btn      = document.getElementById('signupBtn');
+      const err      = document.getElementById('errorMsg');
+      const success  = document.getElementById('successBox');
+
+      // Reset
+      err.style.display     = 'none';
+      success.style.display = 'none';
+
+      // Validate
+      if (!fullname) return showError('Please enter your full name.');
+      if (!email)    return showError('Please enter an email address.');
+      if (password.length < 8) return showError('Password must be at least 8 characters.');
+      if (password !== confirm) return showError('Passwords do not match.');
+
+      btn.textContent = 'Creating account...';
+      btn.disabled    = true;
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullname }
+        }
+      });
+
+      if (error) {
+        showError(error.message);
+      } else {
+        success.style.display = 'block';
+        document.getElementById('fullname').value        = '';
+        document.getElementById('email').value           = '';
+        document.getElementById('password').value        = '';
+        document.getElementById('confirmPassword').value = '';
+      }
+
+      btn.textContent = 'Create Account';
+      btn.disabled    = false;
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('errorMsg');
+      err.textContent    = msg;
+      err.style.display  = 'block';
+      document.getElementById('signupBtn').textContent = 'Create Account';
+      document.getElementById('signupBtn').disabled    = false;
+    }
+  </script>
+</body>
+</html>
