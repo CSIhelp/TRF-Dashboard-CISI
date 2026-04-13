@@ -156,7 +156,7 @@ td.actions-cell{overflow:visible;max-width:none}
 <body>
 
 <header class="topbar">
-  <a class="logo" href="#"><img src="logo.png" alt="" class="logo-img" onerror="this.style.display='none'"><span class="logo-text"><span>CROWD</span>SOURCE</span></a>
+  <a class="logo" href="#"><img src="favicon.ico" alt="" class="logo-img" onerror="this.style.display='none'"><span class="logo-text"><span>CROWD</span>SOURCE</span></a>
   <div class="topbar-user">
     <div class="topbar-user-name"><strong>HR Admin</strong><span>Human Resources</span></div>
     <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
@@ -480,8 +480,17 @@ async function loadEmployees(){
   try{
     const res=await fetch(URL_GET);
     const raw=await res.json();
-    employeesData=Array.isArray(raw)?raw.map(i=>i.json??i):[];
-    filterTable(); // Run it through the filter immediately to catch the default "Employees" state
+    let rawData = Array.isArray(raw)?raw.map(i=>i.json??i):[];
+    
+    // Force sorting by sort_order
+    rawData.sort((a, b) => {
+      const orderA = a.sort_order !== undefined && a.sort_order !== null ? Number(a.sort_order) : 9999;
+      const orderB = b.sort_order !== undefined && b.sort_order !== null ? Number(b.sort_order) : 9999;
+      return orderA - orderB;
+    });
+
+    employeesData = rawData;
+    filterTable(); 
   }catch(e){
     ['personal','company','sil','cip','files'].forEach(t=>{
       const b=document.getElementById('body-'+t);
@@ -527,14 +536,21 @@ async function saveNewOrder() {
   });
 
   try {
-    await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order', {
+    const res = await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newOrderPayload)
     });
-    showToast('Layout saved permanently!', 'success');
+    
+    if (res.ok) {
+      showToast('Layout saved permanently!', 'success');
+      // AUTO REFRESH: Pull the latest sorted data from the server
+      await loadEmployees(); 
+    } else {
+      showToast('Failed to save layout to database.', 'error');
+    }
   } catch (error) {
-    showToast('Failed to save layout to database.', 'error');
+    showToast('Network error. Check your connection.', 'error');
   }
 }
 /* --------------------------- */
