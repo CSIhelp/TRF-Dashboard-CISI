@@ -33,23 +33,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
 .avatar{width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8)}
 .layout{display:flex;flex:1;overflow:hidden}
 .sidebar{width:210px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;flex-shrink:0}
-
-/* Sidebar & Dropdown Additions */
-.nav-group { display: flex; flex-direction: column; width: 100%; }
+.nav-group{display:flex;flex-direction:column;width:100%}
 .nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
 .nav-item:hover{background:var(--accent-light);color:var(--accent)}
 .nav-item.active{color:var(--accent);background:var(--accent-light);font-weight:600}
 .nav-item svg{flex-shrink:0;opacity:.7}
 .nav-item.active svg{opacity:1}
-.nav-item .arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; color: var(--text-muted); }
-.nav-item.open .arrow { transform: rotate(180deg); }
-
-.sub-nav { display: none; flex-direction: column; background: #fafbfc; border-bottom: 1px solid var(--border); }
-.sub-nav.open { display: flex; }
-.sub-nav-item { padding: 10px 20px 10px 47px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: background .15s, color .15s; border-left: 3px solid transparent; }
-.sub-nav-item:hover { color: var(--accent); background: var(--accent-light); }
-.sub-nav-item.active { color: var(--accent); font-weight: 600; background: var(--accent-light); border-left-color: var(--accent); }
-
+.nav-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s;color:var(--text-muted)}
+.nav-item.open .arrow{transform:rotate(180deg)}
+.sub-nav{display:none;flex-direction:column;background:#fafbfc;border-bottom:1px solid var(--border)}
+.sub-nav.open{display:flex}
+.sub-nav-item{padding:10px 20px 10px 47px;font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;cursor:pointer}
+.sub-nav-item:hover{color:var(--accent);background:var(--accent-light)}
+.sub-nav-item.active{color:var(--accent);font-weight:600;background:var(--accent-light);border-left-color:var(--accent)}
 .nav-divider{height:1px;background:var(--border);margin:12px 16px}
 .nav-bottom{margin-top:auto}
 .main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
@@ -72,6 +68,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
 .tab-btn{padding:8px 18px;border-radius:20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
 .tab-btn:hover{background:#bbdefb}
 .tab-btn.active{background:var(--tab);color:#fff}
+.archive-banner{background:#fff8e1;border-bottom:1px solid #fde68a;padding:10px 20px;font-size:12.5px;color:#92400e;display:none;align-items:center;gap:8px}
+.archive-banner.show{display:flex}
 .table-scroll{overflow-x:auto}
 .table-scroll::-webkit-scrollbar{height:6px}
 .table-scroll::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
@@ -80,17 +78,14 @@ th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;le
 td{padding:11px 14px;font-size:12.5px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--row-hover)}
-
-/* Drag & Drop Cursors */
-tr.grab-row { cursor: grab; }
-tr.grab-row:active { cursor: grabbing; }
-
+tr.grab-row{cursor:grab}
+tr.grab-row:active{cursor:grabbing}
 .emp-name{font-weight:600;color:var(--text-primary)}
 .emp-pin{font-family:'DM Mono',monospace;font-size:11px;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:var(--text-muted)}
 .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
-.badge-active{background:#e6f9f0;color:#15803d}
-.badge-inactive{background:#fef2f2;color:#dc2626}
-.badge-probation{background:#fff8e1;color:#b45309}
+.badge-regular{background:#e6f9f0;color:#15803d}
+.badge-probationary{background:#fff8e1;color:#b45309}
+.badge-resigned{background:#fef2f2;color:#dc2626}
 td.actions-cell{overflow:visible;max-width:none}
 .actions{display:flex;gap:5px}
 .actions .btn{padding:5px 10px;font-size:11.5px}
@@ -104,7 +99,7 @@ td.actions-cell{overflow:visible;max-width:none}
 .page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
 .modal-overlay.active{display:flex}
-.modal{background:#fff;width:560px;max-width:90%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+.modal{background:#fff;width:580px;max-width:90%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
 .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .modal-header h2{font-size:16px;font-weight:700}
 .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
@@ -122,6 +117,27 @@ td.actions-cell{overflow:visible;max-width:none}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
 .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
 .form-group textarea{resize:vertical;min-height:72px}
+/* Role wrap */
+.role-wrap{display:flex;gap:6px}
+.role-wrap select{flex:1}
+.role-wrap .btn{padding:9px 12px;flex-shrink:0}
+.new-role-row{display:none;gap:6px;margin-top:6px}
+.new-role-row.show{display:flex}
+.new-role-row input{flex:1}
+/* Benefits table */
+.benefits-table{width:100%;border-collapse:collapse;font-size:12.5px;grid-column:span 2}
+.benefits-table th{background:#f0f8fe;color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.benefits-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.benefits-table tr:last-child td{border-bottom:none}
+.benefits-table .amount{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent);text-align:right}
+.section-title{grid-column:span 2;font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:1px solid var(--border);margin-top:4px}
+/* Liabilities */
+.liability-list{grid-column:span 2;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
+.liability-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12.5px}
+.liability-item-info strong{font-weight:600;display:block}
+.liability-item-info span{color:var(--text-muted);font-size:11.5px}
+.liability-amount{font-family:'DM Mono',monospace;font-weight:700;color:#dc2626}
+/* Delete modal */
 .delete-modal{background:#fff;width:400px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease}
 @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
 .delete-modal-icon{width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
@@ -133,6 +149,7 @@ td.actions-cell{overflow:visible;max-width:none}
 .delete-modal-footer .btn{flex:1;justify-content:center;padding:11px 14px;font-size:13.5px}
 .btn.confirm-delete{background:#dc2626;color:#fff;border-color:#dc2626}
 .btn.confirm-delete:hover{background:#b91c1c}
+/* File dropdown */
 .file-dropdown-wrap{position:relative;display:inline-block}
 .file-dropdown-btn{background:#e0e0e0;color:#333;border:none;border-radius:6px;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .file-dropdown-btn:hover{background:#bdbdbd}
@@ -140,17 +157,16 @@ td.actions-cell{overflow:visible;max-width:none}
 .file-dropdown-menu.open{display:block}
 .file-dropdown-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .12s}
 .file-dropdown-item:hover{background:var(--accent-light);color:var(--accent)}
-.file-dropdown-item svg{flex-shrink:0;color:var(--text-muted)}
+/* Spinner & state */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
-
-/* TOAST NOTIFICATION */
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a2e; color: #fff; font-size: 13px; font-weight: 500; padding: 12px 24px; border-radius: 8px; display: flex; align-items: center; gap: 8px; z-index: 9999; opacity: 0; transition: transform 0.35s ease, opacity 0.3s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.toast.success { background: #16a34a; }
-.toast.error { background: #dc2626; }
-.req-star { color: #dc2626; margin-left: 3px; }
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .35s ease,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{background:#16a34a}
+.toast.error{background:#dc2626}
+.req-star{color:#dc2626;margin-left:3px}
 </style>
 </head>
 <body>
@@ -168,19 +184,17 @@ td.actions-cell{overflow:visible;max-width:none}
     <a class="nav-item" href="homepage.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>TRF Dashboard</a>
     <a class="nav-item" href="timesheets.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Timesheets</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>HR Closing Letters</a>
-    
     <div class="nav-group">
-      <button class="nav-item active toggle-btn open" onclick="toggleNavGroup('hr-db-sub', this)">
+      <button class="nav-item active toggle-btn open" onclick="toggleNavGroup('hr-db-sub',this)">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-        HR Database
-        <span class="arrow">▼</span>
+        HR Database<span class="arrow">▼</span>
       </button>
       <div class="sub-nav open" id="hr-db-sub">
-        <a href="#" class="sub-nav-item active" onclick="setEmpFilter('regular', this); return false;">Employees</a>
-        <a href="#" class="sub-nav-item" onclick="setEmpFilter('intern', this); return false;">Interns</a>
+        <a href="#" class="sub-nav-item active" onclick="setEmpFilter('regular',this);return false;">Employees</a>
+        <a href="#" class="sub-nav-item" onclick="setEmpFilter('intern',this);return false;">Interns</a>
+        <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
       </div>
     </div>
-
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
@@ -204,12 +218,19 @@ td.actions-cell{overflow:visible;max-width:none}
 
     <div class="db-card">
       <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('personal',this)">Personal Details</button>
-        <button class="tab-btn" onclick="switchTab('company',this)">Company Details</button>
-        <button class="tab-btn" onclick="switchTab('sil',this)">SIL Credits</button>
-        <button class="tab-btn" onclick="switchTab('cip',this)">CIP</button>
-        <button class="tab-btn" onclick="switchTab('files',this)">201 Files</button>
+        <button class="tab-btn active"       onclick="switchTab('personal',this)">Personal Details</button>
+        <button class="tab-btn"              onclick="switchTab('company',this)">Company Details</button>
+        <button class="tab-btn"              onclick="switchTab('sil',this)">SIL Credits</button>
+        <button class="tab-btn"              onclick="switchTab('benefits',this)">Gov't Benefits</button>
+        <button class="tab-btn"              onclick="switchTab('liabilities',this)">Liabilities</button>
+        <button class="tab-btn"              onclick="switchTab('cip',this)">CIP</button>
+        <button class="tab-btn"              onclick="switchTab('files',this)">201 Files</button>
       </div>
+
+      <div class="archive-banner" id="archiveBanner">
+        📁 Showing resigned employees. These records are read-only.
+      </div>
+
       <div class="table-scroll">
         <table id="tab-personal">
           <thead><tr><th>Name</th><th>PIN</th><th>Contact No.</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>
@@ -223,6 +244,14 @@ td.actions-cell{overflow:visible;max-width:none}
           <thead><tr><th>Name</th><th>Status</th><th>Position</th><th>Department</th><th>SIL Balance</th><th>Parental Leave Balance</th><th>Actions</th></tr></thead>
           <tbody id="body-sil"><tr><td colspan="7" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
+        <table id="tab-benefits" style="display:none">
+          <thead><tr><th>Name</th><th>Basic Salary</th><th>SSS (EE)</th><th>SSS (ER)</th><th>PhilHealth (EE)</th><th>PhilHealth (ER)</th><th>Pag-IBIG (EE)</th><th>Pag-IBIG (ER)</th><th>Total Deductions</th><th>Actions</th></tr></thead>
+          <tbody id="body-benefits"><tr><td colspan="10" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
+        </table>
+        <table id="tab-liabilities" style="display:none">
+          <thead><tr><th>Name</th><th>PIN</th><th>Type</th><th>Description</th><th>Amount</th><th>Balance</th><th>Date Added</th><th>Actions</th></tr></thead>
+          <tbody id="body-liabilities"><tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
+        </table>
         <table id="tab-cip" style="display:none">
           <thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>CIP Notes</th><th>Actions</th></tr></thead>
           <tbody id="body-cip"><tr><td colspan="7" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
@@ -232,6 +261,7 @@ td.actions-cell{overflow:visible;max-width:none}
           <tbody id="body-files"><tr><td colspan="2" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
       </div>
+
       <div class="pagination-bar" id="paginationBar" style="display:none">
         <div style="display:flex;align-items:center;gap:10px">
           <span class="pagination-info" id="pageInfo"></span>
@@ -254,6 +284,8 @@ td.actions-cell{overflow:visible;max-width:none}
       <button class="modal-tab-btn" onclick="switchModalTab('m-sil',this)">SIL</button>
       <button class="modal-tab-btn" onclick="switchModalTab('m-gov',this)">Gov IDs</button>
       <button class="modal-tab-btn" onclick="switchModalTab('m-cip',this)">CIP</button>
+      <button class="modal-tab-btn" onclick="switchModalTab('m-benefits',this)">Benefits</button>
+      <button class="modal-tab-btn" onclick="switchModalTab('m-liabilities',this)">Liabilities</button>
     </div>
 
     <div class="modal-body active" id="m-personal">
@@ -261,7 +293,7 @@ td.actions-cell{overflow:visible;max-width:none}
       <div class="form-group"><label>First Name<span class="req-star">*</span></label><input type="text" id="f_fn" placeholder="John"></div>
       <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="A."></div>
       <div class="form-group"><label>Last Name<span class="req-star">*</span></label><input type="text" id="f_ln" placeholder="Doe"></div>
-      <div class="form-group"><label>PIN (Employee ID)<span class="req-star">*</span></label><input type="text" id="f_pin" placeholder="e.g. 1099"></div>
+      <div class="form-group"><label>PIN<span class="req-star">*</span></label><input type="text" id="f_pin" placeholder="e.g. 1099"></div>
       <div class="form-group"><label>Personal Email</label><input type="email" id="f_personal_email" placeholder="john@gmail.com"></div>
       <div class="form-group"><label>Contact Number</label><input type="text" id="f_contact" placeholder="09XX XXX XXXX"></div>
       <div class="form-group"><label>Birthdate</label><input type="date" id="f_birthdate"></div>
@@ -275,11 +307,30 @@ td.actions-cell{overflow:visible;max-width:none}
     <div class="modal-body" id="m-company">
       <div class="form-group"><label>Work Email</label><input type="email" id="f_email" placeholder="john@crowdsource.com"></div>
       <div class="form-group"><label>Department</label><select id="f_dep_id"><option value="">— Select Department —</option></select></div>
-      <div class="form-group"><label>Role / Position</label><select id="f_role_id"><option value="">— Select Role —</option></select></div>
-      <div class="form-group"><label>Status</label><select id="f_status"><option value="">— Select —</option><option>Active</option><option>Probation</option><option>Inactive</option><option>Resigned</option><option>Terminated</option></select></div>
+      <div class="form-group full">
+        <label>Role / Position</label>
+        <div class="role-wrap">
+          <select id="f_role_id"><option value="">— Select Role —</option></select>
+          <button class="btn" type="button" onclick="toggleNewRole()">+ New</button>
+        </div>
+        <div class="new-role-row" id="newRoleRow">
+          <input type="text" id="newRoleName" placeholder="Type new role name...">
+          <button class="btn primary" type="button" onclick="saveNewRole()">Add</button>
+          <button class="btn" type="button" onclick="toggleNewRole()">Cancel</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="f_status">
+          <option value="">— Select —</option>
+          <option value="Regular">Regular</option>
+          <option value="Probationary">Probationary</option>
+          <option value="Resigned">Resigned</option>
+        </select>
+      </div>
       <div class="form-group"><label>Start Date</label><input type="date" id="f_start_date"></div>
       <div class="form-group"><label>Regularization Date</label><input type="date" id="f_regularization_date"></div>
-      <div class="form-group"><label>Basic Salary</label><input type="number" id="f_salary" placeholder="e.g. 25000"></div>
+      <div class="form-group"><label>Basic Salary</label><input type="number" id="f_salary" placeholder="e.g. 25000" oninput="renderBenefitsPreview()"></div>
       <div class="form-group"><label>De Minimis</label><input type="number" id="f_de_minimis" placeholder="e.g. 2000"></div>
       <div class="form-group"><label>Allowance</label><input type="number" id="f_allowance" placeholder="e.g. 1500"></div>
       <div class="form-group full">
@@ -302,17 +353,30 @@ td.actions-cell{overflow:visible;max-width:none}
     </div>
 
     <div class="modal-body" id="m-cip">
-      <div class="form-group">
-        <label>CIP Status</label>
-        <select id="f_cip_status">
-          <option value="">— Select —</option>
-          <option value="Pending">Pending</option>
-          <option value="Compliant">Compliant</option>
-          <option value="Non-Compliant">Non-Compliant</option>
-          <option value="Waived">Waived</option>
-        </select>
+      <div class="form-group"><label>CIP Status</label>
+        <select id="f_cip_status"><option value="">— Select —</option><option value="Pending">Pending</option><option value="Compliant">Compliant</option><option value="Non-Compliant">Non-Compliant</option><option value="Waived">Waived</option></select>
       </div>
-      <div class="form-group"><label>CIP Notes</label><textarea id="f_cip_notes" placeholder="Any notes about CIP compliance..."></textarea></div>
+      <div class="form-group"><label>CIP Notes</label><textarea id="f_cip_notes" placeholder="Notes about CIP compliance..."></textarea></div>
+    </div>
+
+    <div class="modal-body" id="m-benefits">
+      <p style="grid-column:span 2;font-size:12.5px;color:var(--text-muted)">Auto-calculated from Basic Salary using 2024 PH contribution tables.</p>
+      <table class="benefits-table">
+        <thead><tr><th>Benefit</th><th style="text-align:right">Employee Share</th><th style="text-align:right">Employer Share</th></tr></thead>
+        <tbody id="benefitsTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px">Enter a salary in the Company tab first.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="modal-body" id="m-liabilities">
+      <div class="section-title">Add New Liability</div>
+      <div class="form-group"><label>Type</label><select id="l_type"><option value="">— Select —</option><option value="Loan">Loan</option><option value="Deduction">Deduction</option><option value="Advance">Advance</option></select></div>
+      <div class="form-group"><label>Description</label><input type="text" id="l_desc" placeholder="e.g. SSS Loan"></div>
+      <div class="form-group"><label>Amount</label><input type="number" id="l_amount" placeholder="e.g. 5000"></div>
+      <div class="form-group"><label>Balance</label><input type="number" id="l_balance" placeholder="e.g. 5000"></div>
+      <div class="form-group full"><label>Notes</label><input type="text" id="l_notes" placeholder="Optional notes"></div>
+      <div class="form-group full"><button class="btn primary" onclick="addLiability()" id="addLiabilityBtn">+ Add Liability</button></div>
+      <div class="section-title">Existing Liabilities</div>
+      <div class="liability-list" id="liabilityList"><p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p></div>
     </div>
 
     <div class="modal-footer">
@@ -337,75 +401,79 @@ td.actions-cell{overflow:visible;max-width:none}
   </div>
 </div>
 
-<div class="toast" id="toast">
-  <span id="toastIcon"></span>
-  <span id="toastMsg"></span>
-</div>
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
 <script>
-const URL_GET    = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
-const URL_CREATE = 'https://primary-production-a810.up.railway.app/webhook/hr-create-employee';
-const URL_UPDATE = 'https://primary-production-a810.up.railway.app/webhook/hr-update-employee';
-const URL_DELETE = 'https://primary-production-a810.up.railway.app/webhook/hr-delete-employee';
-const URL_DEPTS  = 'https://primary-production-a810.up.railway.app/webhook/get-departmentshr';
-const URL_ROLES  = 'https://primary-production-a810.up.railway.app/webhook/get-roles';
+const URL_GET           = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
+const URL_CREATE        = 'https://primary-production-a810.up.railway.app/webhook/hr-create-employee';
+const URL_UPDATE        = 'https://primary-production-a810.up.railway.app/webhook/hr-update-employee';
+const URL_DELETE        = 'https://primary-production-a810.up.railway.app/webhook/hr-delete-employee';
+const URL_DEPTS         = 'https://primary-production-a810.up.railway.app/webhook/get-departmentshr';
+const URL_ROLES         = 'https://primary-production-a810.up.railway.app/webhook/get-roles';
+const URL_ADD_ROLE      = 'https://primary-production-a810.up.railway.app/webhook/add-role';
+const URL_LIABILITIES   = 'https://primary-production-a810.up.railway.app/webhook/get-liabilities';
+const URL_ADD_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/add-liability';
+const URL_DEL_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/delete-liability';
 
 let employeesData=[],filteredData=[],currentPage=1,currentTab='personal';
-let currentEmpFilter = 'regular'; // 'regular' or 'intern'
+let currentEmpFilter='regular', currentEmpId=null;
 
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  document.getElementById('toastIcon').textContent = type === 'success' ? '✅' : '❌';
-  document.getElementById('toastMsg').textContent  = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 4000);
+// ── Toast ──
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastIcon').textContent=type==='success'?'✅':'❌';
+  document.getElementById('toastMsg').textContent=msg;
+  t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),4000);
 }
 
-function toggleNavGroup(id, btn) {
+// ── Sidebar ──
+function toggleNavGroup(id,btn){
   document.getElementById(id).classList.toggle('open');
   btn.classList.toggle('open');
 }
-
-function setEmpFilter(type, btn) {
-  currentEmpFilter = type;
-  document.querySelectorAll('.sub-nav-item').forEach(b => b.classList.remove('active'));
+function setEmpFilter(type,btn){
+  currentEmpFilter=type;
+  document.querySelectorAll('.sub-nav-item').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   
-  if(type === 'intern') {
-    document.getElementById('viewSubtitle').innerText = 'Manage intern records and details.';
-  } else {
-    document.getElementById('viewSubtitle').innerText = 'Manage employee records, roles, and access.';
-  }
+  if(type==='intern') document.getElementById('viewSubtitle').innerText='Manage intern records and details.';
+  else if(type==='archive') document.getElementById('viewSubtitle').innerText='View resigned and archived employee records.';
+  else document.getElementById('viewSubtitle').innerText='Manage employee records, roles, and access.';
+  
+  document.getElementById('archiveBanner').classList.toggle('show', type==='archive');
   filterTable();
 }
 
 function getPageSize(){return parseInt(document.getElementById('pageSizeSelect').value)}
 
+// ── Tab switching ──
 function switchTab(tab,btn){
   currentTab=tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['personal','company','sil','cip','files'].forEach(t=>{
-    document.getElementById('tab-'+t).style.display=t===tab?'table':'none';
-  });
+  const all=['personal','company','sil','benefits','liabilities','cip','files'];
+  all.forEach(t=>{ document.getElementById('tab-'+t).style.display=t===tab?'table':'none'; });
   renderTable();
 }
-
 function switchModalTab(tabId,btn){
   document.querySelectorAll('.modal-tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.modal-body').forEach(b=>b.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
+  if(tabId==='m-benefits') renderBenefitsPreview();
+  if(tabId==='m-liabilities'&&currentEmpId) loadLiabilities(currentEmpId);
 }
 
+// ── Status badge ──
 function statusBadge(s){
   if(!s)return'—';
   const sl=s.toLowerCase();
-  if(sl==='active')return`<span class="badge badge-active">${s}</span>`;
-  if(['inactive','resigned','terminated'].includes(sl))return`<span class="badge badge-inactive">${s}</span>`;
-  return`<span class="badge badge-probation">${s}</span>`;
+  if(sl==='regular')return`<span class="badge badge-regular">Regular</span>`;
+  if(sl==='probationary')return`<span class="badge badge-probationary">Probationary</span>`;
+  if(sl==='resigned')return`<span class="badge badge-resigned">Resigned</span>`;
+  return`<span class="badge badge-probationary">${s}</span>`;
 }
-
 function calcAge(bd){
   if(!bd)return'—';
   const t=new Date(),d=new Date(bd);
@@ -414,65 +482,167 @@ function calcAge(bd){
   if(m<0||(m===0&&t.getDate()<d.getDate()))a--;
   return a;
 }
-
-function fmtDate(d){
-  if(!d)return'—';
-  return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-
+function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function fmtPeso(n){return n?'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2}):'—';}
 function v(x){return x||'—'}
 
-function toggle201(id){
-  const m=document.getElementById('menu-'+id);
-  document.querySelectorAll('.file-dropdown-menu.open').forEach(x=>{if(x!==m)x.classList.remove('open')});
-  m.classList.toggle('open');
+// ── Gov't Benefits calculation (2024 PH tables) ──
+function calcSSS(salary){
+  const s=Number(salary)||0;
+  // Exact 2024 SSS MSC brackets (min 4000, max 30000)
+  const msc = Math.min(Math.max(Math.floor((s - 250) / 500) * 500 + 500, 4000), 30000);
+  return{ee:Math.round(msc*0.045*100)/100,er:Math.round(msc*0.095*100)/100};
 }
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.file-dropdown-wrap'))
-    document.querySelectorAll('.file-dropdown-menu.open').forEach(m=>m.classList.remove('open'));
-});
-function open201(type,id){alert('Opening '+type+' for employee '+id+'.\n\nConnect to your Google Drive folder to open the actual file.');}
+function calcPhilHealth(salary){
+  const s=Number(salary)||0;
+  const total=Math.min(Math.max(s*0.05,500),5000);
+  const share=Math.round(total/2*100)/100;
+  return{ee:share,er:share};
+}
+function calcPagIBIG(salary){
+  const s=Number(salary)||0;
+  const ee=Math.min(Math.round(s*(s>1500?0.02:0.01)*100)/100,200);
+  const er=Math.min(Math.round(s*0.02*100)/100,200);
+  return{ee,er};
+}
+function renderBenefitsPreview(){
+  const salary=Number(document.getElementById('f_salary')?.value)||0;
+  const sss=calcSSS(salary),ph=calcPhilHealth(salary),pi=calcPagIBIG(salary);
+  const totalEE=sss.ee+ph.ee+pi.ee,totalER=sss.er+ph.er+pi.er;
+  const fmt=n=>'₱'+n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('benefitsTableBody').innerHTML=`
+    <tr><td>SSS</td><td class="amount">${fmt(sss.ee)}</td><td class="amount">${fmt(sss.er)}</td></tr>
+    <tr><td>PhilHealth</td><td class="amount">${fmt(ph.ee)}</td><td class="amount">${fmt(ph.er)}</td></tr>
+    <tr><td>Pag-IBIG</td><td class="amount">${fmt(pi.ee)}</td><td class="amount">${fmt(pi.er)}</td></tr>
+    <tr style="background:#f0f8fe;font-weight:700"><td>Total</td><td class="amount">${fmt(totalEE)}</td><td class="amount">${fmt(totalER)}</td></tr>`;
+}
+
+// ── Custom Role ──
+function toggleNewRole(){
+  const row=document.getElementById('newRoleRow');
+  row.classList.toggle('show');
+  if(row.classList.contains('show')) document.getElementById('newRoleName').focus();
+  else document.getElementById('newRoleName').value='';
+}
+async function saveNewRole(){
+  const name=document.getElementById('newRoleName').value.trim();
+  if(!name)return;
+  try{
+    const res=await fetch(URL_ADD_ROLE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});
+    const data=await res.json();
+    const role=Array.isArray(data)?data[0]:data;
+    if(role?.name){
+      const sel=document.getElementById('f_role_id');
+      const o=document.createElement('option');
+      o.value=role.name;o.textContent=role.name;
+      sel.appendChild(o);sel.value=role.name;
+      toggleNewRole();
+      showToast(`Role "${role.name}" added!`,'success');
+    }
+  }catch(e){showToast('Failed to add role.','error');}
+}
+
+// ── Liabilities ──
+async function loadLiabilities(empId){
+  const list=document.getElementById('liabilityList');
+  list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">Loading...</p>';
+  try{
+    const res=await fetch(`${URL_LIABILITIES}?employee_id=${empId}`);
+    const raw=await res.json();
+    
+    // Extract items AND filter out empty/invalid objects (e.g. if the API returns [{}])
+    const items = Array.isArray(raw) 
+        ? raw.map(i => i.json ?? i).filter(l => l && Object.keys(l).length > 0 && l.amount !== undefined) 
+        : [];
+
+    if(!items.length){
+        list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';
+        return;
+    }
+
+    list.innerHTML=items.map(l=>`
+      <div class="liability-item">
+        <div class="liability-item-info">
+          <strong>${l.type || 'Unknown'} — ${l.description||'—'}</strong>
+          <span>Added: ${fmtDate(l.date_added)}${l.notes?' · '+l.notes:''}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="text-align:right">
+            <div class="liability-amount">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
+            <div style="font-size:11px;color:var(--text-muted)">Bal: ₱${Number(l.balance).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
+          </div>
+          <button class="btn danger" style="padding:4px 8px;font-size:11px" onclick="deleteLiability(${l.id})">✕</button>
+        </div>
+      </div>`).join('');
+  }catch(e){
+      list.innerHTML='<p style="color:#dc2626;font-size:12.5px">Failed to load.</p>';
+  }
+}
+async function addLiability(){
+  if(!currentEmpId){showToast('Save the employee first.','error');return;}
+  const type=document.getElementById('l_type').value;
+  const amount=document.getElementById('l_amount').value;
+  if(!type||!amount){showToast('Type and Amount are required.','error');return;}
+  const btn=document.getElementById('addLiabilityBtn');
+  btn.textContent='Adding...';btn.disabled=true;
+  try{
+    await fetch(URL_ADD_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        employee_id:currentEmpId,type,
+        description:document.getElementById('l_desc').value,
+        amount:Number(amount),
+        balance:Number(document.getElementById('l_balance').value||amount),
+        notes:document.getElementById('l_notes').value
+      })});
+    ['l_type','l_desc','l_amount','l_balance','l_notes'].forEach(id=>document.getElementById(id).value='');
+    loadLiabilities(currentEmpId);
+    showToast('Liability added!','success');
+  }catch(e){showToast('Failed to add liability.','error');}
+  finally{btn.textContent='+ Add Liability';btn.disabled=false;}
+}
+async function deleteLiability(id){
+  if(!confirm('Delete this liability?'))return;
+  try{
+    await fetch(URL_DEL_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    loadLiabilities(currentEmpId);showToast('Liability deleted.','success');
+  }catch(e){showToast('Failed to delete.','error');}
+}
+
+// ── Dropdowns ──
+async function loadDropdowns(){
+  try{
+    const dRes=await fetch(URL_DEPTS);
+    const deps=(await dRes.json()).map(i=>i.json??i).filter(d=>d.name&&d.name.toLowerCase()!=='undefined');
+    const ds=document.getElementById('f_dep_id');
+    ds.innerHTML='<option value="">— Select Department —</option>';
+    deps.forEach(d=>{const o=document.createElement('option');o.value=d.name;o.textContent=d.name;ds.appendChild(o)});
+  }catch(e){document.getElementById('f_dep_id').innerHTML='<option value="">— Failed to load —</option>';}
+  try{
+    const rRes=await fetch(URL_ROLES);
+    const rols=(await rRes.json()).map(i=>i.json??i).filter(r=>r.name&&r.name.toLowerCase()!=='undefined');
+    const rs=document.getElementById('f_role_id');
+    rs.innerHTML='<option value="">— Select Role —</option>';
+    rols.forEach(r=>{const o=document.createElement('option');o.value=r.name;o.textContent=r.name;rs.appendChild(o)});
+  }catch(e){document.getElementById('f_role_id').innerHTML='<option value="">— Failed to load —</option>';}
+}
 
 function populateSupervisorDropdown(currentSupId){
   const sel=document.getElementById('f_supervisor_id');
   sel.innerHTML='<option value="">— Select Supervisor —</option>';
-  employeesData.forEach(emp=>{
+  employeesData.filter(e=>e.status!=='Resigned').forEach(emp=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
     const o=document.createElement('option');
     o.value=emp.id;
-    o.textContent=fn+(emp.pin?' ('+emp.pin+')':'');
+    o.textContent=fn; // PIN removed from here
     sel.appendChild(o);
   });
   if(currentSupId!=null&&currentSupId!=='') sel.value=String(currentSupId);
 }
 
-async function loadDropdowns(){
-  try{
-    const dRes=await fetch(URL_DEPTS);
-    const dRaw=await dRes.json();
-    const deps=(Array.isArray(dRaw)?dRaw.map(i=>i.json??i):[]).filter(d=>d.name&&d.name.toLowerCase()!=='undefined');
-    const ds=document.getElementById('f_dep_id');
-    ds.innerHTML='<option value="">— Select Department —</option>';
-    deps.forEach(d=>{const o=document.createElement('option');o.value=d.name;o.textContent=d.name;ds.appendChild(o)});
-  }catch(e){
-    console.error('Departments failed:',e);
-    document.getElementById('f_dep_id').innerHTML='<option value="">— Failed to load —</option>';
-  }
-  try{
-    const rRes=await fetch(URL_ROLES);
-    const rRaw=await rRes.json();
-    const rols=(Array.isArray(rRaw)?rRaw.map(i=>i.json??i):[]).filter(r=>r.name&&r.name.toLowerCase()!=='undefined');
-    const rs=document.getElementById('f_role_id');
-    rs.innerHTML='<option value="">— Select Role —</option>';
-    rols.forEach(r=>{const o=document.createElement('option');o.value=r.name;o.textContent=r.name;rs.appendChild(o)});
-  }catch(e){
-    console.error('Roles failed:',e);
-    document.getElementById('f_role_id').innerHTML='<option value="">— Failed to load —</option>';
-  }
-}
-
+// ── Load employees ──
 async function loadEmployees(){
-  ['personal','company','sil','cip','files'].forEach(t=>{
+  const allTabs=['personal','company','sil','benefits','liabilities','cip','files'];
+  allTabs.forEach(t=>{
     const b=document.getElementById('body-'+t);
     if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell"><span class="spinner"></span> Loading...</td></tr>`;
   });
@@ -480,104 +650,75 @@ async function loadEmployees(){
   try{
     const res=await fetch(URL_GET);
     const raw=await res.json();
-    let rawData = Array.isArray(raw)?raw.map(i=>i.json??i):[];
-    
-    // Force sorting by sort_order
-    rawData.sort((a, b) => {
-      const orderA = a.sort_order !== undefined && a.sort_order !== null ? Number(a.sort_order) : 9999;
-      const orderB = b.sort_order !== undefined && b.sort_order !== null ? Number(b.sort_order) : 9999;
-      return orderA - orderB;
+    let rawData=Array.isArray(raw)?raw.map(i=>i.json??i):[];
+    rawData.sort((a,b)=>{
+      const oa=a.sort_order!=null?Number(a.sort_order):9999;
+      const ob=b.sort_order!=null?Number(b.sort_order):9999;
+      return oa-ob;
     });
-
-    employeesData = rawData;
-    filterTable(); 
+    employeesData=rawData;
+    filterTable();
   }catch(e){
-    ['personal','company','sil','cip','files'].forEach(t=>{
+    allTabs.forEach(t=>{
       const b=document.getElementById('body-'+t);
       if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell" style="color:#dc2626">Failed to connect.</td></tr>`;
     });
   }
 }
 
-/* --- Drag and Drop Logic --- */
-let dragIndex = -1;
-function dragStart(e, index) {
-  dragIndex = index;
-  e.dataTransfer.effectAllowed = "move";
-  e.target.style.opacity = "0.4";
-}
-function dragEnd(e) {
-  e.target.style.opacity = "1";
-}
-function dragOver(e) {
-  e.preventDefault(); 
-  e.dataTransfer.dropEffect = "move";
-}
-function dropRow(e, dropIndex) {
+// ── Drag & Drop ──
+let dragIndex=-1;
+function dragStart(e,index){dragIndex=index;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.4';}
+function dragEnd(e){e.target.style.opacity='1';}
+function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
+function dropRow(e,dropIndex){
   e.preventDefault();
-  if (dragIndex === dropIndex || dragIndex === -1) return;
-
-  // Rearrange visually
-  const item = filteredData.splice(dragIndex, 1)[0];
-  filteredData.splice(dropIndex, 0, item);
-  
+  if(dragIndex===dropIndex||dragIndex===-1)return;
+  const item=filteredData.splice(dragIndex,1)[0];
+  filteredData.splice(dropIndex,0,item);
   renderTable();
-  
-  // Save the new order to the backend automatically
   saveNewOrder();
 }
-
-async function saveNewOrder() {
-  showToast('Saving new layout...', 'success');
-  
-  // Create an array of just the IDs and their new position index
-  const newOrderPayload = filteredData.map((emp, index) => {
-    return { id: emp.id, sort_order: index + 1 };
-  });
-
-  try {
-    const res = await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newOrderPayload)
+async function saveNewOrder(){
+  showToast('Saving layout...','success');
+  const payload=filteredData.map((emp,i)=>({id:emp.id,sort_order:i+1}));
+  try{
+    const res=await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
     });
-    
-    if (res.ok) {
-      showToast('Layout saved permanently!', 'success');
-      // AUTO REFRESH: Pull the latest sorted data from the server
-      await loadEmployees(); 
-    } else {
-      showToast('Failed to save layout to database.', 'error');
-    }
-  } catch (error) {
-    showToast('Network error. Check your connection.', 'error');
-  }
+    if(res.ok){showToast('Layout saved!','success');await loadEmployees();}
+    else showToast('Failed to save layout.','error');
+  }catch(e){showToast('Network error.','error');}
 }
-/* --------------------------- */
 
+// ── Render ──
 function renderTable(){
-  if(filteredData.length===0){
-    ['personal','company','sil','cip','files'].forEach(t=>{
+  const data=filteredData;
+  const allTabs=['personal','company','sil','benefits','liabilities','cip','files'];
+  if(data.length===0){
+    allTabs.forEach(t=>{
       const b=document.getElementById('body-'+t);
-      if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell">No records found.</td></tr>`;
+      if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell">${currentEmpFilter==='archive'?'No archived employees found.':'No records found.'}</td></tr>`;
     });
     document.getElementById('paginationBar').style.display='none';return;
   }
-  const ps=getPageSize(),total=Math.ceil(filteredData.length/ps);
+  const ps=getPageSize(),total=Math.ceil(data.length/ps);
   if(currentPage>total)currentPage=total;
-  const start=(currentPage-1)*ps,items=filteredData.slice(start,start+ps);
-  const ab=(i)=>`<div class="actions"><button class="btn" onclick="openModal(${i})">Edit</button><button class="btn danger" onclick="deleteEmployee(${employeesData[i].id})">Delete</button></div>`;
+  const start=(currentPage-1)*ps,items=data.slice(start,start+ps);
 
-  const buildTr = (content, mapIndex) => {
-    const dIdx = start + mapIndex;
-    return `<tr class="grab-row" draggable="true" ondragstart="dragStart(event, ${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event, ${dIdx})" ondragend="dragEnd(event)">${content}</tr>`;
+  const ab=(emp)=>{
+    const gi=employeesData.indexOf(emp);
+    if(currentEmpFilter==='archive') return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;
+    return`<div class="actions"><button class="btn" onclick="openModal(${gi})">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;
+  };
+  const btr=(content,idx)=>{
+    const dIdx=start+idx;
+    return`<tr class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)">${content}</tr>`;
   };
 
-  document.getElementById('body-personal').innerHTML=items.map((emp, idx)=>{
-    const gi=employeesData.indexOf(emp);
+  document.getElementById('body-personal').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return buildTr(`
-      <td class="emp-name" title="${fn}">${fn}</td>
+    return btr(`<td class="emp-name" title="${fn}">${fn}</td>
       <td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td>${v(emp.contact)}</td><td>${fmtDate(emp.birthdate)}</td><td>${calcAge(emp.birthdate)}</td>
       <td>${v(emp.gender)}</td><td>${v(emp.civil_status)}</td><td>${v(emp.dependents)}</td>
@@ -585,67 +726,79 @@ function renderTable(){
       <td>${v(emp.emergency_contact)}</td><td title="${emp.address||''}">${v(emp.address)}</td>
       <td>${v(emp.sss)}</td><td>${v(emp.pagibig)}</td><td>${v(emp.philhealth)}</td>
       <td>${v(emp.tin)}</td><td>${v(emp.payroll)}</td>
-      <td class="actions-cell">${ab(gi)}</td>`, idx);
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-company').innerHTML=items.map((emp, idx)=>{
-    const gi=employeesData.indexOf(emp);
+  document.getElementById('body-company').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return buildTr(`
-      <td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
+    return btr(`<td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
       <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td>
       <td>${fmtDate(emp.regularization_date)}</td>
       <td title="${emp.email||''}">${v(emp.email)}</td>
-      <td>${emp.salary?'₱'+Number(emp.salary).toLocaleString():'—'}</td>
-      <td>${emp.de_minimis?'₱'+Number(emp.de_minimis).toLocaleString():'—'}</td>
-      <td>${emp.allowance?'₱'+Number(emp.allowance).toLocaleString():'—'}</td>
-      <td>${v(emp.supervisor)}</td>
-      <td class="actions-cell">${ab(gi)}</td>`, idx);
+      <td>${fmtPeso(emp.salary)}</td><td>${fmtPeso(emp.de_minimis)}</td><td>${fmtPeso(emp.allowance)}</td>
+      <td>${v(emp.supervisor)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-sil').innerHTML=items.map((emp, idx)=>{
-    const gi=employeesData.indexOf(emp);
+  document.getElementById('body-sil').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return buildTr(`
-      <td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td>
+    return btr(`<td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td>
       <td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
       <td style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${emp.sil_balance??'—'}</td>
       <td style="font-family:'DM Mono',monospace;font-weight:600">${emp.parental_leave_balance??'—'}</td>
-      <td class="actions-cell">${ab(gi)}</td>`, idx);
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-cip').innerHTML=items.map((emp, idx)=>{
-    const gi=employeesData.indexOf(emp);
+  document.getElementById('body-benefits').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return buildTr(`
-      <td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td>
+    const s=emp.salary||0;
+    const sss=calcSSS(s),ph=calcPhilHealth(s),pi=calcPagIBIG(s);
+    const totalEE=sss.ee+ph.ee+pi.ee;
+    const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2});
+    return btr(`<td class="emp-name">${fn}</td><td>${fmtPeso(s)}</td>
+      <td>${fmt(sss.ee)}</td><td>${fmt(sss.er)}</td>
+      <td>${fmt(ph.ee)}</td><td>${fmt(ph.er)}</td>
+      <td>${fmt(pi.ee)}</td><td>${fmt(pi.er)}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;color:#dc2626">${fmt(totalEE)}</td>
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
+  }).join('');
+
+  document.getElementById('body-liabilities').innerHTML=items.map((emp,idx)=>{
+    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    return btr(`<td class="emp-name">${fn}</td>
+      <td><span class="emp-pin">${emp.pin||'—'}</span></td>
+      <td colspan="5" style="color:var(--text-muted);font-size:12px">Open Edit to manage liabilities</td>
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
+  }).join('');
+
+  document.getElementById('body-cip').innerHTML=items.map((emp,idx)=>{
+    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    return btr(`<td class="emp-name">${fn}</td>
+      <td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td>${v(emp.department_name)}</td><td>${v(emp.role_name)}</td>
       <td>${v(emp.cip_status)}</td><td>${v(emp.cip_notes)}</td>
-      <td class="actions-cell">${ab(gi)}</td>`, idx);
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
   const fileIcon=`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-  document.getElementById('body-files').innerHTML=items.map((emp, idx)=>{
+  document.getElementById('body-files').innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
     const id=emp.id;
-    return buildTr(`
-      <td class="emp-name">${fn}</td>
+    return btr(`<td class="emp-name">${fn}</td>
       <td><div class="file-dropdown-wrap">
         <button class="file-dropdown-btn" onclick="toggle201(${id})">Dropdown ↓</button>
         <div class="file-dropdown-menu" id="menu-${id}">
-          <div class="file-dropdown-item" onclick="open201('resume',${id})">${fileIcon} Resume / CV</div>
-          <div class="file-dropdown-item" onclick="open201('contract',${id})">${fileIcon} Employment Contract</div>
-          <div class="file-dropdown-item" onclick="open201('nbi',${id})">${fileIcon} NBI Clearance</div>
-          <div class="file-dropdown-item" onclick="open201('sss',${id})">${fileIcon} SSS Form</div>
-          <div class="file-dropdown-item" onclick="open201('bir',${id})">${fileIcon} BIR Form 2316</div>
+          <div class="file-dropdown-item">${fileIcon} Resume / CV</div>
+          <div class="file-dropdown-item">${fileIcon} Employment Contract</div>
+          <div class="file-dropdown-item">${fileIcon} NBI Clearance</div>
+          <div class="file-dropdown-item">${fileIcon} SSS Form</div>
+          <div class="file-dropdown-item">${fileIcon} BIR Form 2316</div>
         </div>
-      </div></td>`, idx);
+      </div></td>`,idx);
   }).join('');
 
-  const from=start+1,to=Math.min(start+ps,filteredData.length);
-  document.getElementById('pageInfo').textContent=`${from}–${to} of ${filteredData.length} records`;
+  const from=start+1,to=Math.min(start+ps,data.length);
+  document.getElementById('pageInfo').textContent=`${from}–${to} of ${data.length} records`;
   document.getElementById('paginationBar').style.display='flex';
-
   let btns=`<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>`;
   getPageRange(currentPage,total).forEach(p=>{
     if(p==='...')btns+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
@@ -666,146 +819,115 @@ function changePageSize(){currentPage=1;renderTable()}
 
 function filterTable(){
   const f=document.getElementById('searchInput').value.toLowerCase();
-  
-  filteredData = employeesData.filter(emp => {
-    // Apply Intern vs Regular Filter
-    const role = String(emp.role_name || emp.role_id || '').toLowerCase();
-    const dept = String(emp.department_name || emp.dep_id || '').toLowerCase();
-    const isIntern = role.includes('intern') || dept.includes('intern');
-    
-    if (currentEmpFilter === 'regular' && isIntern) return false;
-    if (currentEmpFilter === 'intern' && !isIntern) return false;
+  filteredData=employeesData.filter(emp=>{
+    const isResigned = emp.status === 'Resigned';
+    if(currentEmpFilter === 'archive' && !isResigned) return false;
+    if(currentEmpFilter !== 'archive' && isResigned) return false;
 
-    // Apply Text Search Filter
-    if (!f) return true;
+    const role=String(emp.role_name||emp.role_id||'').toLowerCase();
+    const dept=String(emp.department_name||emp.dep_id||'').toLowerCase();
+    const isIntern=role.includes('intern')||dept.includes('intern');
+    
+    if(currentEmpFilter==='regular'&&isIntern)return false;
+    if(currentEmpFilter==='intern'&&!isIntern)return false;
+    
+    if(!f)return true;
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
     return[fn,emp.pin,emp.email,emp.personal_email,emp.department_name,emp.role_name,emp.supervisor]
       .some(x=>String(x||'').toLowerCase().includes(f));
   });
-  
-  currentPage=1;
-  renderTable();
+  currentPage=1;renderTable();
 }
+
+function toggle201(id){
+  const m=document.getElementById('menu-'+id);
+  document.querySelectorAll('.file-dropdown-menu.open').forEach(x=>{if(x!==m)x.classList.remove('open')});
+  m.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.file-dropdown-wrap'))
+    document.querySelectorAll('.file-dropdown-menu.open').forEach(m=>m.classList.remove('open'));
+});
 
 function openModal(index=-1){
   document.getElementById('empModal').classList.add('active');
   document.querySelectorAll('.modal-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   document.querySelectorAll('.modal-body').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.getElementById('liabilityList').innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';
 
   const currentSupId=index>=0?employeesData[index].supervisor_id:null;
   populateSupervisorDropdown(currentSupId);
 
+  const isArchive=currentEmpFilter==='archive';
+  
   if(index>=0){
     const e=employeesData[index];
-    document.getElementById('modalTitle').innerText= currentEmpFilter === 'intern' ? 'Edit Intern' : 'Edit Employee';
+    currentEmpId=e.id;
+    
+    document.getElementById('modalTitle').innerText=isArchive?'View Archived Record':currentEmpFilter==='intern'?'Edit Intern':'Edit Employee';
+    document.getElementById('saveBtn').style.display=isArchive?'none':'inline-flex';
+    
     const s=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val??'';};
-    s('f_id',e.id);
-    s('f_pin',e.pin);
-    s('f_fn',e.fn);s('f_mn',e.mn);s('f_ln',e.ln);
+    s('f_id',e.id);s('f_pin',e.pin);s('f_fn',e.fn);s('f_mn',e.mn);s('f_ln',e.ln);
     s('f_email',e.email);s('f_personal_email',e.personal_email);s('f_contact',e.contact);
     s('f_birthdate',e.birthdate?e.birthdate.split('T')[0]:'');
     s('f_gender',e.gender);s('f_civil_status',e.civil_status);s('f_dependents',e.dependents);
     s('f_address',e.address);s('f_emergency_contact',e.emergency_contact);
-    s('f_dep_id',e.department_name);
-    s('f_role_id',e.role_name);
-    s('f_status',e.status);
+    s('f_dep_id',e.department_name);s('f_role_id',e.role_name);s('f_status',e.status);
     s('f_start_date',e.start_date?e.start_date.split('T')[0]:'');
     s('f_regularization_date',e.regularization_date?e.regularization_date.split('T')[0]:'');
     s('f_salary',e.salary);s('f_de_minimis',e.de_minimis);s('f_allowance',e.allowance);
-    s('f_sil_balance',e.sil_balance);
-    s('f_parental_leave',e.parental_leave_balance);
+    s('f_sil_balance',e.sil_balance);s('f_parental_leave',e.parental_leave_balance);
     s('f_sss',e.sss);s('f_pagibig',e.pagibig);s('f_philhealth',e.philhealth);
     s('f_tin',e.tin);s('f_payroll',e.payroll);
     s('f_cip_status',e.cip_status);s('f_cip_notes',e.cip_notes);
   }else{
-    document.getElementById('modalTitle').innerText= currentEmpFilter === 'intern' ? 'Add New Intern' : 'Add New Employee';
+    currentEmpId=null;
+    document.getElementById('modalTitle').innerText=currentEmpFilter==='intern'?'Add New Intern':'Add New Employee';
     document.getElementById('f_id').value='';
-    document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea')
-      .forEach(el=>el.value='');
+    document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea').forEach(el=>el.value='');
     document.getElementById('f_sil_balance').value='0';
+    document.getElementById('saveBtn').style.display='inline-flex';
   }
 }
-
-function closeModal(){document.getElementById('empModal').classList.remove('active')}
+function closeModal(){
+  document.getElementById('empModal').classList.remove('active');
+  document.getElementById('newRoleRow').classList.remove('show');
+  currentEmpId=null;
+}
 
 async function saveEmployee(){
   const g=id=>document.getElementById(id)?.value||'';
-  
-  // ── Validation ──
-  const fn = g('f_fn').trim();
-  const ln = g('f_ln').trim();
-  const pin = g('f_pin').trim();
-
-  if (!fn || !ln) {
-    showToast('First Name and Last Name are required.', 'error');
-    switchModalTab('m-personal', document.querySelectorAll('.modal-tab-btn')[0]); 
-    return;
-  }
-  if (!pin) {
-    showToast('PIN is required.', 'error');
-    switchModalTab('m-personal', document.querySelectorAll('.modal-tab-btn')[0]); 
-    return;
-  }
-
+  const fn=g('f_fn').trim(),ln=g('f_ln').trim(),pin=g('f_pin').trim();
+  if(!fn||!ln){showToast('First Name and Last Name are required.','error');switchModalTab('m-personal',document.querySelectorAll('.modal-tab-btn')[0]);return;}
+  if(!pin){showToast('PIN is required.','error');switchModalTab('m-personal',document.querySelectorAll('.modal-tab-btn')[0]);return;}
   const btn=document.getElementById('saveBtn');
   btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
-  
-  const rawId=g('f_id');
-  const supId=g('f_supervisor_id');
+  const rawId=g('f_id'),supId=g('f_supervisor_id');
   const payload={
-    id:              rawId?Number(rawId):null,
-    pin:             pin,
-    fn:              fn,
-    mn:              g('f_mn'),
-    ln:              ln,
-    email:           g('f_email'),
-    personal_email:  g('f_personal_email'),
-    contact:         g('f_contact'),
-    birthdate:       g('f_birthdate')||null,
-    gender:          g('f_gender'),
-    civil_status:    g('f_civil_status'),
-    dependents:      Number(g('f_dependents'))||0,
-    address:         g('f_address'),
-    emergency_contact: g('f_emergency_contact'),
-    dep_id:          g('f_dep_id'),
-    role_id:         g('f_role_id'),
-    status:          g('f_status'),
-    start_date:      g('f_start_date')||null,
-    regularization_date: g('f_regularization_date')||null,
-    salary:          Number(g('f_salary'))||0,
-    de_minimis:      Number(g('f_de_minimis'))||0,
-    allowance:       Number(g('f_allowance'))||0,
-    sil_balance:     Number(g('f_sil_balance'))||0,
-    parental_leave_balance: Number(g('f_parental_leave'))||0,
-    sss:             g('f_sss'),
-    pagibig:         g('f_pagibig'),
-    philhealth:      g('f_philhealth'),
-    tin:             g('f_tin'),
-    payroll:         g('f_payroll'),
-    cip_status:      g('f_cip_status'),
-    cip_notes:       g('f_cip_notes'),
-    supervisor_id:   supId?Number(supId):null
+    id:rawId?Number(rawId):null,pin,fn,mn:g('f_mn'),ln,
+    email:g('f_email')||null,personal_email:g('f_personal_email')||null,
+    contact:g('f_contact'),birthdate:g('f_birthdate')||null,
+    gender:g('f_gender'),civil_status:g('f_civil_status'),
+    dependents:Number(g('f_dependents'))||0,
+    address:g('f_address'),emergency_contact:g('f_emergency_contact'),
+    dep_id:g('f_dep_id'),role_id:g('f_role_id'),status:g('f_status'),
+    start_date:g('f_start_date')||null,regularization_date:g('f_regularization_date')||null,
+    salary:Number(g('f_salary'))||0,de_minimis:Number(g('f_de_minimis'))||0,
+    allowance:Number(g('f_allowance'))||0,
+    sil_balance:Number(g('f_sil_balance'))||0,
+    parental_leave_balance:Number(g('f_parental_leave'))||0,
+    sss:g('f_sss'),pagibig:g('f_pagibig'),philhealth:g('f_philhealth'),
+    tin:g('f_tin'),payroll:g('f_payroll'),
+    cip_status:g('f_cip_status'),cip_notes:g('f_cip_notes'),
+    supervisor_id:supId?Number(supId):null
   };
-
   try{
-    const res = await fetch(rawId?URL_UPDATE:URL_CREATE,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    
-    if(res.ok) {
-      showToast(rawId ? 'Saved successfully!' : 'Added successfully!', 'success');
-      closeModal();
-      loadEmployees();
-    } else {
-      showToast('Failed to save. Please try again.', 'error');
-    }
-  }catch(e){
-    showToast('Network error. Check your connection.', 'error');
-  }finally{
-    btn.innerHTML='Save';btn.disabled=false;
-  }
+    const res=await fetch(rawId?URL_UPDATE:URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(res.ok){showToast(rawId?'Saved successfully!':'Added successfully!','success');closeModal();loadEmployees();}
+    else showToast('Failed to save.','error');
+  }catch(e){showToast('Network error.','error');}
+  finally{btn.innerHTML='Save';btn.disabled=false;}
 }
 
 let pendingDeleteId=null;
@@ -817,39 +939,20 @@ function deleteEmployee(id){
   pendingDeleteId=Number(id);
   document.getElementById('deleteModal').classList.add('active');
 }
-
 function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('active');pendingDeleteId=null}
-
 async function confirmDelete(){
   if(!pendingDeleteId)return;
   const btn=document.getElementById('confirmDeleteBtn');
-  btn.innerHTML='<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...';
-  btn.disabled=true;
+  btn.innerHTML='<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...';btn.disabled=true;
   try{
-    const res = await fetch(URL_DELETE,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({id:pendingDeleteId})
-    });
-    if(res.ok) {
-       showToast('Deleted successfully!', 'success');
-       closeDeleteModal();
-       loadEmployees();
-    } else {
-       showToast('Failed to delete.', 'error');
-    }
-  }catch(e){
-    showToast('Network error while deleting.', 'error');
-  }finally{
-    btn.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Yes, Delete';
-    btn.disabled=false;
-  }
+    const res=await fetch(URL_DELETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pendingDeleteId})});
+    if(res.ok){showToast('Deleted!','success');closeDeleteModal();loadEmployees();}
+    else showToast('Failed to delete.','error');
+  }catch(e){showToast('Network error.','error');}
+  finally{btn.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Yes, Delete';btn.disabled=false;}
 }
 
-window.onload=async()=>{
-  await loadDropdowns();
-  await loadEmployees();
-};
+window.onload=async()=>{await loadDropdowns();await loadEmployees();};
 </script>
 </body>
 </html>
