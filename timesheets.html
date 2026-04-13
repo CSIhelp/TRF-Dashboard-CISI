@@ -6,7 +6,6 @@
 <title>CrowdSource – Timesheets</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- ── SUPABASE AUTH GUARD ── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
@@ -250,7 +249,7 @@
       </div>
       <div class="controls">
         <select class="employee-select" id="employeeSelect">
-          <option value="">— Select Employee —</option>
+          <option value="">— Loading Employees... —</option>
         </select>
         <select class="month-select" id="monthSelect">
           <option value="1">January</option>
@@ -339,29 +338,48 @@
 </div>
 
 <script>
+  // ── WEBHOOK URLs ──
+  const N8N_EMPLOYEES_URL = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
   const N8N_TIMESHEET_URL = 'https://primary-production-a810.up.railway.app/webhook/get-timesheet';
   const N8N_SAVE_URL      = 'https://primary-production-a810.up.railway.app/webhook/update-timesheet';
-
-  const EMPLOYEES = [
-    'Alcantara, Ma. Cristina','Beles, Rhea Belle','Cayetano, Cheennee',
-    'Hilario, Yvon Marjori','Panganiban, Danila Mae','Pedroche, Maria Beatrice',
-    'Suarez, Kimberlyn Vianca','Tacaca, Adrian Raye','Torregoza, Don Howard',
-    'Escaño, Ruel','Vinarao, Anthony','Alberto, Christian Joshua',
-    'Morales, Laiza','Rodil, Marco Elijah','Tenefrancia, Ayra Lexi',
-    'Tayao, Christopher Andrei'
-  ];
 
   const DAYS      = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const MON_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  const empSel = document.getElementById('employeeSelect');
-  EMPLOYEES.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name; opt.textContent = name;
-    empSel.appendChild(opt);
-  });
+  // ── DYNAMIC EMPLOYEE LOADING ──
+  async function fetchEmployeesForDropdown() {
+    const empSel = document.getElementById('employeeSelect');
+    try {
+      const res = await fetch(N8N_EMPLOYEES_URL);
+      const raw = await res.json();
+      
+      // Clean up the n8n data
+      let employees = Array.isArray(raw) ? raw.map(i => i.json ?? i) : [];
+      
+      // Build the full name (Last, First) and sort alphabetically
+      let namesList = employees.map(emp => {
+        let ln = (emp.ln || '').trim();
+        let fn = (emp.fn || '').trim();
+        return ln && fn ? `${ln}, ${fn}` : (ln || fn || `PIN ${emp.pin}`);
+      }).filter(Boolean).sort((a, b) => a.localeCompare(b));
 
+      // Populate dropdown
+      empSel.innerHTML = '<option value="">— Select Employee —</option>';
+      namesList.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name; opt.textContent = name;
+        empSel.appendChild(opt);
+      });
+      
+    } catch (err) {
+      console.error('Failed to fetch employees:', err);
+      empSel.innerHTML = '<option value="">— Failed to load employees —</option>';
+    }
+  }
+  fetchEmployeesForDropdown();
+
+  // ── INITIALIZE DATE DROPDOWNS ──
   const now = new Date();
   document.getElementById('monthSelect').value = String(now.getMonth() + 1);
 
@@ -374,6 +392,7 @@
     yearSel.appendChild(opt);
   }
 
+  // ── UTILITIES ──
   function showError(msg) {
     document.getElementById('errorMsg').textContent = msg;
     document.getElementById('errorBanner').classList.add('visible');
@@ -437,6 +456,7 @@
     document.getElementById('saveBtn').style.display = 'flex';
   }
 
+  // ── RENDER TIMESHEET ──
   function renderTimesheet(rawRows, year, month) {
     const tbody = document.getElementById('timesheetBody');
     const days  = getDaysInMonth(year, month);
@@ -547,6 +567,7 @@
     document.getElementById('saveBtn').style.display = 'none';
   }
 
+  // ── LOAD TIMESHEET DATA ──
   async function loadTimesheet() {
     const employee = document.getElementById('employeeSelect').value;
     const month    = document.getElementById('monthSelect').value;
@@ -594,6 +615,7 @@
     }
   }
 
+  // ── SAVE EDITS ──
   async function saveTimesheetEdits() {
     const employee   = document.getElementById('employeeSelect').value;
     const month      = document.getElementById('monthSelect').value;
