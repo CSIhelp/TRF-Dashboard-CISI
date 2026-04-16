@@ -85,7 +85,11 @@ tr.grab-row:active{cursor:grabbing}
 .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
 .badge-regular{background:#e6f9f0;color:#15803d}
 .badge-probationary{background:#fff8e1;color:#b45309}
-.badge-resigned{background:#fef2f2;color:#dc2626}
+.badge-resigned,.badge-terminated{background:#fef2f2;color:#dc2626}
+.badge-active{background:#e6f9f0;color:#15803d}
+.badge-inactive{background:#f3f4f6;color:#6b7280}
+.badge-completed{background:#dbeafe;color:#1e40af}
+.badge-ongoing{background:#fef9c3;color:#854d0e}
 td.actions-cell{overflow:visible;max-width:none}
 .actions{display:flex;gap:5px}
 .actions .btn{padding:5px 10px;font-size:11.5px}
@@ -97,9 +101,11 @@ td.actions-cell{overflow:visible;max-width:none}
 .page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .page-btn:disabled{opacity:.4;cursor:not-allowed}
 .page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
+
+/* MODAL SCROLLING FIXES */
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
 .modal-overlay.active{display:flex}
-.modal{background:#fff;width:580px;max-width:90%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+.modal{background:#fff;width:600px;max-width:92%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
 .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .modal-header h2{font-size:16px;font-weight:700}
 .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
@@ -107,9 +113,11 @@ td.actions-cell{overflow:visible;max-width:none}
 .modal-tab-btn{padding:7px 16px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
 .modal-tab-btn:hover{background:#bbdefb}
 .modal-tab-btn.active{background:var(--tab);color:#fff}
-.modal-body{padding:20px;display:none;grid-template-columns:1fr 1fr;gap:16px;overflow-y:auto}
+#modalBodies{flex:1;overflow-y:auto;min-height:0}
+.modal-body{padding:20px;display:none;grid-template-columns:1fr 1fr;gap:16px}
 .modal-body.active{display:grid}
 .modal-footer{padding:20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:#fafbfc;flex-shrink:0}
+
 .form-group{display:flex;flex-direction:column;gap:6px}
 .form-group.full{grid-column:span 2}
 .form-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
@@ -117,28 +125,27 @@ td.actions-cell{overflow:visible;max-width:none}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
 .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
 .form-group textarea{resize:vertical;min-height:72px}
-/* Role wrap */
 .role-wrap{display:flex;gap:6px}
 .role-wrap select{flex:1}
 .role-wrap .btn{padding:9px 12px;flex-shrink:0}
 .new-role-row{display:none;gap:6px;margin-top:6px}
 .new-role-row.show{display:flex}
 .new-role-row input{flex:1}
-/* Benefits table */
 .benefits-table{width:100%;border-collapse:collapse;font-size:12.5px;grid-column:span 2}
 .benefits-table th{background:#f0f8fe;color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
 .benefits-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
 .benefits-table tr:last-child td{border-bottom:none}
 .benefits-table .amount{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent);text-align:right}
 .section-title{grid-column:span 2;font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:1px solid var(--border);margin-top:4px}
-/* Lists */
 .liability-list{grid-column:span 2;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
 .liability-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12.5px}
 .liability-item-info strong{font-weight:600;display:block}
 .liability-item-info span{color:var(--text-muted);font-size:11.5px}
 .liability-amount{font-family:'DM Mono',monospace;font-weight:700;color:#dc2626}
-/* Delete & Invite Modal */
-.small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease}
+
+.small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
+.small-modal .modal-body{overflow-y:auto;flex:1;min-height:0}
+
 @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
 .delete-modal-icon{width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .delete-modal-body{padding:28px 28px 20px;text-align:center}
@@ -149,7 +156,6 @@ td.actions-cell{overflow:visible;max-width:none}
 .delete-modal-footer .btn{flex:1;justify-content:center;padding:11px 14px;font-size:13.5px}
 .btn.confirm-delete{background:#dc2626;color:#fff;border-color:#dc2626}
 .btn.confirm-delete:hover{background:#b91c1c}
-/* File dropdown */
 .file-dropdown-wrap{position:relative;display:inline-block}
 .file-dropdown-btn{background:#e0e0e0;color:#333;border:none;border-radius:6px;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .file-dropdown-btn:hover{background:#bdbdbd}
@@ -157,16 +163,19 @@ td.actions-cell{overflow:visible;max-width:none}
 .file-dropdown-menu.open{display:block}
 .file-dropdown-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .12s}
 .file-dropdown-item:hover{background:var(--accent-light);color:var(--accent)}
-/* Spinner & state */
+.file-dropdown-item svg{flex-shrink:0;color:var(--text-muted)}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
-/* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .35s ease,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.success{background:#16a34a}
 .toast.error{background:#dc2626}
 .req-star{color:#dc2626;margin-left:3px}
+/* Intern tracker badge */
+.tracker-pill{display:inline-flex;align-items:center;gap:4px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#0369a1}
+.progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:6px;min-width:80px;overflow:hidden}
+.progress-bar{height:6px;border-radius:4px;background:var(--accent);transition:width .3s}
 </style>
 </head>
 <body>
@@ -208,61 +217,21 @@ td.actions-cell{overflow:visible;max-width:none}
 
   <main class="main">
     <div class="page-header">
-      <div><div class="page-title">Employee Database</div><div class="page-subtitle" id="viewSubtitle">Manage employee records, roles, and access.</div></div>
+      <div><div class="page-title" id="pageTitle">Employee Database</div><div class="page-subtitle" id="viewSubtitle">Manage employee records, roles, and access.</div></div>
       <div class="controls">
         <input type="text" class="search-input" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
         <button class="btn" onclick="loadEmployees()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
         <button class="btn primary" onclick="openModal()">+ Add New</button>
-        <button class="btn" style="background:#1a1a2e; color:#fff;" onclick="openInviteModal()">💌 Invite New Hire</button>
+        <button class="btn" style="background:#1a1a2e;color:#fff;" onclick="openInviteModal()">💌 Invite New Hire</button>
       </div>
     </div>
 
     <div class="db-card">
-      <div class="tab-bar">
-        <button class="tab-btn active"       onclick="switchTab('personal',this)">Personal Details</button>
-        <button class="tab-btn"              onclick="switchTab('company',this)">Company Details</button>
-        <button class="tab-btn"              onclick="switchTab('sil',this)">SIL Credits</button>
-        <button class="tab-btn"              onclick="switchTab('benefits',this)">Gov't Benefits</button>
-        <button class="tab-btn"              onclick="switchTab('liabilities',this)">Liabilities</button>
-        <button class="tab-btn"              onclick="switchTab('cip',this)">CIP</button>
-        <button class="tab-btn"              onclick="switchTab('files',this)">201 Files</button>
-      </div>
-
-      <div class="archive-banner" id="archiveBanner">
-        📁 Showing resigned employees. These records are read-only.
-      </div>
-
-      <div class="table-scroll">
-        <table id="tab-personal">
-          <thead><tr><th>Name</th><th>PIN</th><th>Contact No.</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>
-          <tbody id="body-personal"><tr><td colspan="17" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-company" style="display:none">
-          <thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>Supervisor</th><th>Actions</th></tr></thead>
-          <tbody id="body-company"><tr><td colspan="12" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-sil" style="display:none">
-          <thead><tr><th>Name</th><th>Status</th><th>Position</th><th>Department</th><th>SIL Balance</th><th>Parental Leave Balance</th><th>Actions</th></tr></thead>
-          <tbody id="body-sil"><tr><td colspan="7" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-benefits" style="display:none">
-          <thead><tr><th>Name</th><th>Basic Salary</th><th>SSS (EE)</th><th>SSS (ER)</th><th>PhilHealth (EE)</th><th>PhilHealth (ER)</th><th>Pag-IBIG (EE)</th><th>Pag-IBIG (ER)</th><th>Total Deductions</th><th>Actions</th></tr></thead>
-          <tbody id="body-benefits"><tr><td colspan="10" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-liabilities" style="display:none">
-          <thead><tr><th>Name</th><th>PIN</th><th>Type</th><th>Description</th><th>Amount</th><th>Balance</th><th>Date Added</th><th>Actions</th></tr></thead>
-          <tbody id="body-liabilities"><tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-cip" style="display:none">
-          <thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>Issued Property</th><th>Actions</th></tr></thead>
-          <tbody id="body-cip"><tr><td colspan="7" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-        <table id="tab-files" style="display:none">
-          <thead><tr><th>Name</th><th>201 File</th></tr></thead>
-          <tbody id="body-files"><tr><td colspan="2" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody>
-        </table>
-      </div>
-
+      <div class="tab-bar" id="mainTabBar">
+        </div>
+      <div class="archive-banner" id="archiveBanner">📁 Showing resigned/archived employees. These records are read-only.</div>
+      <div class="table-scroll" id="tableArea">
+        </div>
       <div class="pagination-bar" id="paginationBar" style="display:none">
         <div style="display:flex;align-items:center;gap:10px">
           <span class="pagination-info" id="pageInfo"></span>
@@ -279,132 +248,8 @@ td.actions-cell{overflow:visible;max-width:none}
 <div class="modal-overlay" id="empModal">
   <div class="modal">
     <div class="modal-header"><h2 id="modalTitle">Add Employee</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="modal-tab-bar">
-      <button class="modal-tab-btn active" onclick="switchModalTab('m-personal',this)">Personal</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-company',this)">Company</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-sil',this)">SIL</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-gov',this)">Gov IDs</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-cip',this)">CIP</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-benefits',this)">Benefits</button>
-      <button class="modal-tab-btn" onclick="switchModalTab('m-liabilities',this)">Liabilities</button>
-    </div>
-
-    <div class="modal-body active" id="m-personal">
-      <input type="hidden" id="f_id">
-      <div class="form-group"><label>First Name<span class="req-star">*</span></label><input type="text" id="f_fn" placeholder="John"></div>
-      <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="e.g. Santos"></div>
-      <div class="form-group"><label>Last Name<span class="req-star">*</span></label><input type="text" id="f_ln" placeholder="Doe"></div>
-      <div class="form-group"><label>PIN<span class="req-star">*</span></label><input type="text" id="f_pin" placeholder="e.g. 1099"></div>
-      <div class="form-group"><label>Personal Email</label><input type="email" id="f_personal_email" placeholder="john@gmail.com"></div>
-      <div class="form-group"><label>Contact Number</label><input type="text" id="f_contact" placeholder="09XX XXX XXXX"></div>
-      <div class="form-group"><label>Birthdate</label><input type="date" id="f_birthdate"></div>
-      <div class="form-group"><label>Gender</label><select id="f_gender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
-      <div class="form-group"><label>Civil Status</label><select id="f_civil_status"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Widowed</option><option>Separated</option></select></div>
-      <div class="form-group full"><label>Address</label><textarea id="f_address" placeholder="Full address"></textarea></div>
-      <div class="form-group full"><label>Emergency Contact</label><input type="text" id="f_emergency_contact" placeholder="Name — Relationship — Number"></div>
-      
-      <div class="section-title">Dependents (Children / Senior Parents)</div>
-      <div class="form-group full">
-        <div style="display:flex;gap:6px;margin-bottom:6px">
-          <input type="text" id="dep_name" placeholder="Full Name" style="flex:2">
-          <input type="number" id="dep_age" placeholder="Age" style="flex:1" min="0">
-        </div>
-        <div style="display:flex;gap:6px;">
-          <input type="date" id="dep_birthdate" style="flex:2">
-          <button class="btn" type="button" onclick="addDependent()" style="flex:1; justify-content:center">+ Add</button>
-        </div>
-      </div>
-      <div class="liability-list" id="dependentsList"></div>
-
-    </div>
-
-    <div class="modal-body" id="m-company">
-      <div class="form-group"><label>Work Email</label><input type="email" id="f_email" placeholder="john@crowdsource.com"></div>
-      <div class="form-group"><label>Department</label><select id="f_dep_id"><option value="">— Select Department —</option></select></div>
-      <div class="form-group full">
-        <label>Role / Position</label>
-        <div class="role-wrap">
-          <select id="f_role_id"><option value="">— Select Role —</option></select>
-          <button class="btn" type="button" onclick="toggleNewRole()">+ New</button>
-        </div>
-        <div class="new-role-row" id="newRoleRow">
-          <input type="text" id="newRoleName" placeholder="Type new role name...">
-          <button class="btn primary" type="button" onclick="saveNewRole()">Add</button>
-          <button class="btn" type="button" onclick="toggleNewRole()">Cancel</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select id="f_status">
-          <option value="">— Select —</option>
-          <option value="Probationary">Probationary</option>
-          <option value="Regular">Regular</option>
-          <option value="Project-Based">Project-Based</option>
-          <option value="Part-time">Part-time</option>
-          <option value="Resigned">Resigned</option>
-          <option value="Terminated">Terminated</option>
-        </select>
-      </div>
-      <div class="form-group"><label>Start Date</label><input type="date" id="f_start_date"></div>
-      <div class="form-group"><label>Regularization Date</label><input type="date" id="f_regularization_date"></div>
-      <div class="form-group"><label>Basic Salary</label><input type="number" id="f_salary" placeholder="e.g. 25000" oninput="renderBenefitsPreview()"></div>
-      <div class="form-group"><label>De Minimis</label><input type="number" id="f_de_minimis" placeholder="e.g. 2000"></div>
-      <div class="form-group"><label>Allowance</label><input type="number" id="f_allowance" placeholder="e.g. 1500"></div>
-      <div class="form-group full">
-        <label>Supervisor</label>
-        <select id="f_supervisor_id"><option value="">— Select Supervisor —</option></select>
-      </div>
-    </div>
-
-    <div class="modal-body" id="m-sil">
-      <div class="form-group"><label>SIL Balance</label><input type="number" id="f_sil_balance" placeholder="e.g. 5" step="0.5" min="0"></div>
-      <div class="form-group"><label>Parental Leave Balance</label><input type="number" id="f_parental_leave" placeholder="e.g. 7" step="0.5" min="0"></div>
-    </div>
-
-    <div class="modal-body" id="m-gov">
-      <div class="form-group"><label>SSS Number</label><input type="text" id="f_sss" placeholder="XX-XXXXXXX-X"></div>
-      <div class="form-group"><label>Pag-IBIG Number</label><input type="text" id="f_pagibig" placeholder="XXXX-XXXX-XXXX"></div>
-      <div class="form-group"><label>PhilHealth Number</label><input type="text" id="f_philhealth" placeholder="XX-XXXXXXXXX-X"></div>
-      <div class="form-group"><label>TIN</label><input type="text" id="f_tin" placeholder="XXX-XXX-XXX-XXX"></div>
-      <div class="form-group"><label>Payroll Account</label><input type="text" id="f_payroll" placeholder="Bank — Account No."></div>
-    </div>
-
-    <div class="modal-body" id="m-cip">
-      <div class="form-group"><label>CIP Status</label>
-        <select id="f_cip_status"><option value="">— Select —</option><option value="Pending">Pending</option><option value="Compliant">Compliant</option><option value="Non-Compliant">Non-Compliant</option><option value="Waived">Waived</option></select>
-      </div>
-      
-      <div class="section-title">Issued Equipment</div>
-      <div class="form-group full">
-        <div style="display:flex;gap:6px;">
-          <input type="text" id="cip_item" placeholder="Item Name (e.g. Laptop)" style="flex:2">
-          <input type="text" id="cip_sn" placeholder="Serial Number" style="flex:2">
-          <button class="btn" type="button" onclick="addCIP()" style="flex:1; justify-content:center">+ Add</button>
-        </div>
-      </div>
-      <div class="liability-list" id="cipList"></div>
-    </div>
-
-    <div class="modal-body" id="m-benefits">
-      <p style="grid-column:span 2;font-size:12.5px;color:var(--text-muted)">Auto-calculated from Basic Salary using 2026 PH contribution tables.</p>
-      <table class="benefits-table">
-        <thead><tr><th>Benefit</th><th style="text-align:right">Employee Share</th><th style="text-align:right">Employer Share</th></tr></thead>
-        <tbody id="benefitsTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px">Enter a salary in the Company tab first.</td></tr></tbody>
-      </table>
-    </div>
-
-    <div class="modal-body" id="m-liabilities">
-      <div class="section-title">Add New Liability</div>
-      <div class="form-group"><label>Type</label><select id="l_type"><option value="">— Select —</option><option value="Loan">Loan</option><option value="Deduction">Deduction</option><option value="Advance">Advance</option></select></div>
-      <div class="form-group"><label>Description</label><input type="text" id="l_desc" placeholder="e.g. SSS Loan"></div>
-      <div class="form-group"><label>Amount</label><input type="number" id="l_amount" placeholder="e.g. 5000"></div>
-      <div class="form-group"><label>Balance</label><input type="number" id="l_balance" placeholder="e.g. 5000"></div>
-      <div class="form-group full"><label>Notes</label><input type="text" id="l_notes" placeholder="Optional notes"></div>
-      <div class="form-group full"><button class="btn primary" onclick="addLiability()" id="addLiabilityBtn">+ Add Liability</button></div>
-      <div class="section-title">Existing Liabilities</div>
-      <div class="liability-list" id="liabilityList"><p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p></div>
-    </div>
-
+    <div class="modal-tab-bar" id="modalTabBar"></div>
+    <div id="modalBodies"></div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn primary" id="saveBtn" onclick="saveEmployee()">Save</button>
@@ -414,19 +259,14 @@ td.actions-cell{overflow:visible;max-width:none}
 
 <div class="modal-overlay" id="inviteModal">
   <div class="small-modal">
-    <div class="modal-header">
-      <h2 style="font-size:16px;">Generate Invite Link</h2>
-      <button class="modal-close" onclick="closeInviteModal()">✕</button>
-    </div>
-    <div class="modal-body active" style="display: flex; flex-direction: column; gap: 16px;">
-      <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">Generate a secure, single-use onboarding link to send to a new hire. This link will automatically expire in 7 days.</p>
-      
-      <button class="btn primary" id="generateLinkBtn" onclick="generateInviteToken()" style="justify-content:center; padding: 12px;">Generate Link</button>
-      
-      <div id="inviteResult" style="display: none; flex-direction: column; gap: 8px;">
-        <label style="font-size: 12px; font-weight: 700; color: var(--accent);">Share this link with the candidate:</label>
-        <div style="display: flex; gap: 6px;">
-          <input type="text" id="generatedLink" readonly style="flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; background: #f9fafb; color: var(--text-secondary);">
+    <div class="modal-header"><h2 style="font-size:16px">Generate Invite Link</h2><button class="modal-close" onclick="closeInviteModal()">✕</button></div>
+    <div class="modal-body active" style="display:flex;flex-direction:column;gap:16px">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Generate a secure, single-use onboarding link for a new hire. Expires in 7 days.</p>
+      <button class="btn primary" id="generateLinkBtn" onclick="generateInviteToken()" style="justify-content:center;padding:12px">Generate Link</button>
+      <div id="inviteResult" style="display:none;flex-direction:column;gap:8px">
+        <label style="font-size:12px;font-weight:700;color:var(--accent)">Share this link:</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="generatedLink" readonly style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;background:#f9fafb;color:var(--text-secondary)">
           <button class="btn primary" onclick="copyInviteLink()">Copy</button>
         </div>
       </div>
@@ -435,16 +275,16 @@ td.actions-cell{overflow:visible;max-width:none}
 </div>
 
 <div class="modal-overlay" id="deleteModal">
-  <div class="delete-modal">
+  <div class="small-modal">
     <div class="delete-modal-body">
       <div class="delete-modal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
-      <div class="delete-modal-title">Delete Employee</div>
+      <div class="delete-modal-title">Delete Record</div>
       <div class="delete-modal-name" id="deleteEmpName">—</div>
-      <div class="delete-modal-desc">This will permanently remove the employee record. Are you sure?</div>
+      <div class="delete-modal-desc">This will permanently remove this record. Are you sure?</div>
     </div>
     <div class="delete-modal-footer">
       <button class="btn" onclick="closeDeleteModal()">Cancel</button>
-      <button class="btn confirm-delete" id="confirmDeleteBtn" onclick="confirmDelete()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Yes, Delete</button>
+      <button class="btn confirm-delete" id="confirmDeleteBtn" onclick="confirmDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -452,6 +292,7 @@ td.actions-cell{overflow:visible;max-width:none}
 <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
 <script>
+// ── URLs ──
 const URL_GET           = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
 const URL_CREATE        = 'https://primary-production-a810.up.railway.app/webhook/hr-create-employee';
 const URL_UPDATE        = 'https://primary-production-a810.up.railway.app/webhook/hr-update-employee';
@@ -462,119 +303,110 @@ const URL_ADD_ROLE      = 'https://primary-production-a810.up.railway.app/webhoo
 const URL_LIABILITIES   = 'https://primary-production-a810.up.railway.app/webhook/get-liabilities';
 const URL_ADD_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/add-liability';
 const URL_DEL_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/delete-liability';
+const URL_GENERATE_TOKEN= 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
 
-// New Endpoint for Invites
-const URL_GENERATE_TOKEN = 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
-
-// Automatically builds the correct link regardless of what page/subfolder you are on
 const currentPath = window.location.pathname.split('/');
-currentPath.pop(); 
+currentPath.pop();
 const ONBOARDING_BASE_URL = window.location.origin + currentPath.join('/') + '/employee-form.html';
 
-let employeesData=[],filteredData=[],currentPage=1,currentTab='personal';
+// Intern tracker data (paste from sheet)
+const INTERN_TRACKER = [
+  {name:'Escaño, Ruel',total:400,rendered:400.52,remaining:-0.52,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:124.4},
+  {name:'Tayao, Christopher Andrei',total:300,rendered:462.16,remaining:-162.16,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:92.4},
+  {name:'Canivel, Adrianne Bleu',total:400,rendered:403.8,remaining:-3.8,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:193.8},
+  {name:'Francisco, Elisha Jean',total:500,rendered:179.78,remaining:320.22,expectedEnd:'Thu May 14 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Morales, Laiza',total:600,rendered:296.05,remaining:303.95,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Hilario, Juan Carlos',total:486,rendered:266.02,remaining:219.98,expectedEnd:'Mon Apr 27 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Tan, Gian Carlo',total:486,rendered:256.02,remaining:229.98,expectedEnd:'Tue Apr 28 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Tenefrancia, Ayra Lexi',total:486,rendered:215.98,remaining:270.02,expectedEnd:'Tue May 5 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Rodil, Marco Elijah',total:486,rendered:184,remaining:302,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Alberto, Christian Joshua',total:400,rendered:63.92,remaining:336.08,expectedEnd:'Mon May 18 2026',status:'ONGOING',preTimesheet:0},
+  {name:'Dingle, Skye Aynjel',total:400,rendered:102.03,remaining:297.97,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
+];
+
+const COMPLETION_BONUS = [
+  {hours:300,bonus:3000},{hours:400,bonus:4000},{hours:450,bonus:4500},{hours:500,bonus:5000},{hours:600,bonus:6000}
+];
+
+function getCompletionBonus(totalHours) {
+  const match = COMPLETION_BONUS.find(b => b.hours === Number(totalHours));
+  return match ? match.bonus : 0;
+}
+
+function getInternData(empName) {
+  if (!empName) return null;
+  const norm = empName.toLowerCase().replace(/\s+/g, '');
+  return INTERN_TRACKER.find(t => {
+    const tn = t.name.toLowerCase().replace(/\s+/g, '');
+    return norm.includes(tn.split(',')[0]) || tn.includes(norm.split(' ')[0]);
+  }) || null;
+}
+
+// ── State ──
+let employeesData=[], filteredData=[], currentPage=1, currentTab='personal';
 let currentEmpFilter='regular', currentEmpId=null;
+let currentDependents=[], currentCIP=[];
 
-// State Arrays for Modal
-let currentDependents = [];
-let currentCIP = [];
-
-function safeParse(val) {
-  if (!val) return [];
-  if (typeof val === 'object') return val;
-  try { return JSON.parse(val); } catch(e) { return []; }
+function safeParse(val){
+  if(!val)return[];
+  if(typeof val==='object')return Array.isArray(val)?val:[];
+  try{return JSON.parse(val);}catch{return[];}
 }
 
-// ── Invite Logic ──
-function openInviteModal() {
-  document.getElementById('inviteModal').classList.add('active');
-  document.getElementById('inviteResult').style.display = 'none';
-  document.getElementById('generateLinkBtn').style.display = 'flex';
-  document.getElementById('generatedLink').value = '';
-}
-function closeInviteModal() {
-  document.getElementById('inviteModal').classList.remove('active');
-}
-async function generateInviteToken() {
-  const btn = document.getElementById('generateLinkBtn');
-  btn.innerHTML = '<span class="spinner"></span> Generating...';
-  btn.disabled = true;
-  try {
-    const res = await fetch(URL_GENERATE_TOKEN, { method: 'POST' });
-    const data = await res.json();
-    if (data.token) {
-      const fullLink = `${ONBOARDING_BASE_URL}?token=${data.token}`;
-      document.getElementById('generatedLink').value = fullLink;
-      document.getElementById('inviteResult').style.display = 'flex';
-      btn.style.display = 'none';
-      showToast('Invite link generated!', 'success');
-    } else {
-      showToast('Failed to generate token.', 'error');
-    }
-  } catch (e) {
-    showToast('Network error.', 'error');
-  } finally {
-    btn.innerHTML = 'Generate Link';
-    btn.disabled = false;
-  }
-}
-function copyInviteLink() {
-  const linkInput = document.getElementById('generatedLink');
-  linkInput.select();
-  document.execCommand('copy');
-  showToast('Copied to clipboard!', 'success');
+// ── Tab definitions per filter ──
+const TABS_EMPLOYEE = [
+  {id:'personal',  label:'Personal Details'},
+  {id:'company',   label:'Company Details'},
+  {id:'sil',       label:'SIL Credits'},
+  {id:'benefits',  label:"Gov't Benefits"},
+  {id:'liabilities',label:'Liabilities'},
+  {id:'cip',       label:'CIP'},
+  {id:'files',     label:'201 Files'},
+];
+const TABS_INTERN = [
+  {id:'personal',  label:'Personal Details'},
+  {id:'company',   label:'Company Details'},
+  {id:'tracker',   label:'OJT Tracker'},
+  {id:'cip',       label:'CIP'},
+  {id:'files',     label:'201 Files'},
+];
+const TABS_ARCHIVE = TABS_EMPLOYEE;
+
+function getTabDefs() {
+  if(currentEmpFilter==='intern') return TABS_INTERN;
+  return TABS_EMPLOYEE;
 }
 
-// ── Dependents Logic ──
-function renderDependents() {
-  const list = document.getElementById('dependentsList');
-  if(!currentDependents.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">No dependents added.</p>'; return; }
-  list.innerHTML = currentDependents.map((d, i) => `
-    <div class="liability-item">
-      <div class="liability-item-info">
-        <strong>${d.name}</strong>
-        <span>Age: ${d.age || '—'} · DOB: ${fmtDate(d.birthdate)}</span>
-      </div>
-      <button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeDependent(${i})">✕</button>
-    </div>
-  `).join('');
-}
-function addDependent() {
-  const name = document.getElementById('dep_name').value.trim();
-  const age = document.getElementById('dep_age').value.trim();
-  const bd = document.getElementById('dep_birthdate').value;
-  if(!name) { showToast('Dependent name is required.', 'error'); return; }
-  currentDependents.push({ name, age, birthdate: bd });
-  document.getElementById('dep_name').value = '';
-  document.getElementById('dep_age').value = '';
-  document.getElementById('dep_birthdate').value = '';
-  renderDependents();
-}
-function removeDependent(idx) { currentDependents.splice(idx, 1); renderDependents(); }
+// ── Build tab bar + tables ──
+function buildTabBar() {
+  const defs = getTabDefs();
+  const bar = document.getElementById('mainTabBar');
+  bar.innerHTML = defs.map((t,i)=>`<button class="tab-btn ${i===0?'active':''}" onclick="switchTab('${t.id}',this)">${t.label}</button>`).join('');
 
-// ── CIP Equipment Logic ──
-function renderCIP() {
-  const list = document.getElementById('cipList');
-  if(!currentCIP.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">No equipment issued.</p>'; return; }
-  list.innerHTML = currentCIP.map((c, i) => `
-    <div class="liability-item">
-      <div class="liability-item-info">
-        <strong>${c.item}</strong>
-        <span>S/N: ${c.sn || 'N/A'}</span>
-      </div>
-      <button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeCIP(${i})">✕</button>
-    </div>
-  `).join('');
+  const area = document.getElementById('tableArea');
+  area.innerHTML = defs.map((t,i)=>`<table id="tab-${t.id}" ${i===0?'':'style="display:none"'}>${tableHead(t.id)}<tbody id="body-${t.id}"><tr><td colspan="20" class="state-cell"><span class="spinner"></span> Loading...</td></tr></tbody></table>`).join('');
+
+  currentTab = defs[0].id;
 }
-function addCIP() {
-  const item = document.getElementById('cip_item').value.trim();
-  const sn = document.getElementById('cip_sn').value.trim();
-  if(!item) { showToast('Item name is required.', 'error'); return; }
-  currentCIP.push({ item, sn });
-  document.getElementById('cip_item').value = '';
-  document.getElementById('cip_sn').value = '';
-  renderCIP();
+
+function tableHead(id) {
+  const isIntern = currentEmpFilter==='intern';
+  const heads = {
+    personal: isIntern
+      ? '<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Civil Status</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>University</th><th>OJT Advisor</th><th>Advisor No.</th><th>Advisor Email</th><th>Actions</th></tr></thead>'
+      : '<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>',
+    company: isIntern
+      ? '<thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>End Date</th><th>Completion Bonus</th><th>Supervisor</th><th>Actions</th></tr></thead>'
+      : '<thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>Supervisor</th><th>Actions</th></tr></thead>',
+    sil:  '<thead><tr><th>Name</th><th>Status</th><th>Position</th><th>Department</th><th>SIL Balance</th><th>Parental Leave</th><th>Actions</th></tr></thead>',
+    benefits: '<thead><tr><th>Name</th><th>Basic Salary</th><th>SSS (EE)</th><th>SSS (ER)</th><th>PhilHealth (EE)</th><th>PhilHealth (ER)</th><th>Pag-IBIG (EE)</th><th>Pag-IBIG (ER)</th><th>Total Deductions</th><th>Actions</th></tr></thead>',
+    liabilities: '<thead><tr><th>Name</th><th>PIN</th><th>Status</th><th>Type</th><th>Submission Date</th><th>Total Amount</th><th>Monthly Amort.</th><th>Start</th><th>End</th><th>Remaining Bal.</th><th>ATD</th><th>Actions</th></tr></thead>',
+    cip:  '<thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>Issued Property</th><th>Actions</th></tr></thead>',
+    files:'<thead><tr><th>Name</th><th>201 File</th></tr></thead>',
+    tracker: '<thead><tr><th>Name</th><th>PIN</th><th>Total Hrs</th><th>Rendered</th><th>Remaining</th><th>Progress</th><th>Expected End</th><th>OJT Status</th><th>Completion Bonus</th><th>Actions</th></tr></thead>',
+  };
+  return heads[id] || '<thead><tr><th>Name</th><th>Actions</th></tr></thead>';
 }
-function removeCIP(idx) { currentCIP.splice(idx, 1); renderCIP(); }
 
 // ── Toast ──
 function showToast(msg,type='success'){
@@ -590,296 +422,216 @@ function toggleNavGroup(id,btn){
   document.getElementById(id).classList.toggle('open');
   btn.classList.toggle('open');
 }
+
 function setEmpFilter(type,btn){
   currentEmpFilter=type;
   document.querySelectorAll('.sub-nav-item').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if(type==='intern') document.getElementById('viewSubtitle').innerText='Manage intern records and details.';
-  else if(type==='archive') document.getElementById('viewSubtitle').innerText='View resigned and archived employee records.';
-  else document.getElementById('viewSubtitle').innerText='Manage employee records, roles, and access.';
-  document.getElementById('archiveBanner').classList.toggle('show', type==='archive');
+  const subtitles={regular:'Manage employee records, roles, and access.',intern:'Manage intern OJT records and details.',archive:'View resigned and archived employee records.'};
+  const titles={regular:'Employee Database',intern:'Intern Database',archive:'Archive'};
+  document.getElementById('viewSubtitle').innerText=subtitles[type]||'';
+  document.getElementById('pageTitle').innerText=titles[type]||'Employee Database';
+  document.getElementById('archiveBanner').classList.toggle('show',type==='archive');
+  buildTabBar();
+  buildModalPanels();
   filterTable();
 }
 
 function getPageSize(){return parseInt(document.getElementById('pageSizeSelect').value)}
 
-// ── Tab switching ──
 function switchTab(tab,btn){
   currentTab=tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const all=['personal','company','sil','benefits','liabilities','cip','files'];
-  all.forEach(t=>{ document.getElementById('tab-'+t).style.display=t===tab?'table':'none'; });
+  getTabDefs().forEach(t=>{
+    const el=document.getElementById('tab-'+t.id);
+    if(el)el.style.display=t.id===tab?'table':'none';
+  });
   renderTable();
 }
-function switchModalTab(tabId,btn){
-  document.querySelectorAll('.modal-tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.modal-body').forEach(b=>b.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  if(tabId==='m-benefits') renderBenefitsPreview();
-  if(tabId==='m-liabilities'&&currentEmpId) loadLiabilities(currentEmpId);
-}
 
-// ── Status badge ──
+// ── Status badges ──
 function statusBadge(s){
   if(!s)return'—';
   const sl=s.toLowerCase();
-  if(sl==='regular')return`<span class="badge badge-regular">Regular</span>`;
-  if(sl==='probationary')return`<span class="badge badge-probationary">Probationary</span>`;
-  if(sl==='resigned')return`<span class="badge badge-resigned">Resigned</span>`;
-  return`<span class="badge badge-probationary">${s}</span>`;
+  const map={regular:'badge-regular',probationary:'badge-probationary',resigned:'badge-resigned',terminated:'badge-resigned',active:'badge-active',inactive:'badge-inactive','project-based':'badge-probationary','part-time':'badge-probationary',completed:'badge-completed',ongoing:'badge-ongoing'};
+  const cls=map[sl]||'badge-probationary';
+  return`<span class="badge ${cls}">${s}</span>`;
 }
-function calcAge(bd){
-  if(!bd)return'—';
-  const t=new Date(),d=new Date(bd);
-  let a=t.getFullYear()-d.getFullYear();
-  const m=t.getMonth()-d.getMonth();
-  if(m<0||(m===0&&t.getDate()<d.getDate()))a--;
-  return a;
-}
+
+function calcAge(bd){if(!bd)return'—';const t=new Date(),d=new Date(bd);let a=t.getFullYear()-d.getFullYear();const m=t.getMonth()-d.getMonth();if(m<0||(m===0&&t.getDate()<d.getDate()))a--;return a;}
 function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 function fmtPeso(n){return n?'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2}):'—';}
 function v(x){return x||'—'}
 
-// ── Gov't Benefits calculation (2026 PH tables) ──
-function calcSSS(salary){
-  const s = Number(salary) || 0;
-  const msc = Math.min(Math.max(Math.floor((s - 250) / 500) * 500 + 500, 5000), 35000);
-  return { ee: Math.round(msc * 0.05 * 100) / 100, er: Math.round(msc * 0.10 * 100) / 100 };
-}
-function calcPhilHealth(salary){
-  const s=Number(salary)||0;
-  const total=Math.min(Math.max(s*0.05,500),5000);
-  const share=Math.round(total/2*100)/100;
-  return{ee:share,er:share};
-}
-function calcPagIBIG(salary){
-  const s=Number(salary)||0;
-  const ee=Math.min(Math.round(s*(s>1500?0.02:0.01)*100)/100,200);
-  const er=Math.min(Math.round(s*0.02*100)/100,200);
-  return{ee,er};
-}
+// ── Gov't Benefits ──
+function calcSSS(s){const m=Math.min(Math.max(Math.floor((s-250)/500)*500+500,5000),35000);return{ee:Math.round(m*0.05*100)/100,er:Math.round(m*0.10*100)/100};}
+function calcPhilHealth(s){const t=Math.min(Math.max(s*0.05,500),5000);const sh=Math.round(t/2*100)/100;return{ee:sh,er:sh};}
+function calcPagIBIG(s){const ee=Math.min(Math.round(s*(s>1500?0.02:0.01)*100)/100,200);const er=Math.min(Math.round(s*0.02*100)/100,200);return{ee,er};}
 function renderBenefitsPreview(){
   const salary=Number(document.getElementById('f_salary')?.value)||0;
   const sss=calcSSS(salary),ph=calcPhilHealth(salary),pi=calcPagIBIG(salary);
-  const totalEE=sss.ee+ph.ee+pi.ee,totalER=sss.er+ph.er+pi.er;
+  const t=sss.ee+ph.ee+pi.ee,tr=sss.er+ph.er+pi.er;
   const fmt=n=>'₱'+n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('benefitsTableBody').innerHTML=`
-    <tr><td>SSS</td><td class="amount">${fmt(sss.ee)}</td><td class="amount">${fmt(sss.er)}</td></tr>
+  const el=document.getElementById('benefitsTableBody');
+  if(!el)return;
+  el.innerHTML=`<tr><td>SSS</td><td class="amount">${fmt(sss.ee)}</td><td class="amount">${fmt(sss.er)}</td></tr>
     <tr><td>PhilHealth</td><td class="amount">${fmt(ph.ee)}</td><td class="amount">${fmt(ph.er)}</td></tr>
     <tr><td>Pag-IBIG</td><td class="amount">${fmt(pi.ee)}</td><td class="amount">${fmt(pi.er)}</td></tr>
-    <tr style="background:#f0f8fe;font-weight:700"><td>Total</td><td class="amount">${fmt(totalEE)}</td><td class="amount">${fmt(totalER)}</td></tr>`;
+    <tr style="background:#f0f8fe;font-weight:700"><td>Total</td><td class="amount">${fmt(t)}</td><td class="amount">${fmt(tr)}</td></tr>`;
 }
 
 // ── Custom Role ──
-function toggleNewRole(){
-  const row=document.getElementById('newRoleRow');
-  row.classList.toggle('show');
-  if(row.classList.contains('show')) document.getElementById('newRoleName').focus();
-  else document.getElementById('newRoleName').value='';
-}
+function toggleNewRole(){const row=document.getElementById('newRoleRow');row.classList.toggle('show');if(row.classList.contains('show'))document.getElementById('newRoleName').focus();else document.getElementById('newRoleName').value='';}
 async function saveNewRole(){
-  const name=document.getElementById('newRoleName').value.trim();
-  if(!name)return;
-  try{
-    const res=await fetch(URL_ADD_ROLE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});
-    const data=await res.json();
-    const role=Array.isArray(data)?data[0]:data;
-    if(role?.name){
-      const sel=document.getElementById('f_role_id');
-      const o=document.createElement('option');
-      o.value=role.name;o.textContent=role.name;
-      sel.appendChild(o);sel.value=role.name;
-      toggleNewRole();
-      showToast(`Role "${role.name}" added!`,'success');
-    }
-  }catch(e){showToast('Failed to add role.','error');}
+  const name=document.getElementById('newRoleName').value.trim();if(!name)return;
+  try{const res=await fetch(URL_ADD_ROLE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});
+  const data=await res.json();const role=Array.isArray(data)?data[0]:data;
+  if(role?.name){const sel=document.getElementById('f_role_id');const o=document.createElement('option');o.value=role.name;o.textContent=role.name;sel.appendChild(o);sel.value=role.name;toggleNewRole();showToast(`Role "${role.name}" added!`);}
+  }catch{showToast('Failed to add role.','error');}
 }
+
+// ── Dependents ──
+function renderDependents(){
+  const list=document.getElementById('dependentsList');if(!list)return;
+  if(!currentDependents.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No dependents added.</p>';return;}
+  list.innerHTML=currentDependents.map((d,i)=>`<div class="liability-item"><div class="liability-item-info"><strong>${d.name}</strong><span>Age: ${d.age||'—'} · DOB: ${fmtDate(d.birthdate)}</span></div><button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeDependent(${i})">✕</button></div>`).join('');
+}
+function addDependent(){const name=document.getElementById('dep_name').value.trim();if(!name){showToast('Name required.','error');return;}currentDependents.push({name,age:document.getElementById('dep_age').value.trim(),birthdate:document.getElementById('dep_birthdate').value});['dep_name','dep_age','dep_birthdate'].forEach(id=>document.getElementById(id).value='');renderDependents();}
+function removeDependent(idx){currentDependents.splice(idx,1);renderDependents();}
+
+// ── CIP Items ──
+function renderCIP(){
+  const list=document.getElementById('cipList');if(!list)return;
+  if(!currentCIP.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No equipment issued.</p>';return;}
+  list.innerHTML=currentCIP.map((c,i)=>`<div class="liability-item"><div class="liability-item-info"><strong>${c.item}</strong><span>S/N: ${c.sn||'N/A'}</span></div><button class="btn danger" type="button" style="padding:4px 8px;font-size:11px" onclick="removeCIP(${i})">✕</button></div>`).join('');
+}
+function addCIP(){const item=document.getElementById('cip_item').value.trim();if(!item){showToast('Item name required.','error');return;}currentCIP.push({item,sn:document.getElementById('cip_sn').value.trim()});['cip_item','cip_sn'].forEach(id=>document.getElementById(id).value='');renderCIP();}
+function removeCIP(idx){currentCIP.splice(idx,1);renderCIP();}
 
 // ── Liabilities ──
 async function loadLiabilities(empId){
-  const list=document.getElementById('liabilityList');
-  if(!empId || empId === 'undefined') {
-    list.innerHTML = '<p style="color:var(--text-muted);font-size:12.5px">Save the employee first to manage liabilities.</p>';
-    return;
-  }
+  const list=document.getElementById('liabilityList');if(!list)return;
+  if(!empId){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">Save the employee first.</p>';return;}
   list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">Loading...</p>';
   try{
     const res=await fetch(`${URL_LIABILITIES}?employee_id=${empId}`);
     const raw=await res.json();
-    const items = Array.isArray(raw) 
-        ? raw.map(i => i.json ?? i).filter(l => l && Object.keys(l).length > 0 && l.amount !== undefined) 
-        : [];
-    if(!items.length){
-        list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';
-        return;
-    }
-    list.innerHTML=items.map(l=>`
-      <div class="liability-item">
-        <div class="liability-item-info">
-          <strong>${l.type || 'Unknown'} — ${l.description||'—'}</strong>
-          <span>Added: ${fmtDate(l.date_added)}${l.notes?' · '+l.notes:''}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="text-align:right">
-            <div class="liability-amount">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
-            <div style="font-size:11px;color:var(--text-muted)">Bal: ₱${Number(l.balance).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
-          </div>
-          <button class="btn danger" style="padding:4px 8px;font-size:11px" onclick="deleteLiability(${l.id})">✕</button>
-        </div>
-      </div>`).join('');
-  }catch(e){
-      list.innerHTML='<p style="color:#dc2626;font-size:12.5px">Failed to load.</p>';
-  }
+    const items=Array.isArray(raw)?raw.map(i=>i.json??i).filter(l=>l&&l.amount!==undefined):[];
+    if(!items.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';return;}
+    list.innerHTML=items.map(l=>`<div class="liability-item">
+      <div class="liability-item-info"><strong>${l.type||'—'} — ${l.description||'—'}</strong><span>${fmtDate(l.date_added)}${l.notes?' · '+l.notes:''}</span></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="text-align:right"><div class="liability-amount">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</div><div style="font-size:11px;color:var(--text-muted)">Bal: ₱${Number(l.balance||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</div></div>
+        <button class="btn danger" style="padding:4px 8px;font-size:11px" onclick="deleteLiability(${l.id})">✕</button>
+      </div></div>`).join('');
+  }catch{list.innerHTML='<p style="color:#dc2626;font-size:12.5px">Failed to load.</p>';}
 }
 async function addLiability(){
   if(!currentEmpId){showToast('Save the employee first.','error');return;}
-  const type=document.getElementById('l_type').value;
-  const amount=document.getElementById('l_amount').value;
-  if(!type||!amount){showToast('Type and Amount are required.','error');return;}
-  const btn=document.getElementById('addLiabilityBtn');
-  btn.textContent='Adding...';btn.disabled=true;
+  const type=document.getElementById('l_type').value,amount=document.getElementById('l_amount').value;
+  if(!type||!amount){showToast('Type and Amount required.','error');return;}
+  const btn=document.getElementById('addLiabilityBtn');btn.textContent='Adding...';btn.disabled=true;
   try{
-    await fetch(URL_ADD_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        employee_id:currentEmpId,type,
-        description:document.getElementById('l_desc').value,
-        amount:Number(amount),
-        balance:Number(document.getElementById('l_balance').value||amount),
-        notes:document.getElementById('l_notes').value
-      })});
-    ['l_type','l_desc','l_amount','l_balance','l_notes'].forEach(id=>document.getElementById(id).value='');
-    loadLiabilities(currentEmpId);
-    showToast('Liability added!','success');
-    loadEmployees();
-  }catch(e){showToast('Failed to add liability.','error');}
+    await fetch(URL_ADD_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      employee_id:currentEmpId,type,
+      description:document.getElementById('l_desc').value,
+      amount:Number(amount),balance:Number(document.getElementById('l_balance').value||amount),
+      notes:document.getElementById('l_notes').value,
+      status:document.getElementById('l_status')?.value||'Active',
+      monthly_amortization:Number(document.getElementById('l_amort')?.value||0),
+      start_date:document.getElementById('l_start')?.value||null,
+      end_date:document.getElementById('l_end')?.value||null,
+      atd_link:document.getElementById('l_atd')?.value||null,
+      submission_date:document.getElementById('l_subdate')?.value||null,
+    })});
+    ['l_type','l_desc','l_amount','l_balance','l_notes','l_amort','l_start','l_end','l_atd','l_subdate','l_status'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    loadLiabilities(currentEmpId);loadEmployees();showToast('Liability added!');
+  }catch{showToast('Failed.','error');}
   finally{btn.textContent='+ Add Liability';btn.disabled=false;}
 }
 async function deleteLiability(id){
   if(!confirm('Delete this liability?'))return;
-  try{
-    await fetch(URL_DEL_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
-    loadLiabilities(currentEmpId);showToast('Liability deleted.','success');
-    loadEmployees();
-  }catch(e){showToast('Failed to delete.','error');}
+  try{await fetch(URL_DEL_LIABILITY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});loadLiabilities(currentEmpId);loadEmployees();showToast('Deleted.');}
+  catch{showToast('Failed.','error');}
 }
 
 // ── Dropdowns ──
 async function loadDropdowns(){
-  try{
-    const dRes=await fetch(URL_DEPTS);
-    const deps=(await dRes.json()).map(i=>i.json??i).filter(d=>d.name&&d.name.toLowerCase()!=='undefined');
-    const ds=document.getElementById('f_dep_id');
-    ds.innerHTML='<option value="">— Select Department —</option>';
-    deps.forEach(d=>{const o=document.createElement('option');o.value=d.name;o.textContent=d.name;ds.appendChild(o)});
-  }catch(e){document.getElementById('f_dep_id').innerHTML='<option value="">— Failed to load —</option>';}
-  try{
-    const rRes=await fetch(URL_ROLES);
-    const rols=(await rRes.json()).map(i=>i.json??i).filter(r=>r.name&&r.name.toLowerCase()!=='undefined');
-    const rs=document.getElementById('f_role_id');
-    rs.innerHTML='<option value="">— Select Role —</option>';
-    rols.forEach(r=>{const o=document.createElement('option');o.value=r.name;o.textContent=r.name;rs.appendChild(o)});
-  }catch(e){document.getElementById('f_role_id').innerHTML='<option value="">— Failed to load —</option>';}
+  try{const r=await fetch(URL_DEPTS);const d=(await r.json()).map(i=>i.json??i).filter(x=>x.name&&x.name.toLowerCase()!=='undefined');const s=document.getElementById('f_dep_id');if(s){s.innerHTML='<option value="">— Select Department —</option>';d.forEach(x=>{const o=document.createElement('option');o.value=x.name;o.textContent=x.name;s.appendChild(o)});} }catch{}
+  try{const r=await fetch(URL_ROLES);const d=(await r.json()).map(i=>i.json??i).filter(x=>x.name&&x.name.toLowerCase()!=='undefined');const s=document.getElementById('f_role_id');if(s){s.innerHTML='<option value="">— Select Role —</option>';d.forEach(x=>{const o=document.createElement('option');o.value=x.name;o.textContent=x.name;s.appendChild(o)});} }catch{}
 }
-
 function populateSupervisorDropdown(currentSupId){
-  const sel=document.getElementById('f_supervisor_id');
+  const sel=document.getElementById('f_supervisor_id');if(!sel)return;
   sel.innerHTML='<option value="">— Select Supervisor —</option>';
-  employeesData.filter(e=>e.status!=='Resigned').forEach(emp=>{
-    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
-    const o=document.createElement('option');
-    o.value=emp.id; o.textContent=fn; 
-    sel.appendChild(o);
-  });
-  if(currentSupId!=null&&currentSupId!=='') sel.value=String(currentSupId);
+  employeesData.filter(e=>e.status!=='Resigned').forEach(emp=>{const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');const o=document.createElement('option');o.value=emp.id;o.textContent=fn;sel.appendChild(o);});
+  if(currentSupId!=null&&currentSupId!=='')sel.value=String(currentSupId);
 }
 
-// ── Load employees ──
+// ── Load ──
 async function loadEmployees(){
-  const allTabs=['personal','company','sil','benefits','liabilities','cip','files'];
-  allTabs.forEach(t=>{
-    const b=document.getElementById('body-'+t);
-    if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell"><span class="spinner"></span> Loading...</td></tr>`;
-  });
+  getTabDefs().forEach(t=>{const b=document.getElementById('body-'+t.id);if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell"><span class="spinner"></span> Loading...</td></tr>`;});
   document.getElementById('paginationBar').style.display='none';
-  
   try{
-    const [empRes, liabRes] = await Promise.all([ fetch(URL_GET), fetch(URL_LIABILITIES) ]);
-    const rawEmp = await empRes.json();
-    let rawData = Array.isArray(rawEmp) ? rawEmp.map(i => i.json ?? i) : [];
-
-    let allLiabilities = [];
-    if(liabRes.ok) {
-       const rawLiab = await liabRes.json();
-       allLiabilities = Array.isArray(rawLiab)
-         ? rawLiab.map(i => i.json ?? i).filter(l => l && Object.keys(l).length > 0 && l.amount !== undefined)
-         : [];
-    }
-
-    rawData.forEach(emp => {
-       emp.liabilities = allLiabilities.filter(l => String(l.employee_id) === String(emp.id));
-    });
-
-    rawData.sort((a,b)=>{
-      const oa=a.sort_order!=null?Number(a.sort_order):9999;
-      const ob=b.sort_order!=null?Number(b.sort_order):9999;
-      return oa-ob;
-    });
-    
-    employeesData=rawData;
-    filterTable();
-  } catch(e) {
-    allTabs.forEach(t=>{
-      const b=document.getElementById('body-'+t);
-      if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell" style="color:#dc2626">Failed to connect.</td></tr>`;
-    });
-  }
+    const [empRes,liabRes]=await Promise.all([fetch(URL_GET),fetch(URL_LIABILITIES)]);
+    const rawEmp=await empRes.json();
+    let rawData=Array.isArray(rawEmp)?rawEmp.map(i=>i.json??i):[];
+    let allLiab=[];
+    if(liabRes.ok){const rl=await liabRes.json();allLiab=Array.isArray(rl)?rl.map(i=>i.json??i).filter(l=>l&&l.amount!==undefined):[];}
+    rawData.forEach(emp=>{emp.liabilities=allLiab.filter(l=>String(l.employee_id)===String(emp.id));});
+    rawData.sort((a,b)=>{const oa=a.sort_order!=null?Number(a.sort_order):9999;const ob=b.sort_order!=null?Number(b.sort_order):9999;return oa-ob;});
+    employeesData=rawData;filterTable();
+  }catch{getTabDefs().forEach(t=>{const b=document.getElementById('body-'+t.id);if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell" style="color:#dc2626">Failed to connect.</td></tr>`;});}
 }
 
-// ── Drag & Drop ──
+// ── Drag ──
 let dragIndex=-1;
-function dragStart(e,index){dragIndex=index;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.4';}
+function dragStart(e,i){dragIndex=i;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.4';}
 function dragEnd(e){e.target.style.opacity='1';}
-function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
-function dropRow(e,dropIndex){
-  e.preventDefault();
-  if(dragIndex===dropIndex||dragIndex===-1)return;
-  const item=filteredData.splice(dragIndex,1)[0];
-  filteredData.splice(dropIndex,0,item);
-  renderTable();
-  saveNewOrder();
-}
+function dragOver(e){e.preventDefault();}
+function dropRow(e,di){e.preventDefault();if(dragIndex===di||dragIndex===-1)return;const item=filteredData.splice(dragIndex,1)[0];filteredData.splice(di,0,item);renderTable();saveNewOrder();}
 async function saveNewOrder(){
-  showToast('Saving layout...','success');
+  showToast('Saving layout...');
   const payload=filteredData.map((emp,i)=>({id:emp.id,sort_order:i+1}));
-  try{
-    const res=await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order',{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
-    });
-    if(res.ok){showToast('Layout saved!','success');await loadEmployees();}
-    else showToast('Failed to save layout.','error');
-  }catch(e){showToast('Network error.','error');}
+  try{const res=await fetch('https://primary-production-a810.up.railway.app/webhook/hr-update-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(res.ok){showToast('Layout saved!');await loadEmployees();}else showToast('Failed.','error');}
+  catch{showToast('Network error.','error');}
+}
+
+// ── Filter ──
+function filterTable(){
+  const f=document.getElementById('searchInput').value.toLowerCase();
+  filteredData=employeesData.filter(emp=>{
+    const isResigned=emp.status==='Resigned'||emp.status==='Terminated';
+    if(currentEmpFilter==='archive'&&!isResigned)return false;
+    if(currentEmpFilter!=='archive'&&isResigned)return false;
+    const role=String(emp.role_name||'').toLowerCase(),dept=String(emp.department_name||'').toLowerCase();
+    const isIntern=role.includes('intern')||dept.includes('intern');
+    if(currentEmpFilter==='regular'&&isIntern)return false;
+    if(currentEmpFilter==='intern'&&!isIntern)return false;
+    if(!f)return true;
+    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
+    return[fn,emp.pin,emp.email,emp.personal_email,emp.department_name,emp.role_name].some(x=>String(x||'').toLowerCase().includes(f));
+  });
+  currentPage=1;renderTable();
 }
 
 // ── Render ──
 function renderTable(){
   const data=filteredData;
-  const allTabs=['personal','company','sil','benefits','liabilities','cip','files'];
   if(data.length===0){
-    allTabs.forEach(t=>{
-      const b=document.getElementById('body-'+t);
-      if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell">${currentEmpFilter==='archive'?'No archived employees found.':'No records found.'}</td></tr>`;
-    });
+    getTabDefs().forEach(t=>{const b=document.getElementById('body-'+t.id);if(b)b.innerHTML=`<tr><td colspan="20" class="state-cell">No records found.</td></tr>`;});
     document.getElementById('paginationBar').style.display='none';return;
   }
   const ps=getPageSize(),total=Math.ceil(data.length/ps);
   if(currentPage>total)currentPage=total;
   const start=(currentPage-1)*ps,items=data.slice(start,start+ps);
 
+  const isArchive=currentEmpFilter==='archive';
+  const isIntern=currentEmpFilter==='intern';
+
   const ab=(emp)=>{
     const gi=employeesData.indexOf(emp);
-    if(currentEmpFilter==='archive') return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;
+    if(isArchive)return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;
     return`<div class="actions"><button class="btn" onclick="openModal(${gi})">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;
   };
   const btr=(content,idx)=>{
@@ -887,10 +639,21 @@ function renderTable(){
     return`<tr class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)">${content}</tr>`;
   };
 
-  document.getElementById('body-personal').innerHTML=items.map((emp,idx)=>{
+  // Personal
+  const pb=document.getElementById('body-personal');
+  if(pb) pb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const deps = safeParse(emp.dependents);
-    return btr(`<td class="emp-name" title="${fn}">${fn}</td>
+    if(isIntern) return btr(`
+      <td class="emp-name">${fn}</td>
+      <td><span class="emp-pin">${emp.pin||'—'}</span></td>
+      <td>${v(emp.contact)}</td><td>${fmtDate(emp.birthdate)}</td><td>${calcAge(emp.birthdate)}</td>
+      <td>${v(emp.civil_status)}</td><td title="${emp.personal_email||''}">${v(emp.personal_email)}</td>
+      <td>${v(emp.emergency_contact)}</td><td title="${emp.address||''}">${v(emp.address)}</td>
+      <td>${v(emp.university)}</td><td>${v(emp.ojt_advisor)}</td><td>${v(emp.ojt_advisor_number)}</td><td>${v(emp.ojt_advisor_email)}</td>
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
+    const deps=safeParse(emp.dependents);
+    return btr(`
+      <td class="emp-name" title="${fn}">${fn}</td>
       <td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td>${v(emp.contact)}</td><td>${fmtDate(emp.birthdate)}</td><td>${calcAge(emp.birthdate)}</td>
       <td>${v(emp.gender)}</td><td>${v(emp.civil_status)}</td><td>${deps.length}</td>
@@ -901,185 +664,255 @@ function renderTable(){
       <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-company').innerHTML=items.map((emp,idx)=>{
+  // Company
+  const cb=document.getElementById('body-company');
+  if(cb) cb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    if(isIntern){
+      const bonus=getCompletionBonus(emp.total_hours||0);
+      return btr(`<td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
+        <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${fmtDate(emp.end_date)}</td>
+        <td style="font-family:'DM Mono',monospace;font-weight:600;color:#16a34a">${fmtPeso(bonus)}</td>
+        <td>${v(emp.supervisor)}</td>
+        <td class="actions-cell">${ab(emp)}</td>`,idx);
+    }
     return btr(`<td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
-      <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td>
-      <td>${fmtDate(emp.regularization_date)}</td>
+      <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${fmtDate(emp.regularization_date)}</td>
       <td title="${emp.email||''}">${v(emp.email)}</td>
       <td>${fmtPeso(emp.salary)}</td><td>${fmtPeso(emp.de_minimis)}</td><td>${fmtPeso(emp.allowance)}</td>
       <td>${v(emp.supervisor)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-sil').innerHTML=items.map((emp,idx)=>{
+  // SIL
+  const sb=document.getElementById('body-sil');
+  if(sb) sb.innerHTML=items.map((emp,idx)=>{const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';return btr(`<td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td><td style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${emp.sil_balance??'—'}</td><td style="font-family:'DM Mono',monospace;font-weight:600">${emp.parental_leave_balance??'—'}</td><td class="actions-cell">${ab(emp)}</td>`,idx);}).join('');
+
+  // Benefits
+  const bb=document.getElementById('body-benefits');
+  if(bb) bb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    return btr(`<td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td>
-      <td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${emp.sil_balance??'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:600">${emp.parental_leave_balance??'—'}</td>
-      <td class="actions-cell">${ab(emp)}</td>`,idx);
+    const s=emp.salary||0;const sss=calcSSS(s),ph=calcPhilHealth(s),pi=calcPagIBIG(s);const totalEE=sss.ee+ph.ee+pi.ee;const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2});
+    return btr(`<td class="emp-name">${fn}</td><td>${fmtPeso(s)}</td><td>${fmt(sss.ee)}</td><td>${fmt(sss.er)}</td><td>${fmt(ph.ee)}</td><td>${fmt(ph.er)}</td><td>${fmt(pi.ee)}</td><td>${fmt(pi.er)}</td><td style="font-family:'DM Mono',monospace;font-weight:700;color:#dc2626">${fmt(totalEE)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  document.getElementById('body-benefits').innerHTML=items.map((emp,idx)=>{
+  // Liabilities (expandable rows from PDF design)
+  const lb=document.getElementById('body-liabilities');
+  if(lb) lb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const s=emp.salary||0;
-    const sss=calcSSS(s),ph=calcPhilHealth(s),pi=calcPagIBIG(s);
-    const totalEE=sss.ee+ph.ee+pi.ee;
-    const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2});
-    return btr(`<td class="emp-name">${fn}</td><td>${fmtPeso(s)}</td>
-      <td>${fmt(sss.ee)}</td><td>${fmt(sss.er)}</td>
-      <td>${fmt(ph.ee)}</td><td>${fmt(ph.er)}</td>
-      <td>${fmt(pi.ee)}</td><td>${fmt(pi.er)}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:700;color:#dc2626">${fmt(totalEE)}</td>
-      <td class="actions-cell">${ab(emp)}</td>`,idx);
+    const liabs=emp.liabilities||[];
+    const dIdx=start+idx;
+    if(!liabs.length) return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td><td colspan="9" style="color:var(--text-muted);font-size:12px;text-align:center">No active liabilities</td><td class="actions-cell">${ab(emp)}</td>`,idx);
+    return liabs.map((l,i)=>{
+      const isFirst=i===0,bdr=i===liabs.length-1?'border-bottom:1px solid var(--border)':'border-bottom:1px dashed #e5e7eb';
+      let row=`<tr ${isFirst?`class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)"`:''}>`; 
+      if(isFirst){row+=`<td class="emp-name" rowspan="${liabs.length}" style="vertical-align:top;border-bottom:1px solid var(--border)">${fn}</td><td rowspan="${liabs.length}" style="vertical-align:top;border-bottom:1px solid var(--border)"><span class="emp-pin">${emp.pin||'—'}</span></td>`;}
+      row+=`<td style="${bdr}">${statusBadge(l.status||'Active')}</td><td style="${bdr}">${l.type||'—'}</td><td style="${bdr}">${fmtDate(l.submission_date||l.date_added)}</td><td style="${bdr}">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</td><td style="${bdr}">₱${Number(l.monthly_amortization||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td><td style="${bdr}">${fmtDate(l.start_date)}</td><td style="${bdr}">${fmtDate(l.end_date)}</td><td style="color:#dc2626;font-weight:600;${bdr}">₱${Number(l.balance||0).toLocaleString('en-PH',{minimumFractionDigits:2})}</td><td style="${bdr}">${l.atd_link?`<a href="${l.atd_link}" target="_blank" style="color:var(--accent);font-weight:600">Link</a>`:'—'}</td>`;
+      if(isFirst){row+=`<td class="actions-cell" rowspan="${liabs.length}" style="vertical-align:top;border-bottom:1px solid var(--border)">${ab(emp)}</td>`;}
+      return row+'</tr>';
+    }).join('');
   }).join('');
 
-  document.getElementById('body-liabilities').innerHTML = items.map((emp, idx) => {
-    const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ') || '—';
-    const dIdx = start + idx;
-    const liabs = emp.liabilities || []; 
-
-    if (liabs.length === 0) {
-      return btr(`<td class="emp-name">${fn}</td>
-        <td><span class="emp-pin">${emp.pin||'—'}</span></td>
-        <td colspan="5" style="color:var(--text-muted);font-size:12.5px;text-align:center">No active liabilities</td>
-        <td class="actions-cell">${ab(emp)}</td>`, idx);
-    }
-
-    let rows = '';
-    liabs.forEach((l, i) => {
-      const isFirst = i === 0;
-      const isLast = i === liabs.length - 1;
-      const btmBorder = isLast ? 'border-bottom:1px solid var(--border)' : 'border-bottom:1px dashed #e5e7eb';
-
-      rows += `<tr ${isFirst ? `class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)"` : ''}>`;
-
-      if (isFirst) {
-        rows += `<td class="emp-name" rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)">${fn}</td>`;
-        rows += `<td rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)"><span class="emp-pin">${emp.pin||'—'}</span></td>`;
-      }
-
-      rows += `
-        <td style="${btmBorder}">${l.type || '—'}</td>
-        <td style="${btmBorder}">${l.description || '—'}</td>
-        <td style="${btmBorder}">₱${Number(l.amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</td>
-        <td style="color:#dc2626;font-weight:600; ${btmBorder}">₱${Number(l.balance).toLocaleString('en-PH',{minimumFractionDigits:2})}</td>
-        <td style="${btmBorder}">${fmtDate(l.date_added)}</td>
-      `;
-
-      if (isFirst) {
-        rows += `<td class="actions-cell" rowspan="${liabs.length}" style="vertical-align:top; border-bottom:1px solid var(--border)">${ab(emp)}</td>`;
-      }
-
-      rows += `</tr>`;
-    });
-
-    return rows;
-  }).join('');
-
-  document.getElementById('body-cip').innerHTML=items.map((emp,idx)=>{
+  // CIP
+  const cipb=document.getElementById('body-cip');
+  if(cipb) cipb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const cips = safeParse(emp.cip_notes);
-    const cipText = cips.length > 0 ? cips.map(c => `${c.item} (${c.sn||'N/A'})`).join(', ') : '—';
-
-    return btr(`<td class="emp-name">${fn}</td>
-      <td><span class="emp-pin">${emp.pin||'—'}</span></td>
-      <td>${v(emp.department_name)}</td><td>${v(emp.role_name)}</td>
-      <td>${v(emp.cip_status)}</td><td title="${cipText}" style="max-width:250px">${cipText}</td>
-      <td class="actions-cell">${ab(emp)}</td>`,idx);
+    const cips=safeParse(emp.cip_notes);
+    const cipText=cips.length>0?cips.map(c=>`${c.item} (${c.sn||'N/A'})`).join(', '):'—';
+    return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td><td>${v(emp.department_name)}</td><td>${v(emp.role_name)}</td><td>${v(emp.cip_status)}</td><td title="${cipText}" style="max-width:250px">${cipText}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
+  // Files
+  const fib=document.getElementById('body-files');
   const fileIcon=`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-  document.getElementById('body-files').innerHTML=items.map((emp,idx)=>{
-    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const id=emp.id;
+  if(fib) fib.innerHTML=items.map((emp,idx)=>{
+    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';const id=emp.id;
     return btr(`<td class="emp-name">${fn}</td>
-      <td><div class="file-dropdown-wrap">
-        <button class="file-dropdown-btn" onclick="toggle201(${id})">Drive Links ↓</button>
-        <div class="file-dropdown-menu" id="menu-${id}">
-          <div class="file-dropdown-item">${fileIcon} Company Documents</div>
-          <div class="file-dropdown-item">${fileIcon} Disciplinary Actions</div>
-        </div>
-      </div></td>`,idx);
+      <td><div class="file-dropdown-wrap"><button class="file-dropdown-btn" onclick="toggle201(${id})">Drive Links ↓</button><div class="file-dropdown-menu" id="menu-${id}"><div class="file-dropdown-item">${fileIcon} Company Documents</div><div class="file-dropdown-item">${fileIcon} Disciplinary Actions</div></div></div></td>`,idx);
   }).join('');
 
+  // OJT Tracker (interns only)
+  const trb=document.getElementById('body-tracker');
+  if(trb) trb.innerHTML=items.map((emp,idx)=>{
+    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+    const t=getInternData(fn);
+    if(!t) return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td><td colspan="7" style="color:var(--text-muted);font-size:12px">Not in tracker</td><td class="actions-cell">${ab(emp)}</td>`,idx);
+    const pct=Math.min(Math.round((t.rendered/t.total)*100),100);
+    const bonus=getCompletionBonus(t.total);
+    return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td>
+      <td style="font-family:'DM Mono',monospace">${t.total}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${t.rendered.toFixed(2)}</td>
+      <td style="font-family:'DM Mono',monospace;color:${t.remaining<=0?'#16a34a':'#b45309'}">${t.remaining.toFixed(2)}</td>
+      <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text-muted)">${pct}%</span></td>
+      <td>${t.expectedEnd}</td>
+      <td>${statusBadge(t.status)}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;color:#16a34a">${fmtPeso(bonus)}</td>
+      <td class="actions-cell">${ab(emp)}</td>`,idx);
+  }).join('');
+
+  // Pagination
   const from=start+1,to=Math.min(start+ps,data.length);
   document.getElementById('pageInfo').textContent=`${from}–${to} of ${data.length} records`;
   document.getElementById('paginationBar').style.display='flex';
   let btns=`<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>`;
-  getPageRange(currentPage,total).forEach(p=>{
-    if(p==='...')btns+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
-    else btns+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;
-  });
+  getPageRange(currentPage,total).forEach(p=>{if(p==='...')btns+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;else btns+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;});
   btns+=`<button class="page-btn" onclick="goToPage(${currentPage+1})" ${currentPage===total?'disabled':''}>&#8250;</button>`;
   document.getElementById('pageControls').innerHTML=btns;
 }
 
-function getPageRange(c,t){
-  if(t<=7)return Array.from({length:t},(_,i)=>i+1);
-  if(c<=4)return[1,2,3,4,5,'...',t];
-  if(c>=t-3)return[1,'...',t-4,t-3,t-2,t-1,t];
-  return[1,'...',c-1,c,c+1,'...',t];
-}
-function goToPage(p){const t=Math.ceil(filteredData.length/getPageSize());if(p<1||p>t)return;currentPage=p;renderTable()}
-function changePageSize(){currentPage=1;renderTable()}
+function getPageRange(c,t){if(t<=7)return Array.from({length:t},(_,i)=>i+1);if(c<=4)return[1,2,3,4,5,'...',t];if(c>=t-3)return[1,'...',t-4,t-3,t-2,t-1,t];return[1,'...',c-1,c,c+1,'...',t];}
+function goToPage(p){const t=Math.ceil(filteredData.length/getPageSize());if(p<1||p>t)return;currentPage=p;renderTable();}
+function changePageSize(){currentPage=1;renderTable();}
 
-function filterTable(){
-  const f=document.getElementById('searchInput').value.toLowerCase();
-  filteredData=employeesData.filter(emp=>{
-    const isResigned = emp.status === 'Resigned';
-    if(currentEmpFilter === 'archive' && !isResigned) return false;
-    if(currentEmpFilter !== 'archive' && isResigned) return false;
+function toggle201(id){const m=document.getElementById('menu-'+id);document.querySelectorAll('.file-dropdown-menu.open').forEach(x=>{if(x!==m)x.classList.remove('open')});m.classList.toggle('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.file-dropdown-wrap'))document.querySelectorAll('.file-dropdown-menu.open').forEach(m=>m.classList.remove('open'));});
 
-    const role=String(emp.role_name||emp.role_id||'').toLowerCase();
-    const dept=String(emp.department_name||emp.dep_id||'').toLowerCase();
-    const isIntern=role.includes('intern')||dept.includes('intern');
-    
-    if(currentEmpFilter==='regular'&&isIntern)return false;
-    if(currentEmpFilter==='intern'&&!isIntern)return false;
-    
-    if(!f)return true;
-    const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
-    return[fn,emp.pin,emp.email,emp.personal_email,emp.department_name,emp.role_name,emp.supervisor]
-      .some(x=>String(x||'').toLowerCase().includes(f));
-  });
-  currentPage=1;renderTable();
+// ── Modal panels ──
+function buildModalPanels(){
+  const isIntern=currentEmpFilter==='intern';
+  const tabs=isIntern
+    ? [{id:'m-personal',label:'Personal'},{id:'m-company',label:'Company'},{id:'m-cip',label:'CIP'}]
+    : [{id:'m-personal',label:'Personal'},{id:'m-company',label:'Company'},{id:'m-sil',label:'SIL'},{id:'m-gov',label:'Gov IDs'},{id:'m-cip',label:'CIP'},{id:'m-benefits',label:'Benefits'},{id:'m-liabilities',label:'Liabilities'}];
+
+  document.getElementById('modalTabBar').innerHTML=tabs.map((t,i)=>`<button class="modal-tab-btn ${i===0?'active':''}" onclick="switchModalTab('${t.id}',this)">${t.label}</button>`).join('');
+
+  document.getElementById('modalBodies').innerHTML=`
+    <div class="modal-body active" id="m-personal">
+      <input type="hidden" id="f_id">
+      <div class="form-group"><label>First Name<span class="req-star">*</span></label><input type="text" id="f_fn" placeholder="John"></div>
+      <div class="form-group"><label>Middle Name</label><input type="text" id="f_mn" placeholder="e.g. Santos"></div>
+      <div class="form-group"><label>Last Name<span class="req-star">*</span></label><input type="text" id="f_ln" placeholder="Doe"></div>
+      <div class="form-group"><label>PIN<span class="req-star">*</span></label><input type="text" id="f_pin" placeholder="e.g. 1099"></div>
+      <div class="form-group"><label>Personal Email</label><input type="email" id="f_personal_email" placeholder="john@gmail.com"></div>
+      <div class="form-group"><label>Contact Number</label><input type="text" id="f_contact" placeholder="09XX XXX XXXX"></div>
+      <div class="form-group"><label>Birthdate</label><input type="date" id="f_birthdate"></div>
+      <div class="form-group"><label>Gender</label><select id="f_gender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+      <div class="form-group"><label>Civil Status</label><select id="f_civil_status"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Widowed</option><option>Separated</option></select></div>
+      <div class="form-group full"><label>Address</label><textarea id="f_address" placeholder="Full address"></textarea></div>
+      <div class="form-group full"><label>Emergency Contact</label><input type="text" id="f_emergency_contact" placeholder="Name — Relationship — Number"></div>
+      ${isIntern?`
+      <div class="section-title">OJT Information</div>
+      <div class="form-group full"><label>University / School</label><input type="text" id="f_university" placeholder="e.g. University of Santo Tomas"></div>
+      <div class="form-group"><label>OJT Advisor Name</label><input type="text" id="f_ojt_advisor" placeholder="Prof. Juan Dela Cruz"></div>
+      <div class="form-group"><label>OJT Advisor Number</label><input type="text" id="f_ojt_advisor_number" placeholder="09XX XXX XXXX"></div>
+      <div class="form-group full"><label>OJT Advisor Email</label><input type="email" id="f_ojt_advisor_email" placeholder="advisor@school.edu.ph"></div>
+      `:`
+      <div class="section-title">Dependents</div>
+      <div class="form-group full">
+        <div style="display:flex;gap:6px;margin-bottom:6px"><input type="text" id="dep_name" placeholder="Full Name" style="flex:2"><input type="number" id="dep_age" placeholder="Age" style="flex:1" min="0"></div>
+        <div style="display:flex;gap:6px"><input type="date" id="dep_birthdate" style="flex:2"><button class="btn" type="button" onclick="addDependent()" style="flex:1;justify-content:center">+ Add</button></div>
+      </div>
+      <div class="liability-list" id="dependentsList"></div>
+      `}
+    </div>
+
+    <div class="modal-body" id="m-company">
+      <div class="form-group"><label>Work Email</label><input type="email" id="f_email" placeholder="john@crowdsource.com"></div>
+      <div class="form-group"><label>Department</label><select id="f_dep_id"><option value="">— Select Department —</option></select></div>
+      <div class="form-group full">
+        <label>Role / Position</label>
+        <div class="role-wrap"><select id="f_role_id"><option value="">— Select Role —</option></select><button class="btn" type="button" onclick="toggleNewRole()">+ New</button></div>
+        <div class="new-role-row" id="newRoleRow"><input type="text" id="newRoleName" placeholder="Type new role name..."><button class="btn primary" type="button" onclick="saveNewRole()">Add</button><button class="btn" type="button" onclick="toggleNewRole()">Cancel</button></div>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="f_status">
+          ${isIntern
+            ?`<option value="">— Select —</option><option value="Active">Active</option><option value="Ongoing">Ongoing</option><option value="Completed">Completed</option><option value="Inactive">Inactive</option><option value="Terminated">Terminated</option>`
+            :`<option value="">— Select —</option><option value="Probationary">Probationary</option><option value="Regular">Regular</option><option value="Project-Based">Project-Based</option><option value="Part-time">Part-time</option><option value="Resigned">Resigned</option><option value="Terminated">Terminated</option>`
+          }
+        </select>
+      </div>
+      <div class="form-group"><label>Start Date</label><input type="date" id="f_start_date"></div>
+      ${isIntern
+        ?`<div class="form-group"><label>End Date</label><input type="date" id="f_end_date"></div>
+           <div class="form-group"><label>Total OJT Hours Required</label><input type="number" id="f_total_hours" placeholder="e.g. 400" oninput="updateBonusPreview()"></div>
+           <div class="form-group"><label>Completion Bonus (auto)</label><input type="text" id="f_bonus_preview" readonly style="background:#f3f4f6;font-weight:700;color:#16a34a" placeholder="Auto from hours"></div>
+           <div class="form-group"><label>Allowance / Stipend</label><input type="number" id="f_allowance" placeholder="e.g. 1500"></div>
+           <div class="form-group full"><label>Supervisor</label><select id="f_supervisor_id"><option value="">— Select Supervisor —</option></select></div>`
+        :`<div class="form-group"><label>Regularization Date</label><input type="date" id="f_regularization_date"></div>
+           <div class="form-group"><label>Basic Salary</label><input type="number" id="f_salary" placeholder="e.g. 25000" oninput="renderBenefitsPreview()"></div>
+           <div class="form-group"><label>De Minimis</label><input type="number" id="f_de_minimis" placeholder="e.g. 2000"></div>
+           <div class="form-group"><label>Allowance</label><input type="number" id="f_allowance" placeholder="e.g. 1500"></div>
+           <div class="form-group full"><label>Supervisor</label><select id="f_supervisor_id"><option value="">— Select Supervisor —</option></select></div>`
+      }
+    </div>
+
+    ${!isIntern?`<div class="modal-body" id="m-sil">
+      <div class="form-group"><label>SIL Balance</label><input type="number" id="f_sil_balance" placeholder="e.g. 5" step="0.5" min="0"></div>
+      <div class="form-group"><label>Parental Leave Balance</label><input type="number" id="f_parental_leave" placeholder="e.g. 7" step="0.5" min="0"></div>
+    </div>`:''}
+
+    ${!isIntern?`<div class="modal-body" id="m-gov">
+      <div class="form-group"><label>SSS Number</label><input type="text" id="f_sss" placeholder="XX-XXXXXXX-X"></div>
+      <div class="form-group"><label>Pag-IBIG Number</label><input type="text" id="f_pagibig" placeholder="XXXX-XXXX-XXXX"></div>
+      <div class="form-group"><label>PhilHealth Number</label><input type="text" id="f_philhealth" placeholder="XX-XXXXXXXXX-X"></div>
+      <div class="form-group"><label>TIN</label><input type="text" id="f_tin" placeholder="XXX-XXX-XXX-XXX"></div>
+      <div class="form-group"><label>Payroll Account</label><input type="text" id="f_payroll" placeholder="Bank — Account No."></div>
+    </div>`:''}
+
+    <div class="modal-body" id="m-cip">
+      <div class="form-group"><label>CIP Status</label><select id="f_cip_status"><option value="">— Select —</option><option value="Pending">Pending</option><option value="Compliant">Compliant</option><option value="Non-Compliant">Non-Compliant</option><option value="Waived">Waived</option></select></div>
+      <div class="section-title">Issued Equipment</div>
+      <div class="form-group full"><div style="display:flex;gap:6px"><input type="text" id="cip_item" placeholder="Item Name (e.g. Laptop)" style="flex:2"><input type="text" id="cip_sn" placeholder="Serial Number" style="flex:2"><button class="btn" type="button" onclick="addCIP()" style="flex:1;justify-content:center">+ Add</button></div></div>
+      <div class="liability-list" id="cipList"></div>
+    </div>
+
+    ${!isIntern?`<div class="modal-body" id="m-benefits">
+      <p style="grid-column:span 2;font-size:12.5px;color:var(--text-muted)">Auto-calculated from Basic Salary using 2026 PH contribution tables.</p>
+      <table class="benefits-table"><thead><tr><th>Benefit</th><th style="text-align:right">Employee Share</th><th style="text-align:right">Employer Share</th></tr></thead><tbody id="benefitsTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px">Enter salary in Company tab first.</td></tr></tbody></table>
+    </div>`:''}
+
+    ${!isIntern?`<div class="modal-body" id="m-liabilities">
+      <div class="section-title">Add New Liability</div>
+      <div class="form-group"><label>Status</label><select id="l_status"><option value="Active">Active</option><option value="Closed">Closed</option></select></div>
+      <div class="form-group"><label>Type</label><select id="l_type"><option value="">— Select —</option><option value="Cash Advance">Cash Advance</option><option value="SSS Salary Loan">SSS Salary Loan</option><option value="SSS Calamity Loan">SSS Calamity Loan</option><option value="Pag-IBIG Multi-Purpose Loan">Pag-IBIG Multi-Purpose Loan</option><option value="Loan">Loan</option><option value="Deduction">Deduction</option><option value="Advance">Advance</option></select></div>
+      <div class="form-group"><label>Submission Date</label><input type="date" id="l_subdate"></div>
+      <div class="form-group"><label>Total Amount</label><input type="number" id="l_amount" placeholder="e.g. 5000"></div>
+      <div class="form-group"><label>Monthly Amortization</label><input type="number" id="l_amort" placeholder="e.g. 1000"></div>
+      <div class="form-group"><label>Start Date</label><input type="date" id="l_start"></div>
+      <div class="form-group"><label>End Date</label><input type="date" id="l_end"></div>
+      <div class="form-group"><label>Remaining Balance</label><input type="number" id="l_balance" placeholder="e.g. 5000"></div>
+      <div class="form-group"><label>ATD Link</label><input type="text" id="l_atd" placeholder="https://..."></div>
+      <div class="form-group"><label>Description / Notes</label><input type="text" id="l_desc" placeholder="Additional notes"></div>
+      <input type="hidden" id="l_notes">
+      <div class="form-group full"><button class="btn primary" onclick="addLiability()" id="addLiabilityBtn">+ Add Liability</button></div>
+      <div class="section-title">Existing Liabilities</div>
+      <div class="liability-list" id="liabilityList"><p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p></div>
+    </div>`:''}
+  `;
 }
 
-function toggle201(id){
-  const m=document.getElementById('menu-'+id);
-  document.querySelectorAll('.file-dropdown-menu.open').forEach(x=>{if(x!==m)x.classList.remove('open')});
-  m.classList.toggle('open');
+function updateBonusPreview(){
+  const hrs=document.getElementById('f_total_hours')?.value;
+  const bonus=getCompletionBonus(hrs);
+  const preview=document.getElementById('f_bonus_preview');
+  if(preview)preview.value=bonus?fmtPeso(bonus):'— (no match)';
 }
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.file-dropdown-wrap'))
-    document.querySelectorAll('.file-dropdown-menu.open').forEach(m=>m.classList.remove('open'));
-});
+
+function switchModalTab(tabId,btn){
+  document.querySelectorAll('.modal-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.modal-body').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(tabId);if(el)el.classList.add('active');
+  if(tabId==='m-benefits')renderBenefitsPreview();
+  if(tabId==='m-liabilities'&&currentEmpId)loadLiabilities(currentEmpId);
+}
 
 function openModal(index=-1){
+  buildModalPanels();
   document.getElementById('empModal').classList.add('active');
-  document.querySelectorAll('.modal-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  document.querySelectorAll('.modal-body').forEach((b,i)=>b.classList.toggle('active',i===0));
-  document.getElementById('liabilityList').innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>';
-
-  const currentSupId=index>=0?employeesData[index].supervisor_id:null;
-  populateSupervisorDropdown(currentSupId);
-
+  loadDropdowns();
+  document.getElementById('liabilityList')&&(document.getElementById('liabilityList').innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>');
   const isArchive=currentEmpFilter==='archive';
-  
-  if(index>=0){
-    const e=employeesData[index];
-    currentEmpId=e.id;
-    
-    document.getElementById('modalTitle').innerText=isArchive?'View Archived Record':currentEmpFilter==='intern'?'Edit Intern':'Edit Employee';
-    document.getElementById('saveBtn').style.display=isArchive?'none':'inline-flex';
-    
-    // Load Dynamic Arrays
-    currentDependents = safeParse(e.dependents);
-    currentCIP = safeParse(e.cip_notes);
-    renderDependents();
-    renderCIP();
+  const isIntern=currentEmpFilter==='intern';
 
+  if(index>=0){
+    const e=employeesData[index];currentEmpId=e.id;
+    document.getElementById('modalTitle').innerText=isArchive?'View Archived Record':isIntern?'Edit Intern':'Edit Employee';
+    document.getElementById('saveBtn').style.display=isArchive?'none':'inline-flex';
+    currentDependents=safeParse(e.dependents);currentCIP=safeParse(e.cip_notes);
+    renderDependents();renderCIP();
+    populateSupervisorDropdown(e.supervisor_id);
     const s=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val??'';};
     s('f_id',e.id);s('f_pin',e.pin);s('f_fn',e.fn);s('f_mn',e.mn);s('f_ln',e.ln);
     s('f_email',e.email);s('f_personal_email',e.personal_email);s('f_contact',e.contact);
@@ -1088,95 +921,89 @@ function openModal(index=-1){
     s('f_address',e.address);s('f_emergency_contact',e.emergency_contact);
     s('f_dep_id',e.department_name);s('f_role_id',e.role_name);s('f_status',e.status);
     s('f_start_date',e.start_date?e.start_date.split('T')[0]:'');
+    s('f_end_date',e.end_date?e.end_date.split('T')[0]:'');
     s('f_regularization_date',e.regularization_date?e.regularization_date.split('T')[0]:'');
     s('f_salary',e.salary);s('f_de_minimis',e.de_minimis);s('f_allowance',e.allowance);
     s('f_sil_balance',e.sil_balance);s('f_parental_leave',e.parental_leave_balance);
     s('f_sss',e.sss);s('f_pagibig',e.pagibig);s('f_philhealth',e.philhealth);
-    s('f_tin',e.tin);s('f_payroll',e.payroll);
-    s('f_cip_status',e.cip_status);
+    s('f_tin',e.tin);s('f_payroll',e.payroll);s('f_cip_status',e.cip_status);
+    s('f_university',e.university);s('f_ojt_advisor',e.ojt_advisor);
+    s('f_ojt_advisor_number',e.ojt_advisor_number);s('f_ojt_advisor_email',e.ojt_advisor_email);
+    s('f_total_hours',e.total_hours);updateBonusPreview();
   }else{
-    currentEmpId=null;
-    document.getElementById('modalTitle').innerText=currentEmpFilter==='intern'?'Add New Intern':'Add New Employee';
-    document.getElementById('f_id').value='';
-    document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea').forEach(el=>el.value='');
-    document.getElementById('f_sil_balance').value='0';
+    currentEmpId=null;currentDependents=[];currentCIP=[];
+    document.getElementById('modalTitle').innerText=isIntern?'Add New Intern':'Add New Employee';
     document.getElementById('saveBtn').style.display='inline-flex';
-    
-    currentDependents = [];
-    currentCIP = [];
-    renderDependents();
-    renderCIP();
+    document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea').forEach(el=>el.value='');
+    const slb=document.getElementById('f_sil_balance');if(slb)slb.value='0';
+    renderDependents();renderCIP();
+    populateSupervisorDropdown(null);
   }
 }
-function closeModal(){
-  document.getElementById('empModal').classList.remove('active');
-  document.getElementById('newRoleRow').classList.remove('show');
-  currentEmpId=null;
-}
+
+function closeModal(){document.getElementById('empModal').classList.remove('active');document.getElementById('newRoleRow')?.classList.remove('show');currentEmpId=null;}
 
 async function saveEmployee(){
   const g=id=>document.getElementById(id)?.value||'';
   const fn=g('f_fn').trim(),ln=g('f_ln').trim(),pin=g('f_pin').trim();
-  if(!fn||!ln){showToast('First Name and Last Name are required.','error');switchModalTab('m-personal',document.querySelectorAll('.modal-tab-btn')[0]);return;}
-  if(!pin){showToast('PIN is required.','error');switchModalTab('m-personal',document.querySelectorAll('.modal-tab-btn')[0]);return;}
-  const btn=document.getElementById('saveBtn');
-  btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
+  if(!fn||!ln){showToast('First Name and Last Name are required.','error');return;}
+  if(!pin){showToast('PIN is required.','error');return;}
+  const btn=document.getElementById('saveBtn');btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
   const rawId=g('f_id'),supId=g('f_supervisor_id');
-  
   const payload={
     id:rawId?Number(rawId):null,pin,fn,mn:g('f_mn'),ln,
     email:g('f_email')||null,personal_email:g('f_personal_email')||null,
     contact:g('f_contact'),birthdate:g('f_birthdate')||null,
     gender:g('f_gender'),civil_status:g('f_civil_status'),
-    
-    // Serialized Arrays
-    dependents: JSON.stringify(currentDependents),
-    cip_notes: JSON.stringify(currentCIP),
-    
+    dependents:JSON.stringify(currentDependents),
+    cip_notes:JSON.stringify(currentCIP),
     address:g('f_address'),emergency_contact:g('f_emergency_contact'),
     dep_id:g('f_dep_id'),role_id:g('f_role_id'),status:g('f_status'),
-    start_date:g('f_start_date')||null,regularization_date:g('f_regularization_date')||null,
-    salary:Number(g('f_salary'))||0,de_minimis:Number(g('f_de_minimis'))||0,
-    allowance:Number(g('f_allowance'))||0,
-    sil_balance:Number(g('f_sil_balance'))||0,
-    parental_leave_balance:Number(g('f_parental_leave'))||0,
-    sss:g('f_sss'),pagibig:g('f_pagibig'),philhealth:g('f_philhealth'),
-    tin:g('f_tin'),payroll:g('f_payroll'),
-    cip_status:g('f_cip_status'),
-    supervisor_id:supId?Number(supId):null
+    start_date:g('f_start_date')||null,end_date:g('f_end_date')||null,
+    regularization_date:g('f_regularization_date')||null,
+    salary:Number(g('f_salary'))||0,de_minimis:Number(g('f_de_minimis'))||0,allowance:Number(g('f_allowance'))||0,
+    sil_balance:Number(g('f_sil_balance'))||0,parental_leave_balance:Number(g('f_parental_leave'))||0,
+    sss:g('f_sss'),pagibig:g('f_pagibig'),philhealth:g('f_philhealth'),tin:g('f_tin'),payroll:g('f_payroll'),
+    cip_status:g('f_cip_status'),supervisor_id:supId?Number(supId):null,
+    university:g('f_university'),ojt_advisor:g('f_ojt_advisor'),
+    ojt_advisor_number:g('f_ojt_advisor_number'),ojt_advisor_email:g('f_ojt_advisor_email'),
+    total_hours:Number(g('f_total_hours'))||null,
   };
-  
   try{
     const res=await fetch(rawId?URL_UPDATE:URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(res.ok){showToast(rawId?'Saved successfully!':'Added successfully!','success');closeModal();loadEmployees();}
+    if(res.ok){showToast(rawId?'Saved!':'Added!');closeModal();loadEmployees();}
     else showToast('Failed to save.','error');
-  }catch(e){showToast('Network error.','error');}
+  }catch{showToast('Network error.','error');}
   finally{btn.innerHTML='Save';btn.disabled=false;}
 }
 
 let pendingDeleteId=null;
-function deleteEmployee(id){
-  const emp=employeesData.find(e=>e.id===id||String(e.id)===String(id));
-  if(!emp)return;
-  const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||`PIN ${emp.pin}`;
-  document.getElementById('deleteEmpName').textContent=fn;
-  pendingDeleteId=Number(id);
-  document.getElementById('deleteModal').classList.add('active');
-}
-function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('active');pendingDeleteId=null}
+function deleteEmployee(id){const emp=employeesData.find(e=>String(e.id)===String(id));if(!emp)return;const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||`PIN ${emp.pin}`;document.getElementById('deleteEmpName').textContent=fn;pendingDeleteId=Number(id);document.getElementById('deleteModal').classList.add('active');}
+function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('active');pendingDeleteId=null;}
 async function confirmDelete(){
-  if(!pendingDeleteId)return;
-  const btn=document.getElementById('confirmDeleteBtn');
+  if(!pendingDeleteId)return;const btn=document.getElementById('confirmDeleteBtn');
   btn.innerHTML='<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...';btn.disabled=true;
-  try{
-    const res=await fetch(URL_DELETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pendingDeleteId})});
-    if(res.ok){showToast('Deleted!','success');closeDeleteModal();loadEmployees();}
-    else showToast('Failed to delete.','error');
-  }catch(e){showToast('Network error.','error');}
-  finally{btn.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Yes, Delete';btn.disabled=false;}
+  try{const res=await fetch(URL_DELETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:pendingDeleteId})});if(res.ok){showToast('Deleted!');closeDeleteModal();loadEmployees();}else showToast('Failed.','error');}
+  catch{showToast('Network error.','error');}
+  finally{btn.innerHTML='Yes, Delete';btn.disabled=false;}
 }
 
-window.onload=async()=>{await loadDropdowns();await loadEmployees();};
+// ── Invite ──
+function openInviteModal(){document.getElementById('inviteModal').classList.add('active');document.getElementById('inviteResult').style.display='none';document.getElementById('generateLinkBtn').style.display='flex';document.getElementById('generatedLink').value='';}
+function closeInviteModal(){document.getElementById('inviteModal').classList.remove('active');}
+async function generateInviteToken(){
+  const btn=document.getElementById('generateLinkBtn');btn.innerHTML='<span class="spinner"></span> Generating...';btn.disabled=true;
+  try{const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});const data=await res.json();if(data.token){document.getElementById('generatedLink').value=`${ONBOARDING_BASE_URL}?token=${data.token}`;document.getElementById('inviteResult').style.display='flex';btn.style.display='none';showToast('Link generated!');}else showToast('Failed.','error');}
+  catch{showToast('Network error.','error');}
+  finally{btn.innerHTML='Generate Link';btn.disabled=false;}
+}
+function copyInviteLink(){document.getElementById('generatedLink').select();document.execCommand('copy');showToast('Copied!');}
+
+window.onload=async()=>{
+  buildTabBar();
+  buildModalPanels();
+  await loadEmployees();
+};
 </script>
 </body>
 </html>
