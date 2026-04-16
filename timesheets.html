@@ -353,25 +353,18 @@
     try {
       const res = await fetch(N8N_EMPLOYEES_URL);
       const raw = await res.json();
-      
-      // Clean up the n8n data
       let employees = Array.isArray(raw) ? raw.map(i => i.json ?? i) : [];
-      
-      // Build the full name (Last, First) and sort alphabetically
       let namesList = employees.map(emp => {
         let ln = (emp.ln || '').trim();
         let fn = (emp.fn || '').trim();
         return ln && fn ? `${ln}, ${fn}` : (ln || fn || `PIN ${emp.pin}`);
       }).filter(Boolean).sort((a, b) => a.localeCompare(b));
-
-      // Populate dropdown
       empSel.innerHTML = '<option value="">— Select Employee —</option>';
       namesList.forEach(name => {
         const opt = document.createElement('option');
         opt.value = name; opt.textContent = name;
         empSel.appendChild(opt);
       });
-      
     } catch (err) {
       console.error('Failed to fetch employees:', err);
       empSel.innerHTML = '<option value="">— Failed to load employees —</option>';
@@ -404,18 +397,22 @@
     return parseFloat(v).toFixed(2);
   }
   function fmtTime(v) { return (!v || v === '') ? '<span class="no-val">—</span>' : v; }
+
   function fmtHours(str) {
-    if (!str || str === '0:00:00' || str === '0' || str === '') return '<span class="no-val">—</span>';
+    if (!str || str === '0:00:00' || str === '0:00' || str === '0' || str === '') return '<span class="no-val">—</span>';
     if (String(str).startsWith('-')) return '<span style="color:#dc2626">' + str + '</span>';
     const parts = String(str).split(':');
     return parts[0] + ':' + (parts[1] || '00');
   }
+
   function timeStrToHours(str) {
-    if (!str || str === '0:00:00' || str === '-8:00:00') return 0;
+    if (!str || str === '0:00:00' || str === '0:00' || str === '-8:00:00') return 0;
+    if (String(str).startsWith('-')) return 0; // don't count negative hours
     const parts = String(str).split(':');
     if (parts.length < 2) return parseFloat(str) || 0;
     return (parseInt(parts[0]) || 0) + (parseInt(parts[1]) || 0) / 60;
   }
+
   function parseTimeToMinutes(t) {
     if (!t || t === '—' || t === '') return null;
     let isPM = t.toUpperCase().includes('PM');
@@ -428,17 +425,44 @@
     if (isAM && h === 12) h = 0;
     return (h * 60) + m;
   }
+
+  // ── FIX 1: calculateAccurateHours ──
+  // Only recalculate from time fields if all 4 values are present AND
+  // the break duration is valid (positive and under 4 hours).
+  // Otherwise fall back to the sheet's pre-computed hours value.
   function calculateAccurateHours(tIn, bIn, bOut, tOut, sheetHoursStr) {
-    const i = parseTimeToMinutes(tIn), bi = parseTimeToMinutes(bIn),
-          bo = parseTimeToMinutes(bOut), o = parseTimeToMinutes(tOut);
+    const i  = parseTimeToMinutes(tIn);
+    const o  = parseTimeToMinutes(tOut);
+    const bi = parseTimeToMinutes(bIn);
+    const bo = parseTimeToMinutes(bOut);
+
     if (i !== null && o !== null) {
       let totalMins = o - i;
-      if (totalMins < 0) totalMins += 24 * 60;
-      if (bi !== null && bo !== null) { let bMins = bo - bi; if (bMins < 0) bMins += 24 * 60; totalMins -= bMins; }
-      return `${Math.floor(totalMins / 60)}:${String(Math.round(totalMins % 60)).padStart(2, '0')}`;
+      if (totalMins < 0) totalMins += 24 * 60; // overnight shift
+
+      // Only subtract break if BOTH break times exist AND break duration is valid
+      if (bi !== null && bo !== null) {
+        let bMins = bo - bi;
+        if (bMins < 0) bMins += 24 * 60;
+        // Guard: only subtract if break is a sensible duration (1 min – 4 hrs)
+        if (bMins > 0 && bMins <= 240) {
+          totalMins -= bMins;
+        }
+        // If break duration is invalid/reversed, skip subtraction and fall back
+        else if (bMins <= 0 || bMins > 240) {
+          return sheetHoursStr || '0:00';
+        }
+      }
+
+      if (totalMins > 0) {
+        return `${Math.floor(totalMins / 60)}:${String(Math.round(totalMins % 60)).padStart(2, '0')}`;
+      }
     }
-    return sheetHoursStr;
+
+    // Fall back to the sheet's pre-computed value
+    return sheetHoursStr || '0:00';
   }
+
   function statusBadge(s) {
     if (!s) return '<span class="no-val">—</span>';
     const sl = s.toLowerCase();
@@ -446,11 +470,13 @@
     if (sl === 'rejected') return '<span class="badge badge-rejected">' + s + '</span>';
     return '<span class="badge badge-pending">' + s + '</span>';
   }
+
   function getDaysInMonth(year, month) {
     const days = [], count = new Date(year, month, 0).getDate();
     for (let d = 1; d <= count; d++) days.push(new Date(year, month - 1, d));
     return days;
   }
+
   function markAsEdited(cell) {
     cell.closest('tr').classList.add('edited');
     document.getElementById('saveBtn').style.display = 'flex';
@@ -487,21 +513,48 @@
       const r     = byLabel[label] || {};
       const day   = DAYS[date.getDay()];
       const weekend = date.getDay() === 0 || date.getDay() === 6;
-      const getV  = (key) => r._lower ? (r._lower[key.toLowerCase()] || '') : '';
-      const timeIn = getV('time in'), breakIn = getV('break in'),
-            breakOut = getV('break out'), timeOut = getV('time out');
-      let hoursStr = calculateAccurateHours(timeIn, breakIn, breakOut, timeOut, getV('hours'));
+
+      // ── FIX 2: expanded key lookups for all columns ──
+      const getV = (key) => {
+        if (!r._lower) return '';
+        const val = r._lower[key.toLowerCase()];
+        return (val === null || val === undefined) ? '' : String(val).trim();
+      };
+
+      const timeIn   = getV('time in');
+      const breakIn  = getV('break in');
+      const breakOut = getV('break out');
+      const timeOut  = getV('time out');
+
+      // Trust the sheet's hours value; only recalculate if break times are valid
+      const sheetHours = getV('hours');
+      let hoursStr = calculateAccurateHours(timeIn, breakIn, breakOut, timeOut, sheetHours);
+
       const absent   = parseFloat(getV('absent') || 0);
-      const late     = parseFloat(getV('late / undertime') || getV('late') || 0);
-      const nightDif = parseFloat(getV('night dif') || getV('night diff') || 0);
-      const otHol    = parseFloat(getV('ot holiday') || getV('ot hol') || 0);
-      const otSHol   = parseFloat(getV('ot s holiday') || getV('ot s.hol') || 0);
-      const otReg    = parseFloat(getV('ot reg') || getV('ot regular') || 0);
-      const otRest   = parseFloat(getV('ot rest') || 0);
-      const notes    = getV('notes');
-      const trfLink  = getV('trf') || getV('link') || '';
-      const status   = getV('status');
+
+      // ── FIX 2: try all known variations of the late/undertime column key ──
+      const late = parseFloat(
+        getV('late / undertime') ||
+        getV('late / ut') ||
+        getV('late/undertime') ||
+        getV('late/ut') ||
+        getV('undertime') ||
+        getV('late') ||
+        0
+      );
+
+      const nightDif = parseFloat(
+        getV('night dif') || getV('night diff') || getV('nightdif') || 0
+      );
+      const otHol  = parseFloat(getV('ot holiday') || getV('ot hol') || 0);
+      const otSHol = parseFloat(getV('ot s holiday') || getV('ot s.hol') || getV('ot special holiday') || 0);
+      const otReg  = parseFloat(getV('ot reg') || getV('ot regular') || 0);
+      const otRest = parseFloat(getV('ot rest') || getV('ot restday') || 0);
+      const notes   = getV('notes');
+      const trfLink = getV('trf') || getV('link') || '';
+      const status  = getV('status');
       const sanction = getV('sanction');
+
       const hoursNum = timeStrToHours(hoursStr);
 
       if (date.getDate() <= 15) { h1H+=hoursNum;h1A+=absent;h1L+=late;h1O+=otReg;h1Oh+=otHol;h1N+=nightDif; }
@@ -628,10 +681,24 @@
       employee, month, year,
       updates: editedRows.map(row => {
         const getTxt = (i) => row.cells[i].innerText.replace('—','').trim();
-        return { date:row.getAttribute('data-date'),timeIn:getTxt(2),breakIn:getTxt(3),
-          breakOut:getTxt(4),timeOut:getTxt(5),hours:getTxt(6),absent:getTxt(7),
-          late:getTxt(8),nightDif:getTxt(9),otHol:getTxt(10),otSHol:getTxt(11),
-          otReg:getTxt(12),otRest:getTxt(13),notes:getTxt(14),status:getTxt(15),sanction:getTxt(16) };
+        return {
+          date:     row.getAttribute('data-date'),
+          timeIn:   getTxt(2),
+          breakIn:  getTxt(3),
+          breakOut: getTxt(4),
+          timeOut:  getTxt(5),
+          hours:    getTxt(6),
+          absent:   getTxt(7),
+          late:     getTxt(8),
+          nightDif: getTxt(9),
+          otHol:    getTxt(10),
+          otSHol:   getTxt(11),
+          otReg:    getTxt(12),
+          otRest:   getTxt(13),
+          notes:    getTxt(14),
+          status:   getTxt(15),
+          sanction: getTxt(16)
+        };
       })
     };
     try {
