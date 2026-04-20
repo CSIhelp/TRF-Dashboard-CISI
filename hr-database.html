@@ -1,182 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrowdSource – HR Database</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
-  const _supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
-  const _supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
-  async function checkAuth() {
-    const { data: { session }, error } = await _supabase.auth.getSession();
-    if (!session || error) window.location.replace('index.html');
-  }
-  checkAuth();
-  async function logOut() { await _supabase.auth.signOut(); window.location.replace('index.html'); }
-</script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f4f5f7;--sidebar-bg:#fff;--topbar-bg:#1a1a2e;--accent:#1565c0;--accent-light:#e8f0fe;--tab:#2196f3;--text-primary:#1a1a2e;--text-secondary:#6b7280;--text-muted:#9ca3af;--border:#e5e7eb;--row-hover:#f9fafb;--radius:10px;--shadow-sm:0 1px 3px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1)}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-.topbar{background:var(--topbar-bg);display:flex;align-items:center;padding:0 28px;height:70px;gap:20px;flex-shrink:0}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-.logo-img{height:40px;width:auto;object-fit:contain}
-.logo-text{font-size:15px;font-weight:600;color:#fff;letter-spacing:.5px}
-.logo-text span{color:#64b5f6}
-.topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
-.topbar-user-name{text-align:right;color:#fff;line-height:1.3}
-.topbar-user-name strong{display:block;font-size:13.5px;font-weight:600}
-.topbar-user-name span{font-size:12px;color:rgba(255,255,255,.55)}
-.avatar{width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8)}
-.layout{display:flex;flex:1;overflow:hidden}
-.sidebar{width:210px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;flex-shrink:0}
-.nav-group{display:flex;flex-direction:column;width:100%}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
-.nav-item:hover{background:var(--accent-light);color:var(--accent)}
-.nav-item.active{color:var(--accent);background:var(--accent-light);font-weight:600}
-.nav-item svg{flex-shrink:0;opacity:.7}
-.nav-item.active svg{opacity:1}
-.nav-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s;color:var(--text-muted)}
-.nav-item.open .arrow{transform:rotate(180deg)}
-.sub-nav{display:none;flex-direction:column;background:#fafbfc;border-bottom:1px solid var(--border)}
-.sub-nav.open{display:flex}
-.sub-nav-item{padding:10px 20px 10px 47px;font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;cursor:pointer}
-.sub-nav-item:hover{color:var(--accent);background:var(--accent-light)}
-.sub-nav-item.active{color:var(--accent);font-weight:600;background:var(--accent-light);border-left-color:var(--accent)}
-.nav-divider{height:1px;background:var(--border);margin:12px 16px}
-.nav-bottom{margin-top:auto}
-.main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
-.main::-webkit-scrollbar{width:6px}
-.main::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
-.page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.page-title{font-size:20px;font-weight:700}
-.page-subtitle{font-size:13px;color:var(--text-muted);margin-top:2px}
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.search-input{border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-family:inherit;font-size:13.5px;width:220px;outline:none;transition:border .2s}
-.search-input:focus{border-color:var(--accent)}
-.btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--text-primary);font-family:inherit;white-space:nowrap}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{background:#0f4c92}
-.btn.danger{background:#fee2e2;color:#dc2626;border-color:#fecaca}
-.btn.danger:hover{background:#fca5a5}
-.db-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
-.tab-bar{display:flex;align-items:center;gap:8px;padding:14px 20px 0;border-bottom:1px solid var(--border);background:#fff;flex-wrap:wrap}
-.tab-btn{padding:8px 18px;border-radius:20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
-.tab-btn:hover{background:#bbdefb}
-.tab-btn.active{background:var(--tab);color:#fff}
-.archive-banner{background:#fff8e1;border-bottom:1px solid #fde68a;padding:10px 20px;font-size:12.5px;color:#92400e;display:none;align-items:center;gap:8px}
-.archive-banner.show{display:flex}
-.table-scroll{overflow-x:auto}
-.table-scroll::-webkit-scrollbar{height:6px}
-.table-scroll::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
-table{width:100%;border-collapse:collapse;text-align:left;min-width:600px}
-th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
-td{padding:11px 14px;font-size:12.5px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--row-hover)}
-tr.grab-row{cursor:grab}
-tr.grab-row:active{cursor:grabbing}
-.emp-name{font-weight:600;color:var(--text-primary)}
-.emp-pin{font-family:'DM Mono',monospace;font-size:11px;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:var(--text-muted)}
-.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
-.badge-regular{background:#e6f9f0;color:#15803d}
-.badge-probationary{background:#fff8e1;color:#b45309}
-.badge-resigned,.badge-terminated{background:#fef2f2;color:#dc2626}
-.badge-active{background:#e6f9f0;color:#15803d}
-.badge-inactive{background:#f3f4f6;color:#6b7280}
-.badge-completed{background:#dbeafe;color:#1e40af}
-.badge-ongoing{background:#fef9c3;color:#854d0e}
-td.actions-cell{overflow:visible;max-width:none}
-.actions{display:flex;gap:5px}
-.actions .btn{padding:5px 10px;font-size:11.5px}
-.pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:#fafbfc;flex-wrap:wrap;gap:10px}
-.pagination-info{font-size:12.5px;color:var(--text-muted)}
-.pagination-controls{display:flex;align-items:center;gap:4px}
-.page-btn{min-width:32px;height:32px;padding:0 8px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
-.page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-.page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.page-btn:disabled{opacity:.4;cursor:not-allowed}
-.page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrowdSource – HR Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
+    const _supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
+    const _supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    async function checkAuth() {
+      const { data: { session }, error } = await _supabase.auth.getSession();
+      if (!session || error) window.location.replace('index.html');
+    }
+    checkAuth();
+    async function logOut() { await _supabase.auth.signOut(); window.location.replace('index.html'); }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f4f5f7;--sidebar-bg:#fff;--topbar-bg:#1a1a2e;--accent:#1565c0;--accent-light:#e8f0fe;--tab:#2196f3;--text-primary:#1a1a2e;--text-secondary:#6b7280;--text-muted:#9ca3af;--border:#e5e7eb;--row-hover:#f9fafb;--radius:10px;--shadow-sm:0 1px 3px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1)}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    .topbar{background:var(--topbar-bg);display:flex;align-items:center;padding:0 28px;height:70px;gap:20px;flex-shrink:0}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-img{height:40px;width:auto;object-fit:contain}
+    .logo-text{font-size:15px;font-weight:600;color:#fff;letter-spacing:.5px}
+    .logo-text span{color:#64b5f6}
+    .topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .topbar-user-name{text-align:right;color:#fff;line-height:1.3}
+    .topbar-user-name strong{display:block;font-size:13.5px;font-weight:600}
+    .topbar-user-name span{font-size:12px;color:rgba(255,255,255,.55)}
+    .avatar{width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8)}
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:210px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;flex-shrink:0}
+    .nav-group{display:flex;flex-direction:column;width:100%}
+    .nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+    .nav-item:hover{background:var(--accent-light);color:var(--accent)}
+    .nav-item.active{color:var(--accent);background:var(--accent-light);font-weight:600}
+    .nav-item svg{flex-shrink:0;opacity:.7}
+    .nav-item.active svg{opacity:1}
+    .nav-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s;color:var(--text-muted)}
+    .nav-item.open .arrow{transform:rotate(180deg)}
+    .sub-nav{display:none;flex-direction:column;background:#fafbfc;border-bottom:1px solid var(--border)}
+    .sub-nav.open{display:flex}
+    .sub-nav-item{padding:10px 20px 10px 47px;font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;cursor:pointer}
+    .sub-nav-item:hover{color:var(--accent);background:var(--accent-light)}
+    .sub-nav-item.active{color:var(--accent);font-weight:600;background:var(--accent-light);border-left-color:var(--accent)}
+    .nav-divider{height:1px;background:var(--border);margin:12px 16px}
+    .nav-bottom{margin-top:auto}
+    .main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+    .main::-webkit-scrollbar{width:6px}
+    .main::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .page-title{font-size:20px;font-weight:700}
+    .page-subtitle{font-size:13px;color:var(--text-muted);margin-top:2px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .search-input{border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-family:inherit;font-size:13.5px;width:220px;outline:none;transition:border .2s}
+    .search-input:focus{border-color:var(--accent)}
+    .btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--text-primary);font-family:inherit;white-space:nowrap}
+    .btn:hover{border-color:var(--accent);color:var(--accent)}
+    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn.primary:hover{background:#0f4c92}
+    .btn.danger{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+    .btn.danger:hover{background:#fca5a5}
+    .db-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
+    .tab-bar{display:flex;align-items:center;gap:8px;padding:14px 20px 0;border-bottom:1px solid var(--border);background:#fff;flex-wrap:wrap}
+    .tab-btn{padding:8px 18px;border-radius:20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
+    .tab-btn:hover{background:#bbdefb}
+    .tab-btn.active{background:var(--tab);color:#fff}
+    .archive-banner{background:#fff8e1;border-bottom:1px solid #fde68a;padding:10px 20px;font-size:12.5px;color:#92400e;display:none;align-items:center;gap:8px}
+    .archive-banner.show{display:flex}
+    .table-scroll{overflow-x:auto}
+    .table-scroll::-webkit-scrollbar{height:6px}
+    .table-scroll::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
+    table{width:100%;border-collapse:collapse;text-align:left;min-width:600px}
+    th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+    td{padding:11px 14px;font-size:12.5px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--row-hover)}
+    tr.grab-row{cursor:grab}
+    tr.grab-row:active{cursor:grabbing}
+    .emp-name{font-weight:600;color:var(--text-primary)}
+    .emp-pin{font-family:'DM Mono',monospace;font-size:11px;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:var(--text-muted)}
+    .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+    .badge-regular{background:#e6f9f0;color:#15803d}
+    .badge-probationary{background:#fff8e1;color:#b45309}
+    .badge-resigned,.badge-terminated{background:#fef2f2;color:#dc2626}
+    .badge-active{background:#e6f9f0;color:#15803d}
+    .badge-inactive{background:#f3f4f6;color:#6b7280}
+    .badge-completed{background:#dbeafe;color:#1e40af}
+    .badge-ongoing{background:#fef9c3;color:#854d0e}
+    td.actions-cell{overflow:visible;max-width:none}
+    .actions{display:flex;gap:5px}
+    .actions .btn{padding:5px 10px;font-size:11.5px}
+    .pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:#fafbfc;flex-wrap:wrap;gap:10px}
+    .pagination-info{font-size:12.5px;color:var(--text-muted)}
+    .pagination-controls{display:flex;align-items:center;gap:4px}
+    .page-btn{min-width:32px;height:32px;padding:0 8px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
+    .page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+    .page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .page-btn:disabled{opacity:.4;cursor:not-allowed}
+    .page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
 
-/* MODAL SCROLLING FIXES */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
-.modal-overlay.active{display:flex}
-.modal{background:#fff;width:600px;max-width:92%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
-.modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.modal-header h2{font-size:16px;font-weight:700}
-.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
-.modal-tab-bar{display:flex;gap:6px;padding:14px 20px 0;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
-.modal-tab-btn{padding:7px 16px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
-.modal-tab-btn:hover{background:#bbdefb}
-.modal-tab-btn.active{background:var(--tab);color:#fff}
-#modalBodies{flex:1;overflow-y:auto;min-height:0}
-.modal-body{padding:20px;display:none;grid-template-columns:1fr 1fr;gap:16px}
-.modal-body.active{display:grid}
-.modal-footer{padding:20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:#fafbfc;flex-shrink:0}
+    /* MODAL SCROLLING FIXES */
+    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
+    .modal-overlay.active{display:flex}
+    .modal{background:#fff;width:600px;max-width:92%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+    .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+    .modal-header h2{font-size:16px;font-weight:700}
+    .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
+    .modal-tab-bar{display:flex;gap:6px;padding:14px 20px 0;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+    .modal-tab-btn{padding:7px 16px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#e3f2fd;color:#1565c0;transition:all .15s;margin-bottom:10px}
+    .modal-tab-btn:hover{background:#bbdefb}
+    .modal-tab-btn.active{background:var(--tab);color:#fff}
+    #modalBodies{flex:1;overflow-y:auto;min-height:0}
+    .modal-body{padding:20px;display:none;grid-template-columns:1fr 1fr;gap:16px}
+    .modal-body.active{display:grid}
+    .modal-footer{padding:20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:#fafbfc;flex-shrink:0}
 
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-group.full{grid-column:span 2}
-.form-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
-.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:#fff;transition:border .2s;width:100%}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
-.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
-.form-group textarea{resize:vertical;min-height:72px}
-.role-wrap{display:flex;gap:6px}
-.role-wrap select{flex:1}
-.role-wrap .btn{padding:9px 12px;flex-shrink:0}
-.new-role-row{display:none;gap:6px;margin-top:6px}
-.new-role-row.show{display:flex}
-.new-role-row input{flex:1}
-.benefits-table{width:100%;border-collapse:collapse;font-size:12.5px;grid-column:span 2}
-.benefits-table th{background:#f0f8fe;color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
-.benefits-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
-.benefits-table tr:last-child td{border-bottom:none}
-.benefits-table .amount{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent);text-align:right}
-.section-title{grid-column:span 2;font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:1px solid var(--border);margin-top:4px}
-.liability-list{grid-column:span 2;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
-.liability-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12.5px}
-.liability-item-info strong{font-weight:600;display:block}
-.liability-item-info span{color:var(--text-muted);font-size:11.5px}
-.liability-amount{font-family:'DM Mono',monospace;font-weight:700;color:#dc2626}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:span 2}
+    .form-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+    .form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:#fff;transition:border .2s;width:100%}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+    .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
+    .form-group textarea{resize:vertical;min-height:72px}
+    .role-wrap{display:flex;gap:6px}
+    .role-wrap select{flex:1}
+    .role-wrap .btn{padding:9px 12px;flex-shrink:0}
+    .new-role-row{display:none;gap:6px;margin-top:6px}
+    .new-role-row.show{display:flex}
+    .new-role-row input{flex:1}
+    .benefits-table{width:100%;border-collapse:collapse;font-size:12.5px;grid-column:span 2}
+    .benefits-table th{background:#f0f8fe;color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+    .benefits-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+    .benefits-table tr:last-child td{border-bottom:none}
+    .benefits-table .amount{font-family:'DM Mono',monospace;font-weight:600;color:var(--accent);text-align:right}
+    .section-title{grid-column:span 2;font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:1px solid var(--border);margin-top:4px}
+    .liability-list{grid-column:span 2;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
+    .liability-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12.5px}
+    .liability-item-info strong{font-weight:600;display:block}
+    .liability-item-info span{color:var(--text-muted);font-size:11.5px}
+    .liability-amount{font-family:'DM Mono',monospace;font-weight:700;color:#dc2626}
 
-.small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
-.small-modal .modal-body{overflow-y:auto;flex:1;min-height:0}
+    .small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
+    .small-modal .modal-body{overflow-y:auto;flex:1;min-height:0}
 
-@keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-.delete-modal-icon{width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-.delete-modal-body{padding:28px 28px 20px;text-align:center}
-.delete-modal-title{font-size:16px;font-weight:700;margin-bottom:10px}
-.delete-modal-name{font-size:14px;font-weight:600;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px 14px;display:inline-block;margin-bottom:12px}
-.delete-modal-desc{font-size:13px;color:var(--text-muted);line-height:1.6}
-.delete-modal-footer{padding:16px 28px 24px;display:flex;gap:10px}
-.delete-modal-footer .btn{flex:1;justify-content:center;padding:11px 14px;font-size:13.5px}
-.btn.confirm-delete{background:#dc2626;color:#fff;border-color:#dc2626}
-.btn.confirm-delete:hover{background:#b91c1c}
-.file-dropdown-wrap{position:relative;display:inline-block}
-.file-dropdown-btn{background:#e0e0e0;color:#333;border:none;border-radius:6px;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.file-dropdown-btn:hover{background:#bdbdbd}
-.file-dropdown-menu{display:none;position:absolute;top:100%;left:0;z-index:10;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-lg);min-width:180px;padding:6px 0}
-.file-dropdown-menu.open{display:block}
-.file-dropdown-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .12s}
-.file-dropdown-item:hover{background:var(--accent-light);color:var(--accent)}
-.file-dropdown-item svg{flex-shrink:0;color:var(--text-muted)}
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .35s ease,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast.success{background:#16a34a}
-.toast.error{background:#dc2626}
-.req-star{color:#dc2626;margin-left:3px}
-/* Intern tracker badge */
-.tracker-pill{display:inline-flex;align-items:center;gap:4px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#0369a1}
-.progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:6px;min-width:80px;overflow:hidden}
-.progress-bar{height:6px;border-radius:4px;background:var(--accent);transition:width .3s}
-</style>
+    @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+    .delete-modal-icon{width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+    .delete-modal-body{padding:28px 28px 20px;text-align:center}
+    .delete-modal-title{font-size:16px;font-weight:700;margin-bottom:10px}
+    .delete-modal-name{font-size:14px;font-weight:600;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px 14px;display:inline-block;margin-bottom:12px}
+    .delete-modal-desc{font-size:13px;color:var(--text-muted);line-height:1.6}
+    .delete-modal-footer{padding:16px 28px 24px;display:flex;gap:10px}
+    .delete-modal-footer .btn{flex:1;justify-content:center;padding:11px 14px;font-size:13.5px}
+    .btn.confirm-delete{background:#dc2626;color:#fff;border-color:#dc2626}
+    .btn.confirm-delete:hover{background:#b91c1c}
+    .file-dropdown-wrap{position:relative;display:inline-block}
+    .file-dropdown-btn{background:#e0e0e0;color:#333;border:none;border-radius:6px;padding:6px 14px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+    .file-dropdown-btn:hover{background:#bdbdbd}
+    .file-dropdown-menu{display:none;position:absolute;top:100%;left:0;z-index:10;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-lg);min-width:180px;padding:6px 0}
+    .file-dropdown-menu.open{display:block}
+    .file-dropdown-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .12s}
+    .file-dropdown-item:hover{background:var(--accent-light);color:var(--accent)}
+    .file-dropdown-item svg{flex-shrink:0;color:var(--text-muted)}
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .35s ease,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .toast.success{background:#16a34a}
+    .toast.error{background:#dc2626}
+    .req-star{color:#dc2626;margin-left:3px}
+    /* Intern tracker badge */
+    .tracker-pill{display:inline-flex;align-items:center;gap:4px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#0369a1}
+    .progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:6px;min-width:80px;overflow:hidden}
+    .progress-bar{height:6px;border-radius:4px;background:var(--accent);transition:width .3s}
+  </style>
 </head>
 <body>
 
@@ -221,17 +221,19 @@ td.actions-cell{overflow:visible;max-width:none}
       <div class="controls">
         <input type="text" class="search-input" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
         <button class="btn" onclick="loadEmployees()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
+        <button class="btn" id="syncOjtBtn" style="display:none;" onclick="syncOjtHours()">
+          <span class="spinner" id="syncSpinner" style="display:none; width:12px; height:12px; margin-right:4px; border-top-color:var(--brand);"></span>
+          🔄 Sync OJT Hours
+        </button>
         <button class="btn primary" onclick="openModal()">+ Add New</button>
         <button class="btn" style="background:#1a1a2e;color:#fff;" onclick="openInviteModal()">💌 Invite New Hire</button>
       </div>
     </div>
 
     <div class="db-card">
-      <div class="tab-bar" id="mainTabBar">
-        </div>
+      <div class="tab-bar" id="mainTabBar"></div>
       <div class="archive-banner" id="archiveBanner">📁 Showing resigned/archived employees. These records are read-only.</div>
-      <div class="table-scroll" id="tableArea">
-        </div>
+      <div class="table-scroll" id="tableArea"></div>
       <div class="pagination-bar" id="paginationBar" style="display:none">
         <div style="display:flex;align-items:center;gap:10px">
           <span class="pagination-info" id="pageInfo"></span>
@@ -304,42 +306,16 @@ const URL_LIABILITIES   = 'https://primary-production-a810.up.railway.app/webhoo
 const URL_ADD_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/add-liability';
 const URL_DEL_LIABILITY = 'https://primary-production-a810.up.railway.app/webhook/delete-liability';
 const URL_GENERATE_TOKEN= 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
+const URL_SYNC_HOURS    = 'https://primary-production-a810.up.railway.app/webhook/sync-intern-hours';
 
 const currentPath = window.location.pathname.split('/');
 currentPath.pop();
 const ONBOARDING_BASE_URL = window.location.origin + currentPath.join('/') + '/employee-form.html';
 
-// Intern tracker data (paste from sheet)
-const INTERN_TRACKER = [
-  {name:'Escaño, Ruel',total:400,rendered:400.52,remaining:-0.52,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:124.4},
-  {name:'Tayao, Christopher Andrei',total:300,rendered:462.16,remaining:-162.16,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:92.4},
-  {name:'Canivel, Adrianne Bleu',total:400,rendered:403.8,remaining:-3.8,expectedEnd:'Thu Mar 19 2026',status:'COMPLETED',preTimesheet:193.8},
-  {name:'Francisco, Elisha Jean',total:500,rendered:179.78,remaining:320.22,expectedEnd:'Thu May 14 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Morales, Laiza',total:600,rendered:296.05,remaining:303.95,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Hilario, Juan Carlos',total:486,rendered:266.02,remaining:219.98,expectedEnd:'Mon Apr 27 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Tan, Gian Carlo',total:486,rendered:256.02,remaining:229.98,expectedEnd:'Tue Apr 28 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Tenefrancia, Ayra Lexi',total:486,rendered:215.98,remaining:270.02,expectedEnd:'Tue May 5 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Rodil, Marco Elijah',total:486,rendered:184,remaining:302,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Alberto, Christian Joshua',total:400,rendered:63.92,remaining:336.08,expectedEnd:'Mon May 18 2026',status:'ONGOING',preTimesheet:0},
-  {name:'Dingle, Skye Aynjel',total:400,rendered:102.03,remaining:297.97,expectedEnd:'Mon May 11 2026',status:'ONGOING',preTimesheet:0},
-];
-
-const COMPLETION_BONUS = [
-  {hours:300,bonus:3000},{hours:400,bonus:4000},{hours:450,bonus:4500},{hours:500,bonus:5000},{hours:600,bonus:6000}
-];
-
-function getCompletionBonus(totalHours) {
-  const match = COMPLETION_BONUS.find(b => b.hours === Number(totalHours));
-  return match ? match.bonus : 0;
-}
-
-function getInternData(empName) {
-  if (!empName) return null;
-  const norm = empName.toLowerCase().replace(/\s+/g, '');
-  return INTERN_TRACKER.find(t => {
-    const tn = t.name.toLowerCase().replace(/\s+/g, '');
-    return norm.includes(tn.split(',')[0]) || tn.includes(norm.split(' ')[0]);
-  }) || null;
+function getCompletionBonus(hours) {
+  const validHours = Number(hours) || 0;
+  const days = validHours / 8;
+  return days * 80;
 }
 
 // ── State ──
@@ -396,10 +372,10 @@ function tableHead(id) {
       ? '<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Civil Status</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>University</th><th>OJT Advisor</th><th>Advisor No.</th><th>Advisor Email</th><th>Actions</th></tr></thead>'
       : '<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>',
     company: isIntern
-      ? '<thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>End Date</th><th>Completion Bonus</th><th>Supervisor</th><th>Actions</th></tr></thead>'
-      : '<thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>Supervisor</th><th>Actions</th></tr></thead>',
+      ? '<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>End Date</th><th>Completion Bonus</th><th>Supervisor</th><th>Actions</th></tr></thead>'
+      : '<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>Supervisor</th><th>Actions</th></tr></thead>',
     sil:  '<thead><tr><th>Name</th><th>Status</th><th>Position</th><th>Department</th><th>SIL Balance</th><th>Parental Leave</th><th>Actions</th></tr></thead>',
-    benefits: '<thead><tr><th>Name</th><th>Basic Salary</th><th>SSS (EE)</th><th>SSS (ER)</th><th>PhilHealth (EE)</th><th>PhilHealth (ER)</th><th>Pag-IBIG (EE)</th><th>Pag-IBIG (ER)</th><th>Total Deductions</th><th>Actions</th></tr></thead>',
+    benefits: '<thead><tr><th>Name</th><th>Basic Salary</th><th>SSS (EE)</th><th>SSS (ER)</th><th>EC (ER)</th><th>PhilHealth (EE)</th><th>PhilHealth (ER)</th><th>Pag-IBIG (EE)</th><th>Pag-IBIG (ER)</th><th>W. Tax</th><th>Total EE Deductions</th><th>Actions</th></tr></thead>',
     liabilities: '<thead><tr><th>Name</th><th>PIN</th><th>Status</th><th>Type</th><th>Submission Date</th><th>Total Amount</th><th>Monthly Amort.</th><th>Start</th><th>End</th><th>Remaining Bal.</th><th>ATD</th><th>Actions</th></tr></thead>',
     cip:  '<thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>Issued Property</th><th>Actions</th></tr></thead>',
     files:'<thead><tr><th>Name</th><th>201 File</th></tr></thead>',
@@ -408,7 +384,6 @@ function tableHead(id) {
   return heads[id] || '<thead><tr><th>Name</th><th>Actions</th></tr></thead>';
 }
 
-// ── Toast ──
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
   document.getElementById('toastIcon').textContent=type==='success'?'✅':'❌';
@@ -417,7 +392,6 @@ function showToast(msg,type='success'){
   setTimeout(()=>t.classList.remove('show'),4000);
 }
 
-// ── Sidebar ──
 function toggleNavGroup(id,btn){
   document.getElementById(id).classList.toggle('open');
   btn.classList.toggle('open');
@@ -432,6 +406,10 @@ function setEmpFilter(type,btn){
   document.getElementById('viewSubtitle').innerText=subtitles[type]||'';
   document.getElementById('pageTitle').innerText=titles[type]||'Employee Database';
   document.getElementById('archiveBanner').classList.toggle('show',type==='archive');
+  
+  const syncBtn = document.getElementById('syncOjtBtn');
+  if(syncBtn) syncBtn.style.display = type === 'intern' ? 'inline-flex' : 'none';
+  
   buildTabBar();
   buildModalPanels();
   filterTable();
@@ -450,7 +428,6 @@ function switchTab(tab,btn){
   renderTable();
 }
 
-// ── Status badges ──
 function statusBadge(s){
   if(!s)return'—';
   const sl=s.toLowerCase();
@@ -464,24 +441,39 @@ function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-
 function fmtPeso(n){return n?'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2}):'—';}
 function v(x){return x||'—'}
 
-// ── Gov't Benefits ──
+// ── Gov't Benefits & Tax Logic ──
 function calcSSS(s){const m=Math.min(Math.max(Math.floor((s-250)/500)*500+500,5000),35000);return{ee:Math.round(m*0.05*100)/100,er:Math.round(m*0.10*100)/100};}
 function calcPhilHealth(s){const t=Math.min(Math.max(s*0.05,500),5000);const sh=Math.round(t/2*100)/100;return{ee:sh,er:sh};}
 function calcPagIBIG(s){const ee=Math.min(Math.round(s*(s>1500?0.02:0.01)*100)/100,200);const er=Math.min(Math.round(s*0.02*100)/100,200);return{ee,er};}
+function calcTax(salary, totalDeductions) {
+  const taxable = Math.max(0, salary - totalDeductions);
+  if (taxable <= 20833) return 0;
+  if (taxable <= 33333) return (taxable - 20833) * 0.15;
+  if (taxable <= 66667) return 1875 + (taxable - 33333) * 0.20;
+  if (taxable <= 166667) return 8541.80 + (taxable - 66667) * 0.25;
+  if (taxable <= 666667) return 33541.80 + (taxable - 166667) * 0.30;
+  return 183541.80 + (taxable - 666667) * 0.35;
+}
+
 function renderBenefitsPreview(){
   const salary=Number(document.getElementById('f_salary')?.value)||0;
-  const sss=calcSSS(salary),ph=calcPhilHealth(salary),pi=calcPagIBIG(salary);
-  const t=sss.ee+ph.ee+pi.ee,tr=sss.er+ph.er+pi.er;
-  const fmt=n=>'₱'+n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const sss=calcSSS(salary), ph=calcPhilHealth(salary), pi=calcPagIBIG(salary);
+  const ec = { ee: 0, er: 10 };
+  const nonTaxable = sss.ee + ph.ee + pi.ee;
+  const wtax = calcTax(salary, nonTaxable);
+  const tEE = nonTaxable + wtax + ec.ee; 
+  const tER = sss.er + ph.er + pi.er + ec.er;
+  const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
   const el=document.getElementById('benefitsTableBody');
   if(!el)return;
   el.innerHTML=`<tr><td>SSS</td><td class="amount">${fmt(sss.ee)}</td><td class="amount">${fmt(sss.er)}</td></tr>
+    <tr><td>EC</td><td class="amount">${fmt(ec.ee)}</td><td class="amount">${fmt(ec.er)}</td></tr>
     <tr><td>PhilHealth</td><td class="amount">${fmt(ph.ee)}</td><td class="amount">${fmt(ph.er)}</td></tr>
     <tr><td>Pag-IBIG</td><td class="amount">${fmt(pi.ee)}</td><td class="amount">${fmt(pi.er)}</td></tr>
-    <tr style="background:#f0f8fe;font-weight:700"><td>Total</td><td class="amount">${fmt(t)}</td><td class="amount">${fmt(tr)}</td></tr>`;
+    <tr><td>Withholding Tax</td><td class="amount">${fmt(wtax)}</td><td class="amount">—</td></tr>
+    <tr style="background:#f0f8fe;font-weight:700"><td>Total</td><td class="amount">${fmt(tEE)}</td><td class="amount">${fmt(tER)}</td></tr>`;
 }
 
-// ── Custom Role ──
 function toggleNewRole(){const row=document.getElementById('newRoleRow');row.classList.toggle('show');if(row.classList.contains('show'))document.getElementById('newRoleName').focus();else document.getElementById('newRoleName').value='';}
 async function saveNewRole(){
   const name=document.getElementById('newRoleName').value.trim();if(!name)return;
@@ -491,7 +483,6 @@ async function saveNewRole(){
   }catch{showToast('Failed to add role.','error');}
 }
 
-// ── Dependents ──
 function renderDependents(){
   const list=document.getElementById('dependentsList');if(!list)return;
   if(!currentDependents.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No dependents added.</p>';return;}
@@ -500,7 +491,6 @@ function renderDependents(){
 function addDependent(){const name=document.getElementById('dep_name').value.trim();if(!name){showToast('Name required.','error');return;}currentDependents.push({name,age:document.getElementById('dep_age').value.trim(),birthdate:document.getElementById('dep_birthdate').value});['dep_name','dep_age','dep_birthdate'].forEach(id=>document.getElementById(id).value='');renderDependents();}
 function removeDependent(idx){currentDependents.splice(idx,1);renderDependents();}
 
-// ── CIP Items ──
 function renderCIP(){
   const list=document.getElementById('cipList');if(!list)return;
   if(!currentCIP.length){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No equipment issued.</p>';return;}
@@ -509,7 +499,6 @@ function renderCIP(){
 function addCIP(){const item=document.getElementById('cip_item').value.trim();if(!item){showToast('Item name required.','error');return;}currentCIP.push({item,sn:document.getElementById('cip_sn').value.trim()});['cip_item','cip_sn'].forEach(id=>document.getElementById(id).value='');renderCIP();}
 function removeCIP(idx){currentCIP.splice(idx,1);renderCIP();}
 
-// ── Liabilities ──
 async function loadLiabilities(empId){
   const list=document.getElementById('liabilityList');if(!list)return;
   if(!empId){list.innerHTML='<p style="color:var(--text-muted);font-size:12.5px">Save the employee first.</p>';return;}
@@ -556,7 +545,6 @@ async function deleteLiability(id){
   catch{showToast('Failed.','error');}
 }
 
-// ── Dropdowns ──
 async function loadDropdowns(){
   try{const r=await fetch(URL_DEPTS);const d=(await r.json()).map(i=>i.json??i).filter(x=>x.name&&x.name.toLowerCase()!=='undefined');const s=document.getElementById('f_dep_id');if(s){s.innerHTML='<option value="">— Select Department —</option>';d.forEach(x=>{const o=document.createElement('option');o.value=x.name;o.textContent=x.name;s.appendChild(o)});} }catch{}
   try{const r=await fetch(URL_ROLES);const d=(await r.json()).map(i=>i.json??i).filter(x=>x.name&&x.name.toLowerCase()!=='undefined');const s=document.getElementById('f_role_id');if(s){s.innerHTML='<option value="">— Select Role —</option>';d.forEach(x=>{const o=document.createElement('option');o.value=x.name;o.textContent=x.name;s.appendChild(o)});} }catch{}
@@ -610,7 +598,7 @@ function filterTable(){
     if(currentEmpFilter==='intern'&&!isIntern)return false;
     if(!f)return true;
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ');
-    return[fn,emp.pin,emp.email,emp.personal_email,emp.department_name,emp.role_name].some(x=>String(x||'').toLowerCase().includes(f));
+    return[fn,emp.pin,emp.email,emp.personal_email,emp.department_name,emp.role_name,emp.company].some(x=>String(x||'').toLowerCase().includes(f));
   });
   currentPage=1;renderTable();
 }
@@ -670,13 +658,13 @@ function renderTable(){
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
     if(isIntern){
       const bonus=getCompletionBonus(emp.total_hours||0);
-      return btr(`<td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
+      return btr(`<td class="emp-name">${fn}</td><td><strong style="color:var(--accent)">${emp.company||'CIS'}</strong></td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
         <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${fmtDate(emp.end_date)}</td>
         <td style="font-family:'DM Mono',monospace;font-weight:600;color:#16a34a">${fmtPeso(bonus)}</td>
         <td>${v(emp.supervisor)}</td>
         <td class="actions-cell">${ab(emp)}</td>`,idx);
     }
-    return btr(`<td class="emp-name">${fn}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
+    return btr(`<td class="emp-name">${fn}</td><td><strong style="color:var(--accent)">${emp.company||'CIS'}</strong></td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
       <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${fmtDate(emp.regularization_date)}</td>
       <td title="${emp.email||''}">${v(emp.email)}</td>
       <td>${fmtPeso(emp.salary)}</td><td>${fmtPeso(emp.de_minimis)}</td><td>${fmtPeso(emp.allowance)}</td>
@@ -691,11 +679,18 @@ function renderTable(){
   const bb=document.getElementById('body-benefits');
   if(bb) bb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const s=emp.salary||0;const sss=calcSSS(s),ph=calcPhilHealth(s),pi=calcPagIBIG(s);const totalEE=sss.ee+ph.ee+pi.ee;const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2});
-    return btr(`<td class="emp-name">${fn}</td><td>${fmtPeso(s)}</td><td>${fmt(sss.ee)}</td><td>${fmt(sss.er)}</td><td>${fmt(ph.ee)}</td><td>${fmt(ph.er)}</td><td>${fmt(pi.ee)}</td><td>${fmt(pi.er)}</td><td style="font-family:'DM Mono',monospace;font-weight:700;color:#dc2626">${fmt(totalEE)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
+    const s=emp.salary||0;
+    const sss=calcSSS(s), ph=calcPhilHealth(s), pi=calcPagIBIG(s);
+    const ec = { ee: 0, er: 10 };
+    const nonTaxable = sss.ee + ph.ee + pi.ee;
+    const wtax = calcTax(s, nonTaxable);
+    const totalEE = nonTaxable + wtax;
+    const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2, maximumFractionDigits:2});
+    
+    return btr(`<td class="emp-name">${fn}</td><td>${fmtPeso(s)}</td><td>${fmt(sss.ee)}</td><td>${fmt(sss.er)}</td><td>${fmt(ec.er)}</td><td>${fmt(ph.ee)}</td><td>${fmt(ph.er)}</td><td>${fmt(pi.ee)}</td><td>${fmt(pi.er)}</td><td>${fmt(wtax)}</td><td style="font-family:'DM Mono',monospace;font-weight:700;color:#dc2626">${fmt(totalEE)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  // Liabilities (expandable rows from PDF design)
+  // Liabilities
   const lb=document.getElementById('body-liabilities');
   if(lb) lb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
@@ -734,17 +729,23 @@ function renderTable(){
   const trb=document.getElementById('body-tracker');
   if(trb) trb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    const t=getInternData(fn);
-    if(!t) return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td><td colspan="7" style="color:var(--text-muted);font-size:12px">Not in tracker</td><td class="actions-cell">${ab(emp)}</td>`,idx);
-    const pct=Math.min(Math.round((t.rendered/t.total)*100),100);
-    const bonus=getCompletionBonus(t.total);
+    
+    // REPLACE getInternData with dynamic DB values
+    const total = Number(emp.total_hours) || 0;
+    const rendered = Number(emp.rendered_hours) || 0;
+    const remaining = total - rendered;
+    const pct = total > 0 ? Math.min(Math.round((rendered/total)*100), 100) : 0;
+    const expectedEnd = emp.end_date ? fmtDate(emp.end_date) : '—';
+    const bonus = getCompletionBonus(total);
+    const ojtStatus = remaining <= 0 && total > 0 ? 'COMPLETED' : 'ONGOING';
+
     return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td>
-      <td style="font-family:'DM Mono',monospace">${t.total}</td>
-      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${t.rendered.toFixed(2)}</td>
-      <td style="font-family:'DM Mono',monospace;color:${t.remaining<=0?'#16a34a':'#b45309'}">${t.remaining.toFixed(2)}</td>
+      <td style="font-family:'DM Mono',monospace">${total}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--accent)">${rendered.toFixed(2)}</td>
+      <td style="font-family:'DM Mono',monospace;color:${remaining<=0?'#16a34a':'#b45309'}">${remaining.toFixed(2)}</td>
       <td><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text-muted)">${pct}%</span></td>
-      <td>${t.expectedEnd}</td>
-      <td>${statusBadge(t.status)}</td>
+      <td>${expectedEnd}</td>
+      <td>${statusBadge(ojtStatus)}</td>
       <td style="font-family:'DM Mono',monospace;font-weight:700;color:#16a34a">${fmtPeso(bonus)}</td>
       <td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
@@ -807,6 +808,13 @@ function buildModalPanels(){
 
     <div class="modal-body" id="m-company">
       <div class="form-group"><label>Work Email</label><input type="email" id="f_email" placeholder="john@crowdsource.com"></div>
+      <div class="form-group">
+        <label>Company</label>
+        <select id="f_company">
+          <option value="CIS">CIS</option>
+          <option value="JB Pro">JB Pro</option>
+        </select>
+      </div>
       <div class="form-group"><label>Department</label><select id="f_dep_id"><option value="">— Select Department —</option></select></div>
       <div class="form-group full">
         <label>Role / Position</label>
@@ -824,8 +832,9 @@ function buildModalPanels(){
       </div>
       <div class="form-group"><label>Start Date</label><input type="date" id="f_start_date"></div>
       ${isIntern
-        ?`<div class="form-group"><label>End Date</label><input type="date" id="f_end_date"></div>
+        ?`<div class="form-group"><label>End Date (Expected End)</label><input type="date" id="f_end_date"></div>
            <div class="form-group"><label>Total OJT Hours Required</label><input type="number" id="f_total_hours" placeholder="e.g. 400" oninput="updateBonusPreview()"></div>
+           <div class="form-group"><label>Manual Rendered Hours (Override)</label><input type="number" step="0.01" id="f_rendered_hours" placeholder="e.g. 120.5"></div>
            <div class="form-group"><label>Completion Bonus (auto)</label><input type="text" id="f_bonus_preview" readonly style="background:#f3f4f6;font-weight:700;color:#16a34a" placeholder="Auto from hours"></div>
            <div class="form-group"><label>Allowance / Stipend</label><input type="number" id="f_allowance" placeholder="e.g. 1500"></div>
            <div class="form-group full"><label>Supervisor</label><select id="f_supervisor_id"><option value="">— Select Supervisor —</option></select></div>`
@@ -915,7 +924,7 @@ function openModal(index=-1){
     populateSupervisorDropdown(e.supervisor_id);
     const s=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val??'';};
     s('f_id',e.id);s('f_pin',e.pin);s('f_fn',e.fn);s('f_mn',e.mn);s('f_ln',e.ln);
-    s('f_email',e.email);s('f_personal_email',e.personal_email);s('f_contact',e.contact);
+    s('f_email',e.email);s('f_company', e.company || 'CIS');s('f_personal_email',e.personal_email);s('f_contact',e.contact);
     s('f_birthdate',e.birthdate?e.birthdate.split('T')[0]:'');
     s('f_gender',e.gender);s('f_civil_status',e.civil_status);
     s('f_address',e.address);s('f_emergency_contact',e.emergency_contact);
@@ -929,13 +938,22 @@ function openModal(index=-1){
     s('f_tin',e.tin);s('f_payroll',e.payroll);s('f_cip_status',e.cip_status);
     s('f_university',e.university);s('f_ojt_advisor',e.ojt_advisor);
     s('f_ojt_advisor_number',e.ojt_advisor_number);s('f_ojt_advisor_email',e.ojt_advisor_email);
-    s('f_total_hours',e.total_hours);updateBonusPreview();
+    
+    if (isIntern) {
+      s('f_total_hours',e.total_hours);
+      s('f_rendered_hours',e.rendered_hours);
+      updateBonusPreview();
+    }
   }else{
     currentEmpId=null;currentDependents=[];currentCIP=[];
     document.getElementById('modalTitle').innerText=isIntern?'Add New Intern':'Add New Employee';
     document.getElementById('saveBtn').style.display='inline-flex';
     document.querySelectorAll('.modal-body input:not([type="hidden"]),.modal-body select,.modal-body textarea').forEach(el=>el.value='');
+    document.getElementById('f_company').value = 'CIS';
     const slb=document.getElementById('f_sil_balance');if(slb)slb.value='0';
+    if (isIntern) {
+      document.getElementById('f_rendered_hours').value = '';
+    }
     renderDependents();renderCIP();
     populateSupervisorDropdown(null);
   }
@@ -950,8 +968,10 @@ async function saveEmployee(){
   if(!pin){showToast('PIN is required.','error');return;}
   const btn=document.getElementById('saveBtn');btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
   const rawId=g('f_id'),supId=g('f_supervisor_id');
+  
   const payload={
     id:rawId?Number(rawId):null,pin,fn,mn:g('f_mn'),ln,
+    company:g('f_company'),
     email:g('f_email')||null,personal_email:g('f_personal_email')||null,
     contact:g('f_contact'),birthdate:g('f_birthdate')||null,
     gender:g('f_gender'),civil_status:g('f_civil_status'),
@@ -968,7 +988,9 @@ async function saveEmployee(){
     university:g('f_university'),ojt_advisor:g('f_ojt_advisor'),
     ojt_advisor_number:g('f_ojt_advisor_number'),ojt_advisor_email:g('f_ojt_advisor_email'),
     total_hours:Number(g('f_total_hours'))||null,
+    rendered_hours: g('f_rendered_hours') !== '' ? Number(g('f_rendered_hours')) : null
   };
+  
   try{
     const res=await fetch(rawId?URL_UPDATE:URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(res.ok){showToast(rawId?'Saved!':'Added!');closeModal();loadEmployees();}
@@ -998,6 +1020,30 @@ async function generateInviteToken(){
   finally{btn.innerHTML='Generate Link';btn.disabled=false;}
 }
 function copyInviteLink(){document.getElementById('generatedLink').select();document.execCommand('copy');showToast('Copied!');}
+
+async function syncOjtHours() {
+  const btn = document.getElementById('syncOjtBtn');
+  const spinner = document.getElementById('syncSpinner');
+  
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  showToast('Syncing timesheets from Google Drive... This may take a minute.', 'success');
+  
+  try {
+    const res = await fetch(URL_SYNC_HOURS, { method: 'POST' });
+    if (res.ok) {
+      showToast('OJT Hours successfully synced!', 'success');
+      await loadEmployees();
+    } else {
+      showToast('Failed to sync hours.', 'error');
+    }
+  } catch (err) {
+    showToast('Network error while syncing.', 'error');
+  } finally {
+    btn.disabled = false;
+    spinner.style.display = 'none';
+  }
+}
 
 window.onload=async()=>{
   buildTabBar();
