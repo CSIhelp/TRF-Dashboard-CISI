@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applicant Pipeline</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --border: #e4e7ec;
+      --text: #101828;
+      --muted: #667085;
+      --accent: #1a56db;
+      --accent-light: #eff4ff;
+      --accent-border: #c7d7fd;
+      --green: #027a48;
+      --green-bg: #ecfdf3;
+      --green-border: #abefc6;
+      --yellow: #b54708;
+      --yellow-bg: #fffaeb;
+      --yellow-border: #fedf89;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --red-border: #fecdca;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.06);
+      --shadow-lg: 0 12px 40px rgba(16,24,40,.14);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
+    .topbar-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-left: 2px;
+    }
+
+    /* ── PAGE ── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .page-heading { font-size: 22px; font-weight: 700; letter-spacing: -.4px; }
+    .page-sub { font-size: 13.5px; color: var(--muted); margin-top: 3px; }
+
+    /* ── TABLE ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    tbody td { padding: 14px 16px; font-size: 13.5px; vertical-align: middle; }
+    .td-name { font-weight: 600; color: var(--text); }
+    .td-muted { color: var(--muted); font-size: 13px; }
+    .td-center { text-align: center; }
+
+    .stage-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: #f2f4f7;
+      color: #344054;
+    }
+
+    /* fit score badge in table */
+    .fit-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+    }
+    .fit-pill.excellent { background: var(--green-bg); color: var(--green); }
+    .fit-pill.strong    { background: var(--accent-light); color: var(--accent); }
+    .fit-pill.moderate  { background: var(--yellow-bg); color: var(--yellow); }
+    .fit-pill.weak      { background: var(--red-bg); color: var(--red); }
+    .fit-pill.none      { background: #f2f4f7; color: var(--muted); }
+
+    .btn-analyze {
+      padding: 7px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, opacity .15s;
+    }
+    .btn-analyze:hover { background: #1648c0; }
+    .btn-analyze:disabled { opacity: .5; cursor: not-allowed; }
+
+    .state-row td {
+      text-align: center;
+      padding: 48px !important;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .mini-spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MODAL OVERLAY ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(16,24,40,.45);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
+    .modal-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 20px; line-height: 1;
+      padding: 2px; border-radius: 4px; transition: color .15s;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
+
+    /* applicant info strip */
+    .info-strip {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 20px;
+    }
+    .info-row { display: flex; flex-direction: column; gap: 1px; }
+    .info-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .info-value { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* file upload */
+    .upload-area {
+      border: 1.5px dashed var(--border);
+      border-radius: 8px;
+      background: #f9fafb;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      position: relative;
+    }
+    .upload-area:hover, .upload-area.has-file { border-color: var(--accent); background: var(--accent-light); }
+    .upload-area input[type=file] {
+      position: absolute; inset: 0; opacity: 0;
+      cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 24px; margin-bottom: 6px; }
+    .upload-text { font-size: 13px; color: var(--muted); }
+    .upload-text strong { color: var(--accent); }
+    .upload-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .file-name {
+      display: none;
+      margin-top: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .file-name.show { display: block; }
+
+    /* submit */
+    .modal-footer {
+      padding: 16px 24px 22px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      border-top: 1px solid var(--border);
+    }
+    .btn-cancel {
+      padding: 9px 18px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+    .btn-run {
+      padding: 9px 22px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: background .15s, opacity .15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-run:hover { background: #1648c0; }
+    .btn-run:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── RESULTS PANEL ── */
+    .result-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .result-panel.show { display: flex; }
+
+    /* score hero */
+    .score-hero {
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .score-hero.excellent { background: var(--green-bg); border: 1px solid var(--green-border); }
+    .score-hero.strong    { background: var(--accent-light); border: 1px solid var(--accent-border); }
+    .score-hero.moderate  { background: var(--yellow-bg); border: 1px solid var(--yellow-border); }
+    .score-hero.weak      { background: var(--red-bg); border: 1px solid var(--red-border); }
+
+    .score-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .score-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .score-pct { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .score-info { flex: 1; }
+    .score-label { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+    .score-shortlist {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.7);
+    }
+
+    /* progress bar */
+    .progress-wrap { margin-top: 10px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .progress-track {
+      height: 7px;
+      background: rgba(0,0,0,.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .8s cubic-bezier(.4,0,.2,1);
+    }
+    .progress-bar.excellent { background: #12b76a; }
+    .progress-bar.strong    { background: var(--accent); }
+    .progress-bar.moderate  { background: #f79009; }
+    .progress-bar.weak      { background: #f04438; }
+
+    /* summary */
+    .result-section { display: flex; flex-direction: column; gap: 6px; }
+    .result-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+    }
+    .result-summary {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text);
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    /* requirements table */
+    .req-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .req-table th {
+      text-align: left;
+      padding: 7px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+    }
+    .req-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text);
+    }
+    .req-table tr:last-child td { border-bottom: none; }
+    .grade-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+    }
+    .grade-5 { background: var(--green-bg); color: var(--green); }
+    .grade-4 { background: var(--accent-light); color: var(--accent); }
+    .grade-3 { background: var(--yellow-bg); color: var(--yellow); }
+    .grade-2, .grade-1 { background: var(--red-bg); color: var(--red); }
+
+    /* error state */
+    .result-error {
+      display: none;
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--red);
+      font-weight: 500;
+    }
+    .result-error.show { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">Recruitment</div>
+  <div class="topbar-sub">/ Applicant Pipeline</div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-heading">Applicant Pipeline</div>
+      <div class="page-sub">Review candidates and run AI-powered fit analysis</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant</th>
+          <th>Email</th>
+          <th>Position Applied</th>
+          <th>Stage</th>
+          <th>Date Applied</th>
+          <th>Fit Score</th>
+          <th class="td-center">Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr class="state-row">
+          <td colspan="7"><span class="mini-spinner"></span>Loading applicants…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Fit Analysis</div>
+        <div class="modal-sub" id="modalSub">Upload resume to analyze candidate fit</div>
+      </div>
+      <button class="modal-close" id="closeBtn">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-strip" id="infoStrip">
+        <div class="info-row">
+          <span class="info-label">Applicant</span>
+          <span class="info-value" id="mName">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Position</span>
+          <span class="info-value" id="mPosition">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Job Order ID</span>
+          <span class="info-value" id="mJobOrderId">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Application ID</span>
+          <span class="info-value" id="mAppId">—</span>
+        </div>
+      </div>
+
+      <div id="uploadSection">
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="resumeFile" accept=".pdf,.docx" />
+          <div class="upload-icon">📄</div>
+          <div class="upload-text"><strong>Click to upload</strong> or drag and drop</div>
+          <div class="upload-hint">PDF or DOCX — max 10MB</div>
+        </div>
+        <div class="file-name" id="fileName"></div>
+      </div>
+
+      <div class="result-error" id="resultError"></div>
+
+      <div class="result-panel" id="resultPanel">
+
+        <div class="score-hero" id="scoreHero">
+          <div class="score-circle">
+            <span class="score-number" id="scoreNumber">—</span>
+            <span class="score-pct">% fit</span>
+          </div>
+          <div class="score-info">
+            <div class="score-label" id="scoreLabel">—</div>
+            <div class="score-shortlist" id="shortlistBadge">—</div>
+            <div class="progress-wrap">
+              <div class="progress-label">
+                <span>Fit Score</span>
+                <span id="progressPct">—</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar" id="progressBar" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-section-title">Summary</div>
+          <div class="result-summary" id="fitSummary">—</div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-section-title">Final Recommendation</div>
+          <div class="result-summary" id="finalRec">—</div>
+        </div>
+
+        <div class="result-section" id="reqSection">
+          <div class="result-section-title">Requirements Breakdown</div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+            <table class="req-table" id="reqTable">
+              <thead>
+                <tr>
+                  <th style="width:30%">JD Requirement</th>
+                  <th style="width:35%">Applicant Experience</th>
+                  <th style="width:25%">Assessment</th>
+                  <th style="width:10%">Grade</th>
+                </tr>
+              </thead>
+              <tbody id="reqBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
+      <button class="btn-run" id="runBtn" disabled>
+        <span id="runBtnText">Run Analysis</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // CONFIGURATION
+  // ==========================================
+  const GET_APPLICANTS_URL = 'https://primary-production-a810.up.railway.app/webhook/get-applicants';
+  const RUN_ANALYSIS_URL   = 'https://primary-production-a810.up.railway.app/webhook/resume-fit-analysis';
+
+  let currentApp = null;
+
+  // ── Helpers ──
+  function fitClass(score) {
+    if (score >= 85) return 'excellent';
+    if (score >= 70) return 'strong';
+    if (score >= 50) return 'moderate';
+    return 'weak';
+  }
+
+  function fitPillHTML(score, label) {
+    if (score == null) return '<span class="fit-pill none">Not run</span>';
+    const cls = fitClass(score);
+    return `<span class="fit-pill ${cls}">${score}% · ${label}</span>`;
+  }
+
+  function gradeClass(g) {
+    if (g >= 5) return 'grade-5';
+    if (g >= 4) return 'grade-4';
+    if (g >= 3) return 'grade-3';
+    return 'grade-2';
+  }
+
+  // ── Load applicants ──
+  async function fetchApplicants() {
+    try {
+      const res = await fetch(GET_APPLICANTS_URL);
+      if (!res.ok) throw new Error('Failed');
+      let raw = await res.json();
+      let list = Array.isArray(raw) ? raw : (raw.data ? raw.data : [raw]);
+      if (list.length && list[0].json) list = list.map(i => i.json);
+      renderTable(list);
+    } catch (e) {
+      document.getElementById('tableBody').innerHTML =
+        `<tr class="state-row"><td colspan="7" style="color:#b42318">Failed to load applicants. Check network.</td></tr>`;
+    }
+  }
+
+  function renderTable(list) {
+    const body = document.getElementById('tableBody');
+    if (!list.length) {
+      body.innerHTML = `<tr class="state-row"><td colspan="7">No applicants found.</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(app => `
+      <tr data-id="${app.application_id}">
+        <td>
+          <div class="td-name">${app.applicant_name || '—'}</div>
+        </td>
+        <td class="td-muted">${app.email || app.applicant_email || '—'}</td>
+        <td>${app.applied_position || app.job_title || '—'}</td>
+        <td><span class="stage-badge">${app.current_stage_code || 'NEW'}</span></td>
+        <td class="td-muted">${app.applied_date || '—'}</td>
+        <td id="score-cell-${app.application_id}">
+          ${fitPillHTML(app.fit_score ?? null, app.fit_label ?? '')}
+        </td>
+        <td class="td-center">
+          <button class="btn-analyze" onclick="openModal(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+            Fit Analysis
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Modal ──
+  function openModal(app) {
+    currentApp = app;
+    document.getElementById('mName').textContent       = app.applicant_name || '—';
+    document.getElementById('mPosition').textContent   = app.applied_position || app.job_title || '—';
+    document.getElementById('mJobOrderId').textContent = app.job_order_id || '—';
+    document.getElementById('mAppId').textContent      = app.application_id || '—';
+    document.getElementById('modalSub').textContent    = 'Upload resume to analyze candidate fit';
+
+    // Reset state
+    document.getElementById('resumeFile').value  = '';
+    document.getElementById('fileName').textContent = '';
+    document.getElementById('fileName').classList.remove('show');
+    document.getElementById('uploadArea').classList.remove('has-file');
+    document.getElementById('uploadSection').style.display = '';
+    document.getElementById('resultPanel').classList.remove('show');
+    document.getElementById('resultError').classList.remove('show');
+    document.getElementById('runBtn').disabled = true;
+    document.getElementById('runBtnText').textContent = 'Run Analysis';
+
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    currentApp = null;
+  }
+
+  document.getElementById('closeBtn').addEventListener('click', closeModal);
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+  document.getElementById('overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  });
+
+  document.getElementById('resumeFile').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('fileName').textContent = '📎 ' + file.name;
+    document.getElementById('fileName').classList.add('show');
+    document.getElementById('uploadArea').classList.add('has-file');
+    document.getElementById('runBtn').disabled = false;
+  });
+
+  // ── Run analysis ──
+  document.getElementById('runBtn').addEventListener('click', async () => {
+    const file = document.getElementById('resumeFile').files[0];
+    if (!file || !currentApp) return;
+
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    document.getElementById('runBtnText').innerHTML = '<span class="mini-spinner"></span>Analyzing…';
+    document.getElementById('resultPanel').classList.remove('show');
+    document.getElementById('resultError').classList.remove('show');
+
+    const fd = new FormData();
+    fd.append('resume', file);
+    fd.append('application_id', currentApp.application_id);
+    fd.append('job_order_id',   currentApp.job_order_id);
+    fd.append('applicant_id',   currentApp.applicant_id || currentApp.applicant_profile_id || '');
+
+    try {
+      const res = await fetch(RUN_ANALYSIS_URL, { method: 'POST', body: fd });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const data = await res.json();
+
+      // Handle n8n array wrapping
+      const result = Array.isArray(data) ? (data[0].json ?? data[0]) : data;
+
+      if (!result.success && result.run_status !== 'success') {
+        throw new Error(result.error_message || 'Analysis failed');
+      }
+
+      renderResults(result);
+
+      // Update score pill in table row
+      const scoreCell = document.getElementById(`score-cell-${currentApp.application_id}`);
+      if (scoreCell) {
+        scoreCell.innerHTML = fitPillHTML(result.fit_score, result.fit_label);
+      }
+
+    } catch (err) {
+      const errEl = document.getElementById('resultError');
+      errEl.textContent = '❌ ' + (err.message || 'Analysis failed. Please try again.');
+      errEl.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      document.getElementById('runBtnText').textContent = 'Re-run Analysis';
+    }
+  });
+
+  function renderResults(data) {
+    const score = data.fit_score ?? 0;
+    const cls   = fitClass(score);
+
+    // Score hero
+    const hero = document.getElementById('scoreHero');
+    hero.className = `score-hero ${cls}`;
+    document.getElementById('scoreNumber').textContent = score;
+    document.getElementById('scoreLabel').textContent  = data.fit_label || '—';
+    document.getElementById('progressPct').textContent = score + '%';
+
+    const bar = document.getElementById('progressBar');
+    bar.className = `progress-bar ${cls}`;
+    setTimeout(() => { bar.style.width = score + '%'; }, 50);
+
+    // Shortlist badge (handles normal string or hallucinated object)
+    let recStr = data.shortlist_recommendation || '';
+    if (typeof recStr === 'object') recStr = JSON.stringify(recStr);
+    
+    const shortlisted = recStr.toLowerCase().includes('shortlisted') && !recStr.toLowerCase().includes('not');
+    const sbadge = document.getElementById('shortlistBadge');
+    sbadge.textContent = shortlisted ? '✅ Shortlisted' : '❌ Not Shortlisted';
+    sbadge.style.color = shortlisted ? 'var(--green)' : 'var(--red)';
+
+    // Summary & recommendation
+    document.getElementById('fitSummary').textContent = data.fit_summary || 'Please see requirement breakdown below.';
+    
+    // Safely parse final rec if the AI hallucinated an object
+    let finalRecText = data.final_recommendation || '—';
+    try {
+      if (finalRecText.startsWith('{')) {
+        const parsed = JSON.parse(finalRecText);
+        finalRecText = `Recommendation: ${parsed.ShortlistRecommendation || 'N/A'} (Average Grade: ${parsed.AverageGrade || 'N/A'})`;
+      }
+    } catch(e) {}
+    document.getElementById('finalRec').textContent = finalRecText;
+
+    // Requirements breakdown
+    const breakdown = Array.isArray(data.role_breakdown) ? data.role_breakdown : [];
+    const bestRole  = breakdown.reduce((best, r) =>
+      (r.percentageScore || 0) > (best.percentageScore || 0) ? r : best
+    , breakdown[0] || {});
+    const reqs = Array.isArray(bestRole?.requirements) ? bestRole.requirements : [];
+
+    const reqBody = document.getElementById('reqBody');
+    if (reqs.length) {
+      reqBody.innerHTML = reqs.map(r => `
+        <tr>
+          <td>${r['JD Requirement'] || '—'}</td>
+          <td>${r['Applicant Experience'] || '—'}</td>
+          <td style="color:var(--muted);font-size:12px">${r['Assessment'] || '—'}</td>
+          <td><span class="grade-dot ${gradeClass(r.Grade)}">${r.Grade ?? '—'}</span></td>
+        </tr>
+      `).join('');
+      document.getElementById('reqSection').style.display = '';
+    } else {
+      document.getElementById('reqSection').style.display = 'none';
+    }
+
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('resultPanel').classList.add('show');
+    document.getElementById('modalSub').textContent = `Analysis complete · ${data.applicant_name || ''}`;
+  }
+
+  fetchApplicants();
+</script>
+</body>
+</html>
