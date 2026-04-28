@@ -427,7 +427,7 @@ function tableHead(id) {
       : '<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>',
     company: isIntern
       ? '<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Expected End Date</th><th>Completion Bonus</th><th>Supervisor</th><th>Actions</th></tr></thead>'
-      : '<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>Supervisor</th><th>Actions</th></tr></thead>',
+      : '<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Supervisor</th><th>Actions</th></tr></thead>',
     sil:  '<thead><tr><th>Name</th><th>Status</th><th>Position</th><th>Department</th><th>SIL Balance</th><th>Parental Leave</th><th>Actions</th></tr></thead>',
     benefits: '<thead><tr><th>Name</th><th>Basic Salary</th><th>De Minimis</th><th>Allowance</th><th>SSS (EE)</th><th>Pag-IBIG (EE)</th><th>PhilHealth (EE)</th><th>Withholding Tax</th><th>Net Pay Est.</th><th>Active Liabilities</th><th>Actions</th></tr></thead>',
     cip:  '<thead><tr><th>Name</th><th>PIN</th><th>Department</th><th>Position</th><th>CIP Status</th><th>Issued Property</th><th>Actions</th></tr></thead>',
@@ -740,7 +740,6 @@ function renderTable(){
     return btr(`<td class="emp-name">${fn}</td><td><strong style="color:var(--accent)">${emp.company||'CIS'}</strong></td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
       <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${fmtDate(emp.regularization_date)}</td>
       <td title="${emp.email||''}">${v(emp.email)}</td>
-      <td>${fmtPeso(emp.salary)}</td><td>${fmtPeso(emp.de_minimis)}</td><td>${fmtPeso(emp.allowance)}</td>
       <td>${v(emp.supervisor)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
