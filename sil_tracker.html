@@ -197,7 +197,7 @@
     <div class="page-header">
       <div>
         <div class="page-title">Service Incentive Leave (SIL)</div>
-        <div class="page-subtitle">Manage and manually adjust employee leave balances.</div>
+        <div class="page-subtitle">Manage and manually adjust regular employee leave balances.</div>
       </div>
       <div class="controls">
         <input type="text" class="search-input" id="searchInput" placeholder="Search employees..." onkeyup="filterTable()">
@@ -294,17 +294,12 @@
       const data      = await res.json();
       let employees = Array.isArray(data) ? data : (data.employees || []);
 
-      // ── FILTER TO HIDE INTERNS ──
-      employees = employees.filter(emp => {
-        const job = String(emp.job_title || emp.role_name || '').toLowerCase();
-        const dept = String(emp.department || emp.department_name || '').toLowerCase();
-        const isIntern = job.includes('intern') || dept.includes('intern') || job.includes('ojt') || dept.includes('ojt');
-        return !isIntern; // Only keep non-interns
-      });
-
+      // ── WE RELY ON THE BACKEND SQL TO FILTER EMPLOYEES NOW ──
+      // The n8n backend is already fetching ONLY Regular employees.
+      
       if (employees.length === 0) {
         document.getElementById('tableBody').innerHTML =
-          '<tr class="state-row"><td colspan="4">No employees found.</td></tr>';
+          '<tr class="state-row"><td colspan="4">No regular employees found.</td></tr>';
         return;
       }
 
