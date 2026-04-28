@@ -6,7 +6,6 @@
 <title>CrowdSource – SIL Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- ── SUPABASE AUTH GUARD ── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
@@ -293,7 +292,15 @@
     try {
       const res       = await fetch(GET_SIL_URL);
       const data      = await res.json();
-      const employees = Array.isArray(data) ? data : (data.employees || []);
+      let employees = Array.isArray(data) ? data : (data.employees || []);
+
+      // ── FILTER TO HIDE INTERNS ──
+      employees = employees.filter(emp => {
+        const job = String(emp.job_title || emp.role_name || '').toLowerCase();
+        const dept = String(emp.department || emp.department_name || '').toLowerCase();
+        const isIntern = job.includes('intern') || dept.includes('intern') || job.includes('ojt') || dept.includes('ojt');
+        return !isIntern; // Only keep non-interns
+      });
 
       if (employees.length === 0) {
         document.getElementById('tableBody').innerHTML =
