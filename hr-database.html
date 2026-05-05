@@ -341,7 +341,6 @@ function getDynamicEndDate(startDateStr, totalHours, renderedHours) {
   const rendered = Number(renderedHours) || 0;
   const remaining = Math.max(0, total - rendered);
 
-  // If done, expected end date is today
   if (remaining <= 0) return new Date();
 
   const startDate = new Date(startDateStr);
@@ -349,9 +348,8 @@ function getDynamicEndDate(startDateStr, totalHours, renderedHours) {
   today.setHours(0,0,0,0);
   startDate.setHours(0,0,0,0);
 
-  let avgHoursPerDay = 8; // Baseline fallback
+  let avgHoursPerDay = 8;
 
-  // If they've started and rendered hours, calculate their actual daily average
   if (rendered > 0 && today > startDate) {
     let workingDaysElapsed = 0;
     let d = new Date(startDate);
@@ -365,20 +363,18 @@ function getDynamicEndDate(startDateStr, totalHours, renderedHours) {
     }
   }
 
-  // Safety clamp: if data is weirdly low/high, keep projection realistic
   if (avgHoursPerDay < 1) avgHoursPerDay = 8;
   if (avgHoursPerDay > 12) avgHoursPerDay = 12;
 
   const remainingDays = Math.ceil(remaining / avgHoursPerDay);
 
-  // Project forward from TODAY (since rendered hours are synced up to today)
   let projectionDate = today > startDate ? new Date(today) : new Date(startDate);
   let daysCounted = 0;
 
   while (daysCounted < remainingDays) {
     projectionDate.setDate(projectionDate.getDate() + 1);
     const dow = projectionDate.getDay();
-    if (dow !== 0 && dow !== 6) daysCounted++; // skip weekends
+    if (dow !== 0 && dow !== 6) daysCounted++;
   }
 
   return projectionDate;
@@ -733,15 +729,12 @@ function renderTable(){
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
     if(isIntern){
       const bonus=getCompletionBonus(emp.total_hours||0);
-      
-      // AUTO-COMPUTE DYNAMIC INJECTION
       let expEnd = '—';
       if (emp.end_date) {
         expEnd = fmtDate(emp.end_date);
       } else if (emp.start_date && emp.total_hours) {
         expEnd = fmtDate(getDynamicEndDate(emp.start_date, emp.total_hours, emp.rendered_hours)) + ' <span style="font-size:10px;color:var(--text-muted)">(Auto)</span>';
       }
-      
       return btr(`<td class="emp-name">${fn}</td><td><strong style="color:var(--accent)">${emp.company||'CIS'}</strong></td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td>
         <td>${statusBadge(emp.status)}</td><td>${fmtDate(emp.start_date)}</td><td>${expEnd}</td>
         <td style="font-family:'DM Mono',monospace;font-weight:600;color:#16a34a">${fmtPeso(bonus)}</td>
@@ -754,11 +747,19 @@ function renderTable(){
       <td>${v(emp.supervisor)}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
   }).join('');
 
-  // SIL
+  // ── SIL — Regular employees only ──
   const sb=document.getElementById('body-sil');
-  if(sb) sb.innerHTML=items.map((emp,idx)=>{const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';return btr(`<td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td><td style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${emp.sil_balance??'—'}</td><td style="font-family:'DM Mono',monospace;font-weight:600">${emp.parental_leave_balance??'—'}</td><td class="actions-cell">${ab(emp)}</td>`,idx);}).join('');
+  if(sb){
+    const silItems=items.filter(emp=>(emp.status||'').toLowerCase()==='regular');
+    sb.innerHTML=silItems.length
+      ? silItems.map((emp,idx)=>{
+          const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
+          return btr(`<td class="emp-name">${fn}</td><td>${statusBadge(emp.status)}</td><td>${v(emp.role_name)}</td><td>${v(emp.department_name)}</td><td style="font-family:'DM Mono',monospace;font-weight:600;color:var(--accent)">${emp.sil_balance??'—'}</td><td style="font-family:'DM Mono',monospace;font-weight:600">${emp.parental_leave_balance??'—'}</td><td class="actions-cell">${ab(emp)}</td>`,idx);
+        }).join('')
+      : `<tr><td colspan="7" class="state-cell">No regular employees on this page.</td></tr>`;
+  }
 
-  // Benefits (combined Gov't Benefits + Liabilities inline expand)
+  // Benefits
   const bb=document.getElementById('body-benefits');
   if(bb) bb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
@@ -871,23 +872,18 @@ function renderTable(){
   const trb=document.getElementById('body-tracker');
   if(trb) trb.innerHTML=items.map((emp,idx)=>{
     const fn=[emp.fn,emp.mn,emp.ln].filter(Boolean).join(' ')||'—';
-    
     const total = Number(emp.total_hours) || 0;
     const rendered = Number(emp.rendered_hours) || 0;
     const remaining = total - rendered;
     const pct = total > 0 ? Math.min(Math.round((rendered/total)*100), 100) : 0;
-    
-    // AUTO-COMPUTE DYNAMIC INJECTION
     let expectedEnd = '—';
     if (emp.end_date) {
       expectedEnd = fmtDate(emp.end_date);
     } else if (emp.start_date && total > 0) {
       expectedEnd = fmtDate(getDynamicEndDate(emp.start_date, total, rendered)) + ' <span style="font-size:10px;color:var(--text-muted)">(Auto)</span>';
     }
-
     const bonus = getCompletionBonus(total);
     const ojtStatus = remaining <= 0 && total > 0 ? 'COMPLETED' : 'ONGOING';
-
     return btr(`<td class="emp-name">${fn}</td><td><span class="emp-pin">${emp.pin||'—'}</span></td>
       <td style="font-family:'DM Mono',monospace">${total}</td>
       <td style="font-family:'DM Mono',monospace;color:var(--accent)">${rendered.toFixed(2)}</td>
@@ -1096,7 +1092,6 @@ function openModal(index=-1){
     s('f_tin',e.tin);s('f_payroll',e.payroll);s('f_cip_status',e.cip_status);
     s('f_university',e.university);s('f_ojt_advisor',e.ojt_advisor);
     s('f_ojt_advisor_number',e.ojt_advisor_number);s('f_ojt_advisor_email',e.ojt_advisor_email);
-    
     if (isIntern) {
       s('f_total_hours',e.total_hours);
       s('f_rendered_hours',e.rendered_hours);
@@ -1211,11 +1206,9 @@ function copyInviteLink(){document.getElementById('generatedLink').select();docu
 async function syncOjtHours() {
   const btn = document.getElementById('syncOjtBtn');
   const spinner = document.getElementById('syncSpinner');
-  
   btn.disabled = true;
   spinner.style.display = 'inline-block';
   showToast('Syncing timesheets from Google Drive... This may take a minute.', 'success');
-  
   try {
     const res = await fetch(URL_SYNC_HOURS, { method: 'POST' });
     if (res.ok) {
@@ -1237,13 +1230,10 @@ function autoCalculateEndDate() {
   const totalHoursVal = document.getElementById('f_total_hours')?.value;
   const renderedVal = document.getElementById('f_rendered_hours')?.value;
   const endDateInput = document.getElementById('f_end_date');
-
   if (!startDateVal || !totalHoursVal || !endDateInput) return;
-
   const total = parseFloat(totalHoursVal);
   const rendered = parseFloat(renderedVal) || 0;
   if (isNaN(total) || total <= 0) return;
-
   const projectedDate = getDynamicEndDate(startDateVal, total, rendered);
   if (projectedDate) {
     const yyyy = projectedDate.getFullYear();
