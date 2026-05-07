@@ -4,51 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CrowdSource – SIL Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
   const _supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
   const _supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
-
   async function checkAuth() {
     const { data: { session }, error } = await _supabase.auth.getSession();
-    if (!session || error) {
-      window.location.replace('index.html');
-    }
+    if (!session || error) window.location.replace('index.html');
   }
   checkAuth();
-
-  async function logOut() {
-    await _supabase.auth.signOut();
-    window.location.replace('index.html');
-  }
+  async function logOut() { await _supabase.auth.signOut(); window.location.replace('index.html'); }
 </script>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f4f5f7;
-    --sidebar-bg: #ffffff;
-    --topbar-bg: #1a1a2e;
-    --accent: #1565c0;
-    --accent-light: #e8f0fe;
-    --text-primary: #1a1a2e;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --border: #e5e7eb;
-    --row-hover: #f9fafb;
-    --radius: 10px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,.07);
+    --bg: #f4f5f7; --sidebar-bg: #fff; --topbar-bg: #1a1a2e;
+    --accent: #1565c0; --accent-light: #e8f0fe;
+    --text-primary: #1a1a2e; --text-secondary: #6b7280; --text-muted: #9ca3af;
+    --border: #e5e7eb; --row-hover: #f9fafb; --radius: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.07); --shadow-lg: 0 10px 25px rgba(0,0,0,.1);
   }
-
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
 
   .topbar { background: var(--topbar-bg); display: flex; align-items: center; padding: 0 28px; height: 70px; gap: 20px; flex-shrink: 0; }
   .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-  .logo-img { height: 40px; width: auto; object-fit: contain; }
   .logo-text { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: .5px; }
   .logo-text span { color: #64b5f6; }
   .topbar-user { margin-left: auto; display: flex; align-items: center; gap: 12px; }
@@ -58,7 +41,6 @@
   .avatar { width: 40px; height: 40px; background: rgba(255,255,255,.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.8); }
 
   .layout { display: flex; flex: 1; overflow: hidden; }
-
   .sidebar { width: 210px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; }
   .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 20px; font-size: 13.5px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: background .15s, color .15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
   .nav-item:hover { background: var(--accent-light); color: var(--accent); }
@@ -73,305 +55,526 @@
   .main::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
   .page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .page-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+  .page-title { font-size: 20px; font-weight: 700; }
   .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-
   .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-  .search-input {
-    appearance: none; border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 9px 14px 9px 36px; font-family: inherit; font-size: 13.5px;
-    color: var(--text-primary); outline: none; transition: border .2s;
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat left 12px center;
-    width: 250px;
-  }
+  .search-input { border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 14px 9px 36px; font-family: inherit; font-size: 13.5px; color: var(--text-primary); outline: none; transition: border .2s; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat left 12px center; width: 230px; }
   .search-input:focus { border-color: var(--accent); }
 
-  .btn { display: flex; align-items: center; gap: 6px; background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 14px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 14px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; white-space: nowrap; }
   .btn:hover { border-color: var(--accent); color: var(--accent); }
   .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .btn.primary:hover { background: #0f4c92; border-color: #0f4c92; color: #fff; }
-  .btn.loading svg { animation: spin .7s linear infinite; }
+  .btn.primary:hover { background: #0f4c92; }
+  .btn.success { background: #15803d; color: #fff; border-color: #15803d; }
+  .btn.success:hover { background: #166534; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .btn.loading svg { animation: spin .7s linear infinite; }
 
   .error-banner { display: none; align-items: center; gap: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #dc2626; }
   .error-banner.visible { display: flex; }
-  .error-banner svg { flex-shrink: 0; }
 
-  .table-card { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
-  .table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 200px); }
+  .table-card { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; }
+  .table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 260px); }
   .table-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
   .table-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
-  table { width: 100%; border-collapse: collapse; min-width: 600px; }
-  thead th { position: sticky; top: 0; z-index: 2; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); padding: 14px 20px; background: #fafbfc; border-bottom: 1px solid var(--border); }
-  thead th.center { text-align: center; }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  thead th { position: sticky; top: 0; z-index: 2; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); padding: 12px 18px; background: #fafbfc; border-bottom: 1px solid var(--border); white-space: nowrap; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--row-hover); }
-  tbody td { padding: 14px 20px; font-size: 13.5px; color: var(--text-primary); vertical-align: middle; }
-  tbody td.center { text-align: center; }
+  tbody td { padding: 13px 18px; font-size: 13px; vertical-align: middle; }
 
-  .emp-name { font-weight: 600; color: var(--text-primary); }
-  .emp-dept { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-  .sil-input { width: 80px; text-align: center; font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; color: var(--accent); border: 1.5px solid transparent; background: transparent; padding: 6px; border-radius: 6px; transition: all 0.2s; }
-  .sil-input:hover { border-color: #cbd5e1; background: #f8fafc; }
-  .sil-input:focus { border-color: var(--accent); background: #fff; outline: none; box-shadow: 0 0 0 2px rgba(21,101,192,0.1); }
-
-  tr.edited { background-color: #fffbeb !important; }
-  tr.edited td { border-bottom: 1px solid #fde68a; }
+  .emp-name { font-weight: 600; }
+  .emp-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .mono { font-family: 'DM Mono', monospace; font-size: 12.5px; }
+  .bal-positive { color: #15803d; font-weight: 700; }
+  .bal-zero { color: var(--text-muted); font-weight: 600; }
+  .bal-negative { color: #dc2626; font-weight: 700; }
 
   .state-row td { text-align: center; padding: 48px !important; color: var(--text-muted); font-size: 13.5px; }
-  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: currentColor; border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ccc; border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 6px; vertical-align: middle; }
+
+  /* LEDGER ROW */
+  .ledger-row { display: none; }
+  .ledger-row.open { display: table-row; }
+  .ledger-panel { padding: 0 18px 16px; background: #f8fbff; border-bottom: 2px solid var(--accent); }
+  .ledger-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
+  .ledger-title { font-size: 13px; font-weight: 700; color: var(--accent); }
+
+  /* LEDGER TABS */
+  .ledger-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .ledger-tab { padding: 5px 14px; border-radius: 20px; font-family: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer; border: none; background: #e3f2fd; color: #1565c0; transition: all .15s; }
+  .ledger-tab:hover { background: #bbdefb; }
+  .ledger-tab.active { background: #2196f3; color: #fff; }
+
+  /* LEDGER TABLE */
+  .ledger-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ledger-table th { background: #e3f2fd; color: #1565c0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 7px 12px; text-align: left; }
+  .ledger-table td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .ledger-table tr:last-child td { border-bottom: none; }
+  .ledger-empty { text-align: center; padding: 24px; color: var(--text-muted); font-size: 12.5px; }
+
+  .type-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+  .type-opening    { background: #e8f0fe; color: #1565c0; }
+  .type-accrual    { background: #e6f9f0; color: #15803d; }
+  .type-leave_used { background: #fef2f2; color: #dc2626; }
+  .type-adjustment { background: #fff8e1; color: #b45309; }
+  .amt-pos { color: #15803d; font-weight: 600; }
+  .amt-neg { color: #dc2626; font-weight: 600; }
+
+  /* CALENDAR */
+  .cal-wrap { display: none; }
+  .cal-wrap.active { display: block; }
+  .cal-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .cal-nav-btn { background: none; border: 1.5px solid var(--border); border-radius: 6px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-secondary); transition: all .15s; }
+  .cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cal-month-label { font-size: 13px; font-weight: 700; color: var(--text-primary); min-width: 140px; text-align: center; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); text-align: center; padding: 4px 0; letter-spacing: .06em; }
+  .cal-day { min-height: 40px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; color: var(--text-secondary); position: relative; transition: background .1s; }
+  .cal-day.empty { background: transparent; }
+  .cal-day.today { background: #e8f0fe; font-weight: 700; color: var(--accent); }
+  .cal-day.weekend { color: #d1d5db; }
+  .cal-day .cal-num { font-weight: 600; font-size: 12px; line-height: 1; }
+  .cal-day .cal-tag { font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 4px; line-height: 1.2; }
+  .cal-tag.accrual    { background: #dcfce7; color: #15803d; }
+  .cal-tag.leave_used { background: #fee2e2; color: #dc2626; }
+  .cal-tag.opening    { background: #dbeafe; color: #1565c0; }
+  .cal-tag.adjustment { background: #fef3c7; color: #92400e; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
+  .modal-overlay.active { display: flex; }
+  .modal { background: #fff; width: 480px; max-width: 92%; border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+  .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .modal-header h2 { font-size: 15px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; }
+  .modal-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+  .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #fafbfc; flex-shrink: 0; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .form-group input, .form-group select { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px; color: var(--text-primary); outline: none; background: #fff; transition: border .2s; width: 100%; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+  .form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; cursor: pointer; }
+  .req { color: #dc2626; margin-left: 2px; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a2e; color: #fff; font-size: 13px; font-weight: 500; padding: 12px 24px; border-radius: 8px; display: flex; align-items: center; gap: 8px; z-index: 9999; opacity: 0; transition: transform .3s, opacity .3s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.success { background: #16a34a; }
+  .toast.error { background: #dc2626; }
+
+  .pagination-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid var(--border); background: #fafbfc; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
+  .pagination-info { font-size: 12.5px; color: var(--text-muted); }
+  .pagination-controls { display: flex; gap: 4px; }
+  .page-btn { min-width: 32px; height: 32px; padding: 0 8px; border: 1.5px solid var(--border); border-radius: 6px; background: #fff; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; }
+  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .page-size-select { border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 10px; font-family: inherit; font-size: 12.5px; color: var(--text-secondary); outline: none; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <a class="logo" href="#">
-    <img src="logo.png" alt="CrowdSource Logo" class="logo-img" onerror="this.style.display='none'">
-    <span class="logo-text"><span>CROWD</span>SOURCE</span>
-  </a>
+  <a class="logo" href="#"><span class="logo-text"><span>CROWD</span>SOURCE</span></a>
   <div class="topbar-user">
-    <div class="topbar-user-name">
-      <strong>HR Admin</strong>
-      <span>Human Resources</span>
-    </div>
-    <div class="avatar">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </div>
+    <div class="topbar-user-name"><strong>HR Admin</strong><span>Human Resources</span></div>
+    <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
   </div>
 </header>
 
 <div class="layout">
-
   <nav class="sidebar">
-    <a class="nav-item" href="homepage.html">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      TRF Dashboard
-    </a>
-    <a class="nav-item" href="timesheets.html">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Timesheets
-    </a>
-    <a class="nav-item" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      HR Closing Letters
-    </a>
-    <a class="nav-item" href="hr-database.html">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-      HR Database
-    </a>
-    <a class="nav-item" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-      Onboarding
-    </a>
-    <a class="nav-item" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Background Investigation
-    </a>
-    <a class="nav-item active" href="sil_tracker.html">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      SIL Dashboard
-    </a>
-    <a class="nav-item" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Exit Letters
-    </a>
+    <a class="nav-item" href="homepage.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>TRF Dashboard</a>
+    <a class="nav-item" href="timesheets.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Timesheets</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>HR Closing Letters</a>
+    <a class="nav-item" href="hr-database.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>HR Database</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
+    <a class="nav-item active" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
     <div class="nav-divider"></div>
     <div class="nav-bottom">
-      <a class="nav-item" href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Help
-      </a>
-      <a class="nav-item" href="#" onclick="logOut(); return false;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
-      </a>
+      <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help</a>
+      <a class="nav-item" href="#" onclick="logOut();return false;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
     </div>
   </nav>
 
   <main class="main">
-
     <div class="page-header">
       <div>
         <div class="page-title">Service Incentive Leave (SIL)</div>
-        <div class="page-subtitle">Manage and manually adjust regular employee leave balances.</div>
+        <div class="page-subtitle">Transaction ledger and calendar view for all regular employees.</div>
       </div>
       <div class="controls">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search employees..." onkeyup="filterTable()">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search employees..." oninput="applyFilter()">
         <button class="btn" id="refreshBtn" onclick="loadSILData()">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Refresh
         </button>
-        <button class="btn primary" id="saveBtn" onclick="saveSILEdits()" style="display:none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save Changes
-        </button>
+        <button class="btn success" onclick="openAddEntryModal(null)">+ Add Entry</button>
+        <button class="btn" style="background:#1a1a2e;color:#fff;" onclick="openAddEmployeeModal()">+ Add Employee</button>
       </div>
     </div>
 
-    <div class="error-banner" id="errorBanner">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span id="errorMsg"></span>
-    </div>
+    <div class="error-banner" id="errorBanner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="errorMsg"></span></div>
 
     <div class="table-card">
       <div class="table-scroll">
-        <table id="silTable">
-          <thead>
-            <tr>
-              <th>Employee Name</th>
-              <th>Department</th>
-              <th>Job Title</th>
-              <th class="center">Current SIL Balance</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <tr class="state-row">
-              <td colspan="4">Click Refresh to load SIL balances.</td>
-            </tr>
-          </tbody>
+        <table>
+          <thead><tr>
+            <th style="width:32px"></th>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Job Title</th>
+            <th style="text-align:center">SIL Balance</th>
+            <th style="text-align:center">YTD Used</th>
+            <th style="text-align:center">YTD Accrued</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="tableBody"><tr class="state-row"><td colspan="8"><span class="spinner"></span> Loading...</td></tr></tbody>
         </table>
       </div>
+      <div class="pagination-bar" id="paginationBar" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="pagination-info" id="pageInfo"></span>
+          <select class="page-size-select" id="pageSizeSelect" onchange="currentPage=1;renderTable()">
+            <option value="10">10 / page</option><option value="25" selected>25 / page</option><option value="50">50 / page</option>
+          </select>
+        </div>
+        <div class="pagination-controls" id="pageControls"></div>
+      </div>
     </div>
-
   </main>
 </div>
 
+<!-- ADD ENTRY MODAL -->
+<div class="modal-overlay" id="entryModal">
+  <div class="modal">
+    <div class="modal-header"><h2 id="entryModalTitle">Add Ledger Entry</h2><button class="modal-close" onclick="closeEntryModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group" id="entryEmpGroup"><label>Employee<span class="req">*</span></label><select id="entry_emp_id"><option value="">— Select Employee —</option></select></div>
+      <div class="form-group"><label>Date<span class="req">*</span></label><input type="date" id="entry_date"></div>
+      <div class="form-group"><label>Type<span class="req">*</span></label><select id="entry_type"><option value="">— Select Type —</option><option value="opening">Opening Balance</option><option value="accrual">Accrual</option><option value="leave_used">Leave Used</option><option value="adjustment">Adjustment</option></select></div>
+      <div class="form-group"><label>Amount<span class="req">*</span> <span style="font-size:11px;color:var(--text-muted)">(negative for deductions e.g. -1)</span></label><input type="number" step="0.5" id="entry_amount" placeholder="e.g. 0.5 or -1"></div>
+      <div class="form-group"><label>Notes</label><input type="text" id="entry_notes" placeholder="Optional notes"></div>
+      <div class="form-group"><label>TRF UID <span style="font-size:11px;color:var(--text-muted)">(if linked to a TRF)</span></label><input type="text" id="entry_trf_uid" placeholder="Optional TRF reference"></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeEntryModal()">Cancel</button><button class="btn primary" onclick="saveEntry()" id="saveEntryBtn">Save Entry</button></div>
+  </div>
+</div>
+
+<!-- ADD EMPLOYEE MODAL -->
+<div class="modal-overlay" id="addEmpModal">
+  <div class="modal">
+    <div class="modal-header"><h2>Add Employee to SIL Ledger</h2><button class="modal-close" onclick="closeAddEmployeeModal()">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Use this when onboarding a newly regularized employee. Creates an opening balance entry.</p>
+      <div class="form-group"><label>Employee<span class="req">*</span></label><select id="new_emp_id"><option value="">— Select Employee —</option></select></div>
+      <div class="form-group"><label>Regularization Date<span class="req">*</span></label><input type="date" id="new_reg_date"></div>
+      <div class="form-group"><label>Opening SIL Balance</label><input type="number" step="0.5" id="new_opening_bal" value="0" placeholder="e.g. 0 or 1.5"></div>
+      <div class="form-group"><label>Notes</label><input type="text" id="new_notes" placeholder="e.g. Regularized — opening balance"></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeAddEmployeeModal()">Cancel</button><button class="btn primary" onclick="saveNewEmployee()" id="saveNewEmpBtn">Add to Ledger</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
 <script>
-  const GET_SIL_URL  = 'https://primary-production-a810.up.railway.app/webhook/get-all-sil';
-  const SAVE_SIL_URL = 'https://primary-production-a810.up.railway.app/webhook/update-sil';
+const GET_SIL_URL    = 'https://primary-production-a810.up.railway.app/webhook/get-all-sil';
+const GET_LEDGER_URL = 'https://primary-production-a810.up.railway.app/webhook/get-sil-ledger';
+const ADD_ENTRY_URL  = 'https://primary-production-a810.up.railway.app/webhook/add-sil-ledger-entry';
 
-  let originalData = {};
+let allData=[], filteredData=[], currentPage=1;
+let openLedgers={};
+let calendarMonths={};  // empId -> {year, month}
 
-  function showError(msg) {
-    document.getElementById('errorMsg').textContent = msg;
-    document.getElementById('errorBanner').classList.add('visible');
-  }
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-  function clearError() {
-    document.getElementById('errorBanner').classList.remove('visible');
-  }
+function getPageSize(){return parseInt(document.getElementById('pageSizeSelect').value)}
 
-  function markAsEdited(inputEl) {
-    const row   = inputEl.closest('tr');
-    const empId = row.getAttribute('data-id');
-    if (parseFloat(inputEl.value) !== parseFloat(originalData[empId])) {
-      row.classList.add('edited');
-    } else {
-      row.classList.remove('edited');
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastIcon').textContent=type==='success'?'✅':'❌';
+  document.getElementById('toastMsg').textContent=msg;
+  t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+function showError(msg){document.getElementById('errorMsg').textContent=msg;document.getElementById('errorBanner').classList.add('visible');}
+function clearError(){document.getElementById('errorBanner').classList.remove('visible');}
+
+function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function balClass(n){if(n>0)return'bal-positive';if(n<0)return'bal-negative';return'bal-zero';}
+
+// ── LOAD ──
+async function loadSILData(){
+  clearError();
+  const btn=document.getElementById('refreshBtn');
+  btn.classList.add('loading');
+  document.getElementById('tableBody').innerHTML='<tr class="state-row"><td colspan="8"><span class="spinner"></span> Loading SIL data...</td></tr>';
+  document.getElementById('paginationBar').style.display='none';
+  openLedgers={};calendarMonths={};
+  try{
+    const res=await fetch(GET_SIL_URL);
+    const data=await res.json();
+    allData=Array.isArray(data)?data:(data.employees||[]);
+    applyFilter();
+  }catch{
+    showError('Failed to load SIL data.');
+    document.getElementById('tableBody').innerHTML='<tr class="state-row"><td colspan="8">Error loading data.</td></tr>';
+  }finally{btn.classList.remove('loading');}
+}
+
+function applyFilter(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  filteredData=allData.filter(emp=>{
+    const name=(emp.employee_name||emp.name||'').toLowerCase();
+    const dept=(emp.department||'').toLowerCase();
+    return !q||name.includes(q)||dept.includes(q);
+  });
+  currentPage=1;renderTable();
+}
+
+function renderTable(){
+  const tbody=document.getElementById('tableBody');
+  const pBar=document.getElementById('paginationBar');
+  if(!filteredData.length){tbody.innerHTML='<tr class="state-row"><td colspan="8">No employees found.</td></tr>';pBar.style.display='none';return;}
+
+  const ps=getPageSize(),total=Math.ceil(filteredData.length/ps);
+  if(currentPage>total)currentPage=total;
+  const start=(currentPage-1)*ps,items=filteredData.slice(start,start+ps);
+
+  tbody.innerHTML=items.map(emp=>{
+    const empId=emp.id||emp.employee_id;
+    const sil=parseFloat(emp.sil_balance??0);
+    const ytdUsed=parseFloat(emp.ytd_used??0);
+    const ytdAccrued=parseFloat(emp.ytd_accrued??0);
+    const empName=(emp.employee_name||emp.name||'').replace(/"/g,'&quot;');
+
+    return `<tr data-id="${empId}" data-name="${empName}">
+      <td style="text-align:center;padding:13px 8px">
+        <button onclick="toggleLedger(${empId},this)" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px 6px;border-radius:4px;transition:all .15s" title="View ledger">▶</button>
+      </td>
+      <td><div class="emp-name">${emp.employee_name||emp.name||'Unknown'}</div><div class="emp-sub">PIN: ${emp.pin||empId}</div></td>
+      <td>${emp.department||'—'}</td>
+      <td>${emp.job_title||'—'}</td>
+      <td style="text-align:center"><span class="mono ${balClass(sil)}" style="font-size:14px">${sil.toFixed(1)}</span></td>
+      <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12.5px;color:#dc2626;font-weight:600">${ytdUsed>0?'-'+ytdUsed.toFixed(1):'<span style="color:var(--text-muted)">—</span>'}</td>
+      <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12.5px;color:#15803d;font-weight:600">${ytdAccrued>0?'+'+ytdAccrued.toFixed(1):'<span style="color:var(--text-muted)">—</span>'}</td>
+      <td><button class="btn" style="padding:5px 10px;font-size:11.5px" onclick="openAddEntryModal(${empId})">+ Entry</button></td>
+    </tr>
+    <tr class="ledger-row" id="ledger-${empId}">
+      <td colspan="8" style="padding:0">
+        <div class="ledger-panel" id="ledger-panel-${empId}">
+          <div class="ledger-header">
+            <span class="ledger-title">SIL History</span>
+            <span style="font-size:12px;color:var(--text-muted)" id="ledger-count-${empId}"></span>
+          </div>
+          <div class="ledger-tabs">
+            <button class="ledger-tab active" onclick="switchLedgerView(${empId},'table',this)">Table</button>
+            <button class="ledger-tab" onclick="switchLedgerView(${empId},'calendar',this)">Calendar</button>
+          </div>
+          <div id="ledger-table-${empId}"><div class="ledger-empty"><span class="spinner"></span> Loading...</div></div>
+          <div class="cal-wrap" id="ledger-cal-${empId}"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const from=start+1,to=Math.min(start+ps,filteredData.length);
+  document.getElementById('pageInfo').textContent=`${from}–${to} of ${filteredData.length} records`;
+  pBar.style.display='flex';
+  let btns=`<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  getPageRange(currentPage,total).forEach(p=>{
+    if(p==='...')btns+=`<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+    else btns+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  btns+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>›</button>`;
+  document.getElementById('pageControls').innerHTML=btns;
+}
+
+function getPageRange(c,t){if(t<=7)return Array.from({length:t},(_,i)=>i+1);if(c<=4)return[1,2,3,4,5,'...',t];if(c>=t-3)return[1,'...',t-4,t-3,t-2,t-1,t];return[1,'...',c-1,c,c+1,'...',t];}
+function goPage(p){const t=Math.ceil(filteredData.length/getPageSize());if(p<1||p>t)return;currentPage=p;renderTable();}
+
+// ── LEDGER VIEW SWITCH ──
+function switchLedgerView(empId,view,btn){
+  btn.parentElement.querySelectorAll('.ledger-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const tableEl=document.getElementById(`ledger-table-${empId}`);
+  const calEl=document.getElementById(`ledger-cal-${empId}`);
+  if(view==='table'){tableEl.style.display='block';calEl.classList.remove('active');}
+  else{tableEl.style.display='none';calEl.classList.add('active');renderCalendar(empId);}
+}
+
+// ── LEDGER TOGGLE ──
+async function toggleLedger(empId,btn){
+  const row=document.getElementById(`ledger-${empId}`);
+  if(row.classList.contains('open')){row.classList.remove('open');btn.textContent='▶';btn.style.color='var(--text-muted)';return;}
+  row.classList.add('open');btn.textContent='▼';btn.style.color='var(--accent)';
+  if(openLedgers[empId]!==undefined){renderLedgerTable(empId,openLedgers[empId]);return;}
+  try{
+    const res=await fetch(`${GET_LEDGER_URL}?employee_id=${empId}`);
+    let entries=[];
+    if(res.ok){const text=await res.text();if(text&&text.trim()){try{const data=JSON.parse(text);entries=Array.isArray(data)?data.map(i=>i.json??i):[];}catch(e){entries=[];}}}
+    openLedgers[empId]=entries;renderLedgerTable(empId,entries);
+  }catch{openLedgers[empId]=[];renderLedgerTable(empId,[]);}
+}
+
+function renderLedgerTable(empId,entries){
+  const countEl=document.getElementById(`ledger-count-${empId}`);
+  const content=document.getElementById(`ledger-table-${empId}`);
+  if(countEl)countEl.textContent=`${entries.length} transaction${entries.length!==1?'s':''}`;
+  if(!entries.length){content.innerHTML=`<div class="ledger-empty">No ledger entries yet. Use <strong>+ Entry</strong> to add the first entry.</div>`;return;}
+  content.innerHTML=`<table class="ledger-table"><thead><tr><th>Date</th><th>Type</th><th style="text-align:right">Amount</th><th style="text-align:right">Running Balance</th><th>Notes</th><th>TRF</th></tr></thead><tbody>${entries.map(e=>{
+    const amt=parseFloat(e.amount),bal=parseFloat(e.running_balance);
+    return`<tr><td class="mono">${fmtDate(e.date)}</td><td><span class="type-badge type-${e.type}">${e.type.replace('_',' ')}</span></td><td style="text-align:right" class="mono ${amt>=0?'amt-pos':'amt-neg'}">${amt>=0?'+':''}${amt.toFixed(2)}</td><td style="text-align:right" class="mono ${balClass(bal)}">${bal.toFixed(2)}</td><td style="color:var(--text-secondary);font-size:12px">${e.notes||'—'}</td><td style="font-size:12px">${e.trf_uid?`<span class="mono" style="font-size:11px;color:var(--accent)">${e.trf_uid}</span>`:'—'}</td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+// ── CALENDAR ──
+function renderCalendar(empId){
+  const calEl=document.getElementById(`ledger-cal-${empId}`);
+  const entries=openLedgers[empId]||[];
+  if(!calendarMonths[empId]){const now=new Date();calendarMonths[empId]={year:now.getFullYear(),month:now.getMonth()};}
+  const cm=calendarMonths[empId];
+  const year=cm.year,month=cm.month;
+
+  // Map entries to day
+  const dayMap={};
+  entries.forEach(e=>{
+    const d=new Date(e.date);
+    if(d.getFullYear()===year&&d.getMonth()===month){
+      const day=d.getDate();
+      if(!dayMap[day])dayMap[day]=[];
+      dayMap[day].push(e);
     }
-    const hasEdits = document.querySelectorAll('tr.edited').length > 0;
-    document.getElementById('saveBtn').style.display = hasEdits ? 'flex' : 'none';
-  }
+  });
 
-  function filterTable() {
-    const filter = document.getElementById('searchInput').value.toUpperCase();
-    const trs    = document.getElementById('tableBody').getElementsByTagName('tr');
-    for (let i = 0; i < trs.length; i++) {
-      if (trs[i].classList.contains('state-row')) continue;
-      const nameTd = trs[i].getElementsByTagName('td')[0];
-      if (nameTd) {
-        trs[i].style.display =
-          (nameTd.textContent || nameTd.innerText).toUpperCase().includes(filter) ? '' : 'none';
-      }
-    }
-  }
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const today=new Date();
+  const isThisMonth=today.getFullYear()===year&&today.getMonth()===month;
 
-  async function loadSILData() {
-    clearError();
-    const btn = document.getElementById('refreshBtn');
-    btn.classList.add('loading');
-    document.getElementById('tableBody').innerHTML =
-      '<tr class="state-row"><td colspan="4"><span class="spinner"></span> Loading SIL data...</td></tr>';
-    document.getElementById('saveBtn').style.display = 'none';
-    originalData = {};
+  let html=`<div class="cal-nav">
+    <button class="cal-nav-btn" onclick="calNav(${empId},-1)">‹</button>
+    <span class="cal-month-label">${MONTHS[month]} ${year}</span>
+    <button class="cal-nav-btn" onclick="calNav(${empId},1)">›</button>
+  </div>`;
 
-    try {
-      const res       = await fetch(GET_SIL_URL);
-      const data      = await res.json();
-      let employees = Array.isArray(data) ? data : (data.employees || []);
+  html+=`<div class="cal-grid">`;
+  DAYS_SHORT.forEach(d=>{html+=`<div class="cal-hdr">${d}</div>`;});
 
-      // ── WE RELY ON THE BACKEND SQL TO FILTER EMPLOYEES NOW ──
-      // The n8n backend is already fetching ONLY Regular employees.
-      
-      if (employees.length === 0) {
-        document.getElementById('tableBody').innerHTML =
-          '<tr class="state-row"><td colspan="4">No regular employees found.</td></tr>';
-        return;
-      }
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
 
-      document.getElementById('tableBody').innerHTML = employees.map(emp => {
-        const empId      = emp.id || emp.employee_id || emp.pin;
-        const currentSil = emp.sil_balance ?? emp.sil ?? 0;
-        originalData[empId] = currentSil;
-        return `<tr data-id="${empId}">
-          <td>
-            <div class="emp-name">${emp.employee_name || emp.name || 'Unknown'}</div>
-            <div class="emp-dept">${emp.pin || empId}</div>
-          </td>
-          <td>${emp.department || '—'}</td>
-          <td>${emp.job_title || '—'}</td>
-          <td class="center">
-            <input type="number" step="0.5" class="sil-input" value="${currentSil}" oninput="markAsEdited(this)">
-          </td>
-        </tr>`;
-      }).join('');
+  for(let d=1;d<=daysInMonth;d++){
+    const dow=new Date(year,month,d).getDay();
+    const isToday=isThisMonth&&today.getDate()===d;
+    const isWeekend=dow===0||dow===6;
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    if(isWeekend)cls+=' weekend';
 
-      filterTable();
-    } catch (err) {
-      showError('Failed to load SIL database. Please check your connection.');
-      document.getElementById('tableBody').innerHTML =
-        '<tr class="state-row"><td colspan="4">Error loading data.</td></tr>';
-    } finally {
-      btn.classList.remove('loading');
-    }
-  }
-
-  async function saveSILEdits() {
-    const editedRows = Array.from(document.querySelectorAll('tr.edited'));
-    if (editedRows.length === 0) return;
-
-    const btn = document.getElementById('saveBtn');
-    btn.classList.add('loading');
-    btn.disabled = true;
-
-    const payload = {
-      updates: editedRows.map(row => ({
-        employee_id:     row.getAttribute('data-id'),
-        new_sil_balance: parseFloat(row.querySelector('.sil-input').value)
-      }))
-    };
-
-    try {
-      const res = await fetch(SAVE_SIL_URL, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload)
+    let tags='';
+    if(dayMap[d]){
+      dayMap[d].forEach(e=>{
+        const amt=parseFloat(e.amount);
+        tags+=`<span class="cal-tag ${e.type}" title="${e.type.replace('_',' ')}: ${amt>=0?'+':''}${amt.toFixed(1)}${e.notes?' — '+e.notes:''}">${amt>=0?'+':''}${amt.toFixed(1)}</span>`;
       });
-
-      if (res.ok) {
-        editedRows.forEach(row => {
-          row.classList.remove('edited');
-          const empId = row.getAttribute('data-id');
-          originalData[empId] = parseFloat(row.querySelector('.sil-input').value);
-        });
-        btn.style.display = 'none';
-      } else {
-        showError('Failed to save changes. Please try again.');
-      }
-    } catch (err) {
-      showError('Network error. Check your connection.');
-    } finally {
-      btn.classList.remove('loading');
-      btn.disabled = false;
     }
+
+    html+=`<div class="${cls}"><span class="cal-num">${d}</span>${tags}</div>`;
   }
 
-  window.addEventListener('DOMContentLoaded', loadSILData);
-</script>
+  html+=`</div>`;
+  calEl.innerHTML=html;
+}
 
+function calNav(empId,dir){
+  const cm=calendarMonths[empId];
+  cm.month+=dir;
+  if(cm.month<0){cm.month=11;cm.year--;}
+  if(cm.month>11){cm.month=0;cm.year++;}
+  renderCalendar(empId);
+}
+
+// ── ADD ENTRY MODAL ──
+let entryTargetEmpId=null;
+function openAddEntryModal(empId){
+  entryTargetEmpId=empId;
+  document.getElementById('entryModal').classList.add('active');
+  document.getElementById('entry_date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('entry_type').value='';
+  document.getElementById('entry_amount').value='';
+  document.getElementById('entry_notes').value='';
+  document.getElementById('entry_trf_uid').value='';
+  const empGroup=document.getElementById('entryEmpGroup'),empSel=document.getElementById('entry_emp_id');
+  if(empId){empGroup.style.display='none';empSel.value=empId;const r=document.querySelector(`tr[data-id="${empId}"]`);document.getElementById('entryModalTitle').textContent=`Add Entry — ${r?r.getAttribute('data-name'):''}`;}
+  else{empGroup.style.display='flex';document.getElementById('entryModalTitle').textContent='Add Ledger Entry';populateEmpDropdown(empSel);}
+}
+function closeEntryModal(){document.getElementById('entryModal').classList.remove('active');entryTargetEmpId=null;}
+
+async function saveEntry(){
+  const empId=entryTargetEmpId||document.getElementById('entry_emp_id').value;
+  const date=document.getElementById('entry_date').value;
+  const type=document.getElementById('entry_type').value;
+  const amount=document.getElementById('entry_amount').value;
+  if(!empId||!date||!type||amount===''){showToast('Employee, Date, Type, and Amount are required.','error');return;}
+  const btn=document.getElementById('saveEntryBtn');btn.textContent='Saving...';btn.disabled=true;
+  try{
+    const res=await fetch(ADD_ENTRY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({employee_id:Number(empId),date,type,amount:parseFloat(amount),notes:document.getElementById('entry_notes').value||null,trf_uid:document.getElementById('entry_trf_uid').value||null})});
+    if(res.ok){
+      showToast('Entry added!');closeEntryModal();
+      delete openLedgers[empId];
+      const lr=document.getElementById(`ledger-${empId}`);
+      if(lr&&lr.classList.contains('open')){
+        document.getElementById(`ledger-table-${empId}`).innerHTML='<div class="ledger-empty"><span class="spinner"></span> Reloading...</div>';
+        try{const r=await fetch(`${GET_LEDGER_URL}?employee_id=${empId}`);let entries=[];if(r.ok){const text=await r.text();if(text&&text.trim()){try{const data=JSON.parse(text);entries=Array.isArray(data)?data.map(i=>i.json??i):[];}catch(e){}}}openLedgers[empId]=entries;renderLedgerTable(empId,entries);const calEl=document.getElementById(`ledger-cal-${empId}`);if(calEl&&calEl.classList.contains('active'))renderCalendar(empId);}catch{renderLedgerTable(empId,[]);}
+      }
+      await loadSILData();
+    }else showToast('Failed to add entry.','error');
+  }catch{showToast('Network error.','error');}
+  finally{btn.textContent='Save Entry';btn.disabled=false;}
+}
+
+// ── ADD EMPLOYEE MODAL ──
+function openAddEmployeeModal(){
+  document.getElementById('addEmpModal').classList.add('active');
+  document.getElementById('new_reg_date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('new_opening_bal').value='0';
+  document.getElementById('new_notes').value='';
+  populateEmpDropdown(document.getElementById('new_emp_id'));
+}
+function closeAddEmployeeModal(){document.getElementById('addEmpModal').classList.remove('active');}
+
+async function saveNewEmployee(){
+  const empId=document.getElementById('new_emp_id').value;
+  const regDate=document.getElementById('new_reg_date').value;
+  if(!empId||!regDate){showToast('Employee and Regularization Date are required.','error');return;}
+  const btn=document.getElementById('saveNewEmpBtn');btn.textContent='Adding...';btn.disabled=true;
+  try{
+    const res=await fetch(ADD_ENTRY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({employee_id:Number(empId),date:regDate,type:'opening',amount:parseFloat(document.getElementById('new_opening_bal').value)||0,notes:document.getElementById('new_notes').value||'Opening balance upon regularization',trf_uid:null})});
+    if(res.ok){showToast('Employee added to SIL ledger!');closeAddEmployeeModal();await loadSILData();}
+    else showToast('Failed.','error');
+  }catch{showToast('Network error.','error');}
+  finally{btn.textContent='Add to Ledger';btn.disabled=false;}
+}
+
+function populateEmpDropdown(sel){
+  const cur=sel.value;sel.innerHTML='<option value="">— Select Employee —</option>';
+  allData.forEach(emp=>{const id=emp.id||emp.employee_id;const o=document.createElement('option');o.value=id;o.textContent=emp.employee_name||emp.name||`ID ${id}`;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+
+document.getElementById('entryModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeEntryModal();});
+document.getElementById('addEmpModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddEmployeeModal();});
+
+window.addEventListener('DOMContentLoaded',loadSILData);
+</script>
 </body>
 </html>
