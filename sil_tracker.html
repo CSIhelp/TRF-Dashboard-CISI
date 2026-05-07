@@ -68,6 +68,10 @@
   .btn.primary:hover { background: #0f4c92; }
   .btn.success { background: #15803d; color: #fff; border-color: #15803d; }
   .btn.success:hover { background: #166534; }
+  .btn.danger { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+  .btn.danger:hover { background: #fca5a5; }
+  .btn.confirm-delete { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .btn.confirm-delete:hover { background: #b91c1c; }
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn.loading svg { animation: spin .7s linear infinite; }
@@ -97,20 +101,17 @@
   .state-row td { text-align: center; padding: 48px !important; color: var(--text-muted); font-size: 13.5px; }
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ccc; border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 6px; vertical-align: middle; }
 
-  /* LEDGER ROW */
+  /* LEDGER */
   .ledger-row { display: none; }
   .ledger-row.open { display: table-row; }
   .ledger-panel { padding: 0 18px 16px; background: #f8fbff; border-bottom: 2px solid var(--accent); }
   .ledger-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
   .ledger-title { font-size: 13px; font-weight: 700; color: var(--accent); }
-
-  /* LEDGER TABS */
   .ledger-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
   .ledger-tab { padding: 5px 14px; border-radius: 20px; font-family: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer; border: none; background: #e3f2fd; color: #1565c0; transition: all .15s; }
   .ledger-tab:hover { background: #bbdefb; }
   .ledger-tab.active { background: #2196f3; color: #fff; }
 
-  /* LEDGER TABLE */
   .ledger-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   .ledger-table th { background: #e3f2fd; color: #1565c0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 7px 12px; text-align: left; }
   .ledger-table td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
@@ -125,6 +126,10 @@
   .amt-pos { color: #15803d; font-weight: 600; }
   .amt-neg { color: #dc2626; font-weight: 600; }
 
+  /* DELETE BTN IN LEDGER ROW */
+  .del-entry-btn { background: none; border: 1.5px solid #fecaca; border-radius: 6px; color: #dc2626; font-size: 11px; font-weight: 600; padding: 3px 8px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .del-entry-btn:hover { background: #fee2e2; }
+
   /* CALENDAR */
   .cal-wrap { display: none; }
   .cal-wrap.active { display: block; }
@@ -134,12 +139,12 @@
   .cal-month-label { font-size: 13px; font-weight: 700; color: var(--text-primary); min-width: 140px; text-align: center; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .cal-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); text-align: center; padding: 4px 0; letter-spacing: .06em; }
-  .cal-day { min-height: 40px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; color: var(--text-secondary); position: relative; transition: background .1s; }
+  .cal-day { min-height: 48px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 5px; gap: 2px; font-size: 12px; color: var(--text-secondary); transition: background .1s; }
   .cal-day.empty { background: transparent; }
   .cal-day.today { background: #e8f0fe; font-weight: 700; color: var(--accent); }
   .cal-day.weekend { color: #d1d5db; }
   .cal-day .cal-num { font-weight: 600; font-size: 12px; line-height: 1; }
-  .cal-day .cal-tag { font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 4px; line-height: 1.2; }
+  .cal-day .cal-tag { font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 4px; line-height: 1.2; cursor: default; }
   .cal-tag.accrual    { background: #dcfce7; color: #15803d; }
   .cal-tag.leave_used { background: #fee2e2; color: #dc2626; }
   .cal-tag.opening    { background: #dbeafe; color: #1565c0; }
@@ -161,6 +166,15 @@
   .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
   .form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; cursor: pointer; }
   .req { color: #dc2626; margin-left: 2px; }
+
+  /* DELETE CONFIRM MODAL */
+  .delete-icon-wrap { width: 52px; height: 52px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .delete-confirm-body { padding: 28px 28px 20px; text-align: center; }
+  .delete-confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+  .delete-entry-preview { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; text-align: left; font-size: 12.5px; margin-bottom: 12px; }
+  .delete-entry-preview strong { display: block; font-weight: 600; margin-bottom: 4px; }
+  .delete-entry-preview span { color: var(--text-muted); font-size: 12px; }
+  .delete-warn { font-size: 12.5px; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 8px 12px; }
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a2e; color: #fff; font-size: 13px; font-weight: 500; padding: 12px 24px; border-radius: 8px; display: flex; align-items: center; gap: 8px; z-index: 9999; opacity: 0; transition: transform .3s, opacity .3s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -283,21 +297,43 @@
   </div>
 </div>
 
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:420px">
+    <div class="delete-confirm-body">
+      <div class="delete-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </div>
+      <div class="delete-confirm-title">Delete Ledger Entry?</div>
+      <div class="delete-entry-preview" id="deletePreview">
+        <strong id="deletePreviewType">—</strong>
+        <span id="deletePreviewDetails">—</span>
+      </div>
+      <div class="delete-warn">⚠️ This will permanently remove the entry and recalculate the employee's SIL balance. This cannot be undone.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn confirm-delete" id="confirmDeleteBtn" onclick="confirmDeleteEntry()">Yes, Delete Entry</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
 <script>
 const GET_SIL_URL    = 'https://primary-production-a810.up.railway.app/webhook/get-all-sil';
 const GET_LEDGER_URL = 'https://primary-production-a810.up.railway.app/webhook/get-sil-ledger';
 const ADD_ENTRY_URL  = 'https://primary-production-a810.up.railway.app/webhook/add-sil-ledger-entry';
+const DEL_ENTRY_URL  = 'https://primary-production-a810.up.railway.app/webhook/delete-sil-ledger-entry';
 
 let allData=[], filteredData=[], currentPage=1;
-let openLedgers={};
-let calendarMonths={};  // empId -> {year, month}
+let openLedgers={}, calendarMonths={};
+let pendingDelete = { entryId: null, empId: null };
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function getPageSize(){return parseInt(document.getElementById('pageSizeSelect').value)}
+function getPageSize(){return parseInt(document.getElementById('pageSizeSelect').value);}
 
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
@@ -308,7 +344,6 @@ function showToast(msg,type='success'){
 }
 function showError(msg){document.getElementById('errorMsg').textContent=msg;document.getElementById('errorBanner').classList.add('visible');}
 function clearError(){document.getElementById('errorBanner').classList.remove('visible');}
-
 function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 function balClass(n){if(n>0)return'bal-positive';if(n<0)return'bal-negative';return'bal-zero';}
 
@@ -345,7 +380,6 @@ function renderTable(){
   const tbody=document.getElementById('tableBody');
   const pBar=document.getElementById('paginationBar');
   if(!filteredData.length){tbody.innerHTML='<tr class="state-row"><td colspan="8">No employees found.</td></tr>';pBar.style.display='none';return;}
-
   const ps=getPageSize(),total=Math.ceil(filteredData.length/ps);
   if(currentPage>total)currentPage=total;
   const start=(currentPage-1)*ps,items=filteredData.slice(start,start+ps);
@@ -418,11 +452,22 @@ async function toggleLedger(empId,btn){
   if(row.classList.contains('open')){row.classList.remove('open');btn.textContent='▶';btn.style.color='var(--text-muted)';return;}
   row.classList.add('open');btn.textContent='▼';btn.style.color='var(--accent)';
   if(openLedgers[empId]!==undefined){renderLedgerTable(empId,openLedgers[empId]);return;}
+  await fetchAndRenderLedger(empId);
+}
+
+async function fetchAndRenderLedger(empId){
   try{
     const res=await fetch(`${GET_LEDGER_URL}?employee_id=${empId}`);
     let entries=[];
-    if(res.ok){const text=await res.text();if(text&&text.trim()){try{const data=JSON.parse(text);entries=Array.isArray(data)?data.map(i=>i.json??i):[];}catch(e){entries=[];}}}
-    openLedgers[empId]=entries;renderLedgerTable(empId,entries);
+    if(res.ok){
+      const text=await res.text();
+      if(text&&text.trim()){
+        try{const data=JSON.parse(text);entries=Array.isArray(data)?data.map(i=>i.json??i):[];}
+        catch(e){entries=[];}
+      }
+    }
+    openLedgers[empId]=entries;
+    renderLedgerTable(empId,entries);
   }catch{openLedgers[empId]=[];renderLedgerTable(empId,[]);}
 }
 
@@ -430,11 +475,83 @@ function renderLedgerTable(empId,entries){
   const countEl=document.getElementById(`ledger-count-${empId}`);
   const content=document.getElementById(`ledger-table-${empId}`);
   if(countEl)countEl.textContent=`${entries.length} transaction${entries.length!==1?'s':''}`;
-  if(!entries.length){content.innerHTML=`<div class="ledger-empty">No ledger entries yet. Use <strong>+ Entry</strong> to add the first entry.</div>`;return;}
-  content.innerHTML=`<table class="ledger-table"><thead><tr><th>Date</th><th>Type</th><th style="text-align:right">Amount</th><th style="text-align:right">Running Balance</th><th>Notes</th><th>TRF</th></tr></thead><tbody>${entries.map(e=>{
-    const amt=parseFloat(e.amount),bal=parseFloat(e.running_balance);
-    return`<tr><td class="mono">${fmtDate(e.date)}</td><td><span class="type-badge type-${e.type}">${e.type.replace('_',' ')}</span></td><td style="text-align:right" class="mono ${amt>=0?'amt-pos':'amt-neg'}">${amt>=0?'+':''}${amt.toFixed(2)}</td><td style="text-align:right" class="mono ${balClass(bal)}">${bal.toFixed(2)}</td><td style="color:var(--text-secondary);font-size:12px">${e.notes||'—'}</td><td style="font-size:12px">${e.trf_uid?`<span class="mono" style="font-size:11px;color:var(--accent)">${e.trf_uid}</span>`:'—'}</td></tr>`;
-  }).join('')}</tbody></table>`;
+  if(!entries.length){
+    content.innerHTML=`<div class="ledger-empty">No ledger entries yet. Use <strong>+ Entry</strong> to add the first entry.</div>`;
+    return;
+  }
+  content.innerHTML=`<table class="ledger-table">
+    <thead><tr>
+      <th>Date</th><th>Type</th>
+      <th style="text-align:right">Amount</th>
+      <th style="text-align:right">Running Balance</th>
+      <th>Notes</th><th>TRF</th><th style="width:80px"></th>
+    </tr></thead>
+    <tbody>${entries.map(e=>{
+      const amt=parseFloat(e.amount),bal=parseFloat(e.running_balance);
+      return`<tr>
+        <td class="mono">${fmtDate(e.date)}</td>
+        <td><span class="type-badge type-${e.type}">${e.type.replace('_',' ')}</span></td>
+        <td style="text-align:right" class="mono ${amt>=0?'amt-pos':'amt-neg'}">${amt>=0?'+':''}${amt.toFixed(2)}</td>
+        <td style="text-align:right" class="mono ${balClass(bal)}">${bal.toFixed(2)}</td>
+        <td style="color:var(--text-secondary);font-size:12px">${e.notes||'—'}</td>
+        <td style="font-size:12px">${e.trf_uid?`<span class="mono" style="font-size:11px;color:var(--accent)">${e.trf_uid}</span>`:'—'}</td>
+        <td style="text-align:center">
+          <button class="del-entry-btn" onclick="openDeleteModal(${e.id},${empId},'${e.type}',${amt},'${fmtDate(e.date)}','${(e.notes||'').replace(/'/g,"\\'")}')">Delete</button>
+        </td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+// ── DELETE MODAL ──
+function openDeleteModal(entryId, empId, type, amount, date, notes){
+  pendingDelete = { entryId, empId };
+  document.getElementById('deletePreviewType').textContent = `${type.replace('_',' ')} — ${amount>=0?'+':''}${parseFloat(amount).toFixed(2)} days`;
+  document.getElementById('deletePreviewDetails').textContent = `${date}${notes?' · '+notes:''}`;
+  document.getElementById('confirmDeleteBtn').disabled = false;
+  document.getElementById('confirmDeleteBtn').textContent = 'Yes, Delete Entry';
+  document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal(){
+  document.getElementById('deleteModal').classList.remove('active');
+  pendingDelete = { entryId: null, empId: null };
+}
+
+async function confirmDeleteEntry(){
+  const {entryId, empId} = pendingDelete;
+  if(!entryId||!empId) return;
+
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.disabled = true;
+  btn.textContent = 'Deleting...';
+
+  try{
+    const res = await fetch(DEL_ENTRY_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ entry_id: entryId, employee_id: empId })
+    });
+    if(res.ok){
+      showToast('Entry deleted and balance recalculated.');
+      closeDeleteModal();
+      delete openLedgers[empId];
+      const lr = document.getElementById(`ledger-${empId}`);
+      if(lr && lr.classList.contains('open')){
+        document.getElementById(`ledger-table-${empId}`).innerHTML='<div class="ledger-empty"><span class="spinner"></span> Reloading...</div>';
+        await fetchAndRenderLedger(empId);
+        const calEl = document.getElementById(`ledger-cal-${empId}`);
+        if(calEl && calEl.classList.contains('active')) renderCalendar(empId);
+      }
+      await loadSILData();
+    }else{
+      showToast('Failed to delete entry.','error');
+      btn.disabled=false;btn.textContent='Yes, Delete Entry';
+    }
+  }catch{
+    showToast('Network error.','error');
+    btn.disabled=false;btn.textContent='Yes, Delete Entry';
+  }
 }
 
 // ── CALENDAR ──
@@ -444,8 +561,6 @@ function renderCalendar(empId){
   if(!calendarMonths[empId]){const now=new Date();calendarMonths[empId]={year:now.getFullYear(),month:now.getMonth()};}
   const cm=calendarMonths[empId];
   const year=cm.year,month=cm.month;
-
-  // Map entries to day
   const dayMap={};
   entries.forEach(e=>{
     const d=new Date(e.date);
@@ -455,23 +570,17 @@ function renderCalendar(empId){
       dayMap[day].push(e);
     }
   });
-
   const firstDay=new Date(year,month,1).getDay();
   const daysInMonth=new Date(year,month+1,0).getDate();
   const today=new Date();
   const isThisMonth=today.getFullYear()===year&&today.getMonth()===month;
-
   let html=`<div class="cal-nav">
     <button class="cal-nav-btn" onclick="calNav(${empId},-1)">‹</button>
     <span class="cal-month-label">${MONTHS[month]} ${year}</span>
     <button class="cal-nav-btn" onclick="calNav(${empId},1)">›</button>
-  </div>`;
-
-  html+=`<div class="cal-grid">`;
+  </div><div class="cal-grid">`;
   DAYS_SHORT.forEach(d=>{html+=`<div class="cal-hdr">${d}</div>`;});
-
   for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
-
   for(let d=1;d<=daysInMonth;d++){
     const dow=new Date(year,month,d).getDay();
     const isToday=isThisMonth&&today.getDate()===d;
@@ -479,7 +588,6 @@ function renderCalendar(empId){
     let cls='cal-day';
     if(isToday)cls+=' today';
     if(isWeekend)cls+=' weekend';
-
     let tags='';
     if(dayMap[d]){
       dayMap[d].forEach(e=>{
@@ -487,10 +595,8 @@ function renderCalendar(empId){
         tags+=`<span class="cal-tag ${e.type}" title="${e.type.replace('_',' ')}: ${amt>=0?'+':''}${amt.toFixed(1)}${e.notes?' — '+e.notes:''}">${amt>=0?'+':''}${amt.toFixed(1)}</span>`;
       });
     }
-
     html+=`<div class="${cls}"><span class="cal-num">${d}</span>${tags}</div>`;
   }
-
   html+=`</div>`;
   calEl.innerHTML=html;
 }
@@ -534,7 +640,9 @@ async function saveEntry(){
       const lr=document.getElementById(`ledger-${empId}`);
       if(lr&&lr.classList.contains('open')){
         document.getElementById(`ledger-table-${empId}`).innerHTML='<div class="ledger-empty"><span class="spinner"></span> Reloading...</div>';
-        try{const r=await fetch(`${GET_LEDGER_URL}?employee_id=${empId}`);let entries=[];if(r.ok){const text=await r.text();if(text&&text.trim()){try{const data=JSON.parse(text);entries=Array.isArray(data)?data.map(i=>i.json??i):[];}catch(e){}}}openLedgers[empId]=entries;renderLedgerTable(empId,entries);const calEl=document.getElementById(`ledger-cal-${empId}`);if(calEl&&calEl.classList.contains('active'))renderCalendar(empId);}catch{renderLedgerTable(empId,[]);}
+        await fetchAndRenderLedger(empId);
+        const calEl=document.getElementById(`ledger-cal-${empId}`);
+        if(calEl&&calEl.classList.contains('active'))renderCalendar(empId);
       }
       await loadSILData();
     }else showToast('Failed to add entry.','error');
@@ -573,6 +681,7 @@ function populateEmpDropdown(sel){
 
 document.getElementById('entryModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeEntryModal();});
 document.getElementById('addEmpModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddEmployeeModal();});
+document.getElementById('deleteModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDeleteModal();});
 
 window.addEventListener('DOMContentLoaded',loadSILData);
 </script>
