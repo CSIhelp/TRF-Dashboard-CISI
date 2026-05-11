@@ -330,15 +330,15 @@
           <div class="csv-steps">
             <div class="csv-step">
               <div class="csv-step-num">Step 1</div>
-              <div class="csv-step-text"><strong>Download</strong> the CSV template below and fill in your employees' details.</div>
+              <div class="csv-step-text"><strong>Download</strong> the CSV template below and fill in your employees' details. Document links are optional.</div>
             </div>
             <div class="csv-step">
               <div class="csv-step-num">Step 2</div>
-              <div class="csv-step-text"><strong>Upload</strong> your filled CSV file. We'll preview all rows before submitting.</div>
+              <div class="csv-step-text"><strong>Upload</strong> your filled CSV file. Preview and edit all rows before submitting.</div>
             </div>
             <div class="csv-step">
               <div class="csv-step-num">Step 3</div>
-              <div class="csv-step-text"><strong>Confirm</strong> and submit. All employees are created and emailed automatically.</div>
+              <div class="csv-step-text"><strong>Confirm</strong> and submit. All employees are added to the HR system. HR will send their 201 upload link separately.</div>
             </div>
           </div>
           <div>
@@ -387,7 +387,7 @@
 
         <!-- Bulk Submit -->
         <div class="submit-wrap" id="bulkSubmitWrap" style="display:none">
-          <div class="submit-note">All <strong id="bulkCount">0</strong> employees will be added with status <strong>Onboarding</strong> and emailed a 201 requirements link.</div>
+          <div class="submit-note">All <strong id="bulkCount">0</strong> employees will be added with status <strong>Onboarding</strong>. HR can send their 201 upload link manually from the HR Database.</div>
           <div style="display:flex;gap:10px">
             <button class="btn" onclick="clearCsv()">Clear</button>
             <button class="btn-submit" id="bulkSubmitBtn" onclick="submitBulk()">
@@ -950,7 +950,7 @@ async function submitBulk() {
   setTimeout(() => {
     document.getElementById('formWrap').style.display = 'none';
     document.getElementById('successBulkMsg').textContent =
-      `${results.success.length} of ${valid.length} employees were added to the HR system. Each will receive a 201 requirements email.`;
+      `${results.success.length} of ${valid.length} employees were added to the HR system. HR can send each employee their 201 upload link from the HR Database.`;
     document.getElementById('successBulkList').innerHTML =
       results.success.map(n=>`<li>✅ ${n}</li>`).join('') +
       results.failed.map(n=>`<li style="background:#fef2f2;border-color:#fecaca;color:#dc2626">✗ ${n} — failed</li>`).join('');
