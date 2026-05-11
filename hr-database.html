@@ -229,7 +229,7 @@
         <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
       </div>
     </div>
-    <a class="nav-item" href="employee-form.html" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
+    <a class="nav-item" href="#" onclick="openOnboardingWithToken();return false;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
@@ -363,7 +363,7 @@
       <div id="fileList201"><p style="font-size:12.5px;color:var(--text-muted)"><span class="spinner"></span> Loading...</p></div>
     </div>
 
-    <div class="modal-footer"><button class="btn" onclick="close201Modal()">Close</button></div>
+    <div class="modal-footer"><button class="btn" style="background:#e8f0fe;color:var(--accent);border-color:#bfdbfe" id="send201EmailBtn" onclick="send201EmailFromModal()">✉ Send 201 Link to Employee</button><button class="btn" onclick="close201Modal()">Close</button></div>
   </div>
 </div>
 
@@ -386,6 +386,7 @@ const URL_SYNC_HOURS    = 'https://primary-production-a810.up.railway.app/webhoo
 const URL_SAVE_201      = 'https://primary-production-a810.up.railway.app/webhook/save-201-file';
 const URL_GET_201       = 'https://primary-production-a810.up.railway.app/webhook/get-201-files';
 const URL_DELETE_201    = 'https://primary-production-a810.up.railway.app/webhook/delete-201-file';
+const URL_SEND_201_EMAIL= 'https://primary-production-a810.up.railway.app/webhook/send-201-email';
 
 const currentPath = window.location.pathname.split('/');
 currentPath.pop();
@@ -397,6 +398,7 @@ let employeesData=[], filteredData=[], currentPage=1, currentTab='personal';
 let currentEmpFilter='regular', currentEmpId=null;
 let currentDependents=[], currentCIP=[];
 let current201EmpId=null, current201Pin=null;
+let openModalAtTab=null;
 
 function safeParse(val){if(!val)return[];if(typeof val==='object')return Array.isArray(val)?val:[];try{return JSON.parse(val);}catch{return[];}}
 
@@ -570,7 +572,7 @@ function renderTable(){
   if(currentPage>total)currentPage=total;
   const start=(currentPage-1)*ps,items=data.slice(start,start+ps);
   const isArchive=currentEmpFilter==='archive',isIntern=currentEmpFilter==='intern';
-  const ab=(emp)=>{const gi=employeesData.indexOf(emp);if(isArchive)return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;return`<div class="actions"><button class="btn" onclick="openModal(${gi})">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;};
+  const ab=(emp)=>{const gi=employeesData.indexOf(emp);if(isArchive)return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;return`<div class="actions"><button class="btn" onclick="openModal(${gi},currentTab)">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;};
   const btr=(content,idx)=>{const dIdx=start+idx;return`<tr class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)">${content}</tr>`;};
 
   // Personal
@@ -904,7 +906,8 @@ function buildModalPanels(){
 function updateBonusPreview(){const hrs=document.getElementById('f_total_hours')?.value;const bonus=getCompletionBonus(hrs);const preview=document.getElementById('f_bonus_preview');if(preview)preview.value=bonus?fmtPeso(bonus):'— (no match)';}
 function switchModalTab(tabId,btn){document.querySelectorAll('.modal-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.modal-body').forEach(b=>b.classList.remove('active'));const el=document.getElementById(tabId);if(el)el.classList.add('active');if(tabId==='m-benefits')renderBenefitsPreview();if(tabId==='m-liabilities'&&currentEmpId)loadLiabilities(currentEmpId);}
 
-function openModal(index=-1){
+function openModal(index=-1, jumpToTab=null){
+  openModalAtTab=jumpToTab;
   buildModalPanels();document.getElementById('empModal').classList.add('active');loadDropdowns();
   document.getElementById('liabilityList')&&(document.getElementById('liabilityList').innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>');
   const isArchive=currentEmpFilter==='archive',isIntern=currentEmpFilter==='intern';
@@ -928,6 +931,21 @@ function openModal(index=-1){
     s('f_cip_status',e.cip_status);s('f_university',e.university);s('f_ojt_advisor',e.ojt_advisor);
     s('f_ojt_advisor_number',e.ojt_advisor_number);s('f_ojt_advisor_email',e.ojt_advisor_email);
     if(isIntern){s('f_total_hours',e.total_hours);s('f_rendered_hours',e.rendered_hours);updateBonusPreview();}
+    // Jump to the tab that was active when Edit was clicked
+    if(openModalAtTab){
+      const tabMap={'personal':'m-personal','company':'m-company','sil':'m-sil','benefits':'m-benefits','cip':'m-cip','files':'m-liabilities','tracker':'m-company'};
+      const modalTabId=tabMap[openModalAtTab]||'m-personal';
+      setTimeout(()=>{
+        const btn=document.querySelector(`#modalTabBar .modal-tab-btn[onclick*="${modalTabId}"]`);
+        if(btn){btn.click();}
+        // If it's the 201 files tab, show it directly
+        if(openModalAtTab==='files'){
+          // Open the 201 panel directly instead
+          const fn=[e.fn,e.mn,e.ln].filter(Boolean).join(' ')||'—';
+          open201Panel(e.id,e.pin||e.id,fn);
+        }
+      },50);
+    }
   }else{
     currentEmpId=null;currentDependents=[];currentCIP=[];
     document.getElementById('modalTitle').innerText=isIntern?'Add New Intern':'Add New Employee';
@@ -968,7 +986,7 @@ function closeInviteModal(){document.getElementById('inviteModal').classList.rem
 async function generateInviteToken(){
   const btn=document.getElementById('generateLinkBtn'),type=document.getElementById('inviteType').value;
   btn.innerHTML='<span class="spinner"></span> Generating...';btn.disabled=true;
-  try{const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});const data=await res.json();if(data.token){const targetForm=type==='intern'?'/intern-form.html':'/employee-form.html';document.getElementById('generatedLink').value=`${BASE_URL_PATH}${targetForm}?token=${data.token}`;document.getElementById('inviteResult').style.display='flex';btn.style.display='none';showToast('Link generated!');}else showToast('Failed.','error');}catch{showToast('Network error.','error');}
+  try{const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});const data=await res.json();if(data.token){document.getElementById('generatedLink').value=`${BASE_URL_PATH}/onboarding-form.html?token=${data.token}`;document.getElementById('inviteResult').style.display='flex';btn.style.display='none';showToast('Link generated!');}else showToast('Failed.','error');}catch{showToast('Network error.','error');}
   finally{btn.innerHTML='Generate Link';btn.disabled=false;}
 }
 function copyInviteLink(){document.getElementById('generatedLink').select();document.execCommand('copy');showToast('Copied!');}
@@ -990,6 +1008,60 @@ function autoCalculateEndDate(){
 }
 
 document.getElementById('files201Modal').addEventListener('click',e=>{if(e.target===e.currentTarget)close201Modal();});
+
+async function openOnboardingWithToken(){
+  showToast('Generating onboarding link...');
+  try{
+    const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});
+    const data=await res.json();
+    if(data.token){
+      window.open(`${BASE_URL_PATH}/onboarding-form.html?token=${data.token}`,'_blank');
+    }else{
+      showToast('Failed to generate token.','error');
+    }
+  }catch{
+    showToast('Network error.','error');
+  }
+}
+
+async function send201Email(empId) {
+  const emp = employeesData.find(e => String(e.id) === String(empId));
+  const name = emp ? [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ') : `Employee #${empId}`;
+  if (!confirm(`Send 201 upload link to ${name}?`)) return;
+  showToast('Sending email...');
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employee_id: empId })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) showToast('201 upload link sent!', 'success');
+    else showToast(data.message || 'Failed to send email.', 'error');
+  } catch(err) {
+    showToast('Network error: ' + err.message, 'error');
+  }
+}
+
+async function send201EmailFromModal() {
+  if (!current201EmpId) return;
+  const btn = document.getElementById('send201EmailBtn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employee_id: current201EmpId })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) showToast('201 upload link sent!', 'success');
+    else showToast(data.message || 'Failed to send email.', 'error');
+  } catch(err) {
+    showToast('Network error: ' + err.message, 'error');
+  } finally {
+    btn.textContent = '✉ Send 201 Link to Employee'; btn.disabled = false;
+  }
+}
 
 window.onload=async()=>{buildTabBar();buildModalPanels();await loadEmployees();};
 </script>
