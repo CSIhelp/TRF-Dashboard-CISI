@@ -229,7 +229,15 @@
         <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
       </div>
     </div>
-    <a class="nav-item" href="#" onclick="openOnboardingWithToken();return false;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>Onboarding</a>
+    <div class="nav-group">
+      <button class="nav-item toggle-btn" onclick="toggleNavGroup('onboarding-sub',this)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+        Onboarding<span class="arrow">▼</span>
+      </button>
+      <div class="sub-nav" id="onboarding-sub">
+        <a href="onboarding.html" class="sub-nav-item">Pipeline</a>
+      </div>
+    </div>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
@@ -367,6 +375,22 @@
   </div>
 </div>
 
+<!-- DELETE 201 FILE MODAL -->
+<div class="modal-overlay" id="delete201Modal">
+  <div class="small-modal">
+    <div class="delete-modal-body">
+      <div class="delete-modal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+      <div class="delete-modal-title">Delete File?</div>
+      <div class="delete-modal-name" id="delete201FileName" style="max-width:280px;white-space:normal;word-break:break-word"></div>
+      <div class="delete-modal-desc">This will permanently remove the file from storage and cannot be undone.</div>
+    </div>
+    <div class="delete-modal-footer">
+      <button class="btn" onclick="closeDelete201Modal()">Cancel</button>
+      <button class="btn confirm-delete" id="confirmDelete201Btn" onclick="confirmDelete201()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
 <script>
@@ -399,6 +423,7 @@ let currentEmpFilter='regular', currentEmpId=null;
 let currentDependents=[], currentCIP=[];
 let current201EmpId=null, current201Pin=null;
 let openModalAtTab=null;
+let pending201Delete={path:null,name:null,type:null};
 
 function safeParse(val){if(!val)return[];if(typeof val==='object')return Array.isArray(val)?val:[];try{return JSON.parse(val);}catch{return[];}}
 
@@ -745,10 +770,24 @@ async function view201File(path, type) {
   }
 }
 
-async function delete201File(path, name, type) {
-  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+function delete201File(path, name, type) {
+  pending201Delete = { path, name, type };
+  document.getElementById('delete201FileName').textContent = name;
+  document.getElementById('delete201Modal').classList.add('active');
+}
+
+function closeDelete201Modal() {
+  document.getElementById('delete201Modal').classList.remove('active');
+  pending201Delete = { path: null, name: null, type: null };
+}
+
+async function confirmDelete201() {
+  const { path, name, type } = pending201Delete;
+  if (!path) return;
+  const btn = document.getElementById('confirmDelete201Btn');
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...';
+  btn.disabled = true;
   try {
-    // Only remove from storage if it's an actual uploaded file
     if (type !== 'link') {
       const { error: storageErr } = await _supabase.storage.from('employee-201').remove([path]);
       if (storageErr) { showToast(`Storage error: ${storageErr.message}`, 'error'); return; }
@@ -760,10 +799,14 @@ async function delete201File(path, name, type) {
     });
     if (!res.ok) { showToast('Metadata removal failed.', 'error'); return; }
     showToast('Deleted.');
+    closeDelete201Modal();
     await load201Files();
     await loadEmployees();
   } catch(err) {
     showToast(`Delete error: ${err.message}`, 'error');
+  } finally {
+    btn.innerHTML = 'Yes, Delete';
+    btn.disabled = false;
   }
 }
 
@@ -1008,6 +1051,7 @@ function autoCalculateEndDate(){
 }
 
 document.getElementById('files201Modal').addEventListener('click',e=>{if(e.target===e.currentTarget)close201Modal();});
+document.getElementById('delete201Modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDelete201Modal();});
 
 async function openOnboardingWithToken(){
   showToast('Generating onboarding link...');
