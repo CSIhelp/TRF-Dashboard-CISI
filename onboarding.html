@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrowdSource – Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
+    const _supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
+    const _supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    async function checkAuth() {
+      const { data: { session }, error } = await _supabase.auth.getSession();
+      if (!session || error) window.location.replace('index.html');
+    }
+    checkAuth();
+    async function logOut() { await _supabase.auth.signOut(); window.location.replace('index.html'); }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f4f5f7;--sidebar-bg:#fff;--topbar-bg:#1a1a2e;--accent:#1565c0;--accent-light:#e8f0fe;--tab:#2196f3;--text-primary:#1a1a2e;--text-secondary:#6b7280;--text-muted:#9ca3af;--border:#e5e7eb;--row-hover:#f9fafb;--radius:10px;--shadow-sm:0 1px 3px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1)}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    .topbar{background:var(--topbar-bg);display:flex;align-items:center;padding:0 28px;height:70px;gap:20px;flex-shrink:0}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+    .logo-text{font-size:15px;font-weight:600;color:#fff;letter-spacing:.5px}
+    .logo-text span{color:#64b5f6}
+    .topbar-user{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .topbar-user-name{text-align:right;color:#fff;line-height:1.3}
+    .topbar-user-name strong{display:block;font-size:13.5px;font-weight:600}
+    .topbar-user-name span{font-size:12px;color:rgba(255,255,255,.55)}
+    .avatar{width:40px;height:40px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8)}
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:210px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;flex-shrink:0}
+    .nav-group{display:flex;flex-direction:column;width:100%}
+    .nav-item{display:flex;align-items:center;gap:11px;padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+    .nav-item:hover{background:var(--accent-light);color:var(--accent)}
+    .nav-item.active{color:var(--accent);background:var(--accent-light);font-weight:600}
+    .nav-item svg{flex-shrink:0;opacity:.7}
+    .nav-item.active svg{opacity:1}
+    .nav-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s;color:var(--text-muted)}
+    .nav-item.open .arrow{transform:rotate(180deg)}
+    .sub-nav{display:none;flex-direction:column;background:#fafbfc;border-bottom:1px solid var(--border)}
+    .sub-nav.open{display:flex}
+    .sub-nav-item{padding:10px 20px 10px 47px;font-size:13px;font-weight:500;color:var(--text-secondary);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;cursor:pointer}
+    .sub-nav-item:hover{color:var(--accent);background:var(--accent-light)}
+    .sub-nav-item.active{color:var(--accent);font-weight:600;background:var(--accent-light);border-left-color:var(--accent)}
+    .nav-divider{height:1px;background:var(--border);margin:12px 16px}
+    .nav-bottom{margin-top:auto}
+    .main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+    .main::-webkit-scrollbar{width:6px}
+    .main::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .page-title{font-size:20px;font-weight:700}
+    .page-subtitle{font-size:13px;color:var(--text-muted);margin-top:2px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .search-input{border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-family:inherit;font-size:13.5px;width:220px;outline:none;transition:border .2s}
+    .search-input:focus{border-color:var(--accent)}
+    .btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--text-primary);font-family:inherit;white-space:nowrap}
+    .btn:hover{border-color:var(--accent);color:var(--accent)}
+    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn.primary:hover{background:#0f4c92}
+    .btn.dark{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+    .btn.dark:hover{background:#2d2d4e}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .db-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden}
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .stat-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:20px 24px}
+    .stat-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+    .stat-value{font-size:28px;font-weight:700;color:var(--text-primary);line-height:1}
+    .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+    /* TABLE */
+    .table-scroll{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;text-align:left;min-width:900px}
+    th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+    td{padding:11px 14px;font-size:12.5px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--row-hover)}
+    td.actions-cell{overflow:visible;max-width:none}
+    .emp-name{font-weight:600;color:var(--text-primary)}
+    .emp-pin{font-family:'DM Mono',monospace;font-size:11px;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:var(--text-muted)}
+    .actions{display:flex;gap:5px;flex-wrap:wrap}
+    .actions .btn{padding:5px 10px;font-size:11.5px}
+    /* 201 PROGRESS */
+    .doc-progress{display:flex;align-items:center;gap:8px}
+    .doc-bar{background:#e5e7eb;border-radius:4px;height:6px;width:80px;overflow:hidden}
+    .doc-bar-fill{height:6px;border-radius:4px;transition:width .3s}
+    .doc-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+    .doc-badge.complete{background:#dcfce7;color:#15803d}
+    .doc-badge.partial{background:#fef9c3;color:#854d0e}
+    .doc-badge.empty{background:#fee2e2;color:#dc2626}
+    /* PAGINATION */
+    .pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:#fafbfc;flex-wrap:wrap;gap:10px}
+    .pagination-info{font-size:12.5px;color:var(--text-muted)}
+    .pagination-controls{display:flex;align-items:center;gap:4px}
+    .page-btn{min-width:32px;height:32px;padding:0 8px;border:1.5px solid var(--border);border-radius:6px;background:#fff;font-family:inherit;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
+    .page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+    .page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .page-btn:disabled{opacity:.4;cursor:not-allowed}
+    .page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
+    /* MODALS */
+    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
+    .modal-overlay.active{display:flex}
+    .small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
+    @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+    .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+    .modal-header h2{font-size:16px;font-weight:700}
+    .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
+    .modal-body{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+    .form-group select,.form-group input{padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:#fff;transition:border .2s;width:100%}
+    .form-group select:focus,.form-group input:focus{border-color:var(--accent)}
+    /* 201 FILES MODAL */
+    .files-modal-inner{background:#fff;width:700px;max-width:94%;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+    .files-tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0}
+    .files-tab{flex:1;padding:13px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#fafbfc;color:var(--text-secondary);transition:all .15s;text-align:center}
+    .files-tab.active{background:#fff;color:var(--accent);border-bottom:2px solid var(--accent)}
+    .files-tab-content{display:none;padding:20px;flex-direction:column;gap:14px}
+    .files-tab-content.active{display:flex}
+    .dropzone{border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;transition:border .2s,background .2s;cursor:pointer}
+    .dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:#f0f7ff}
+    .file-item{display:flex;align-items:center;justify-content:space-between;border-radius:8px;padding:10px 14px;margin-bottom:6px;gap:10px}
+    .file-item.type-file{background:#f9fafb;border:1px solid var(--border)}
+    .file-item.type-link{background:#f0f7ff;border:1px solid #bfdbfe}
+    .file-item-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+    .file-item-icon{flex-shrink:0;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .file-item-icon.icon-file{background:#e8f0fe}
+    .file-item-icon.icon-link{background:#dbeafe}
+    .file-item-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-item-meta{font-size:11px;color:var(--text-muted);margin-top:1px}
+    .file-item-actions{display:flex;gap:6px;flex-shrink:0}
+    .upload-row{display:flex;align-items:center;gap:10px;font-size:12.5px;border-radius:6px;padding:8px 12px;margin-bottom:4px}
+    .upload-row.uploading{background:#f0f9ff;border:1px solid #bae6fd}
+    .upload-row.done{background:#f0fdf4;border:1px solid #bbf7d0}
+    .upload-row.failed{background:#fef2f2;border:1px solid #fecaca}
+    .link-input-row{display:flex;gap:8px;flex-wrap:wrap}
+    .link-input-row input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;transition:border .2s}
+    .link-input-row input:focus{border-color:var(--accent)}
+    .section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border)}
+    /* CHECKLIST MODAL */
+    .checklist-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#fafbfc}
+    .checklist-item.done{background:#f0fdf4;border-color:#bbf7d0}
+    .checklist-item.missing{background:#fef2f2;border-color:#fecaca}
+    .checklist-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+    .checklist-name{font-size:13px;font-weight:600;flex:1}
+    .checklist-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+    .checklist-status.done{background:#dcfce7;color:#15803d}
+    .checklist-status.missing{background:#fee2e2;color:#dc2626}
+    /* STATUS TRANSITION MODAL */
+    .transition-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px}
+    /* SPINNER / TOAST */
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .35s ease,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .toast.success{background:#16a34a}
+    .toast.error{background:#dc2626}
+    .btn.danger{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+    .btn.danger:hover{background:#fca5a5}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="#"><span class="logo-text"><span>CROWD</span>SOURCE</span></a>
+  <div class="topbar-user">
+    <div class="topbar-user-name"><strong>HR Admin</strong><span>Human Resources</span></div>
+    <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <a class="nav-item" href="homepage.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>TRF Dashboard</a>
+    <a class="nav-item" href="timesheets.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Timesheets</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>HR Closing Letters</a>
+    <div class="nav-group">
+      <button class="nav-item toggle-btn" onclick="toggleNavGroup('hr-db-sub',this)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        HR Database<span class="arrow">▼</span>
+      </button>
+      <div class="sub-nav" id="hr-db-sub">
+        <a href="hr-database.html" class="sub-nav-item">Employees</a>
+        <a href="hr-database.html" class="sub-nav-item">Interns</a>
+        <a href="hr-database.html" class="sub-nav-item">Archived</a>
+      </div>
+    </div>
+    <div class="nav-group">
+      <button class="nav-item active toggle-btn open" onclick="toggleNavGroup('onboarding-sub',this)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+        Onboarding<span class="arrow">▼</span>
+      </button>
+      <div class="sub-nav open" id="onboarding-sub">
+        <a href="onboarding.html" class="sub-nav-item active">Pipeline</a>
+      </div>
+    </div>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
+    <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
+    <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
+    <div class="nav-divider"></div>
+    <div class="nav-bottom">
+      <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help</a>
+      <a class="nav-item" href="#" onclick="logOut();return false;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Onboarding Pipeline</div>
+        <div class="page-subtitle">Track new hire progress and pre-employment document submission.</div>
+      </div>
+      <div class="controls">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+        <button class="btn" onclick="loadEmployees()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Refresh</button>
+        <button class="btn dark" onclick="openInviteModal()">💌 Invite Client</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Onboarding</div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-sub">Active in pipeline</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Docs Complete</div>
+        <div class="stat-value" id="statComplete" style="color:#16a34a">—</div>
+        <div class="stat-sub">All 8 docs submitted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Docs Partial</div>
+        <div class="stat-value" id="statPartial" style="color:#b45309">—</div>
+        <div class="stat-sub">Some docs missing</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">No Docs Yet</div>
+        <div class="stat-value" id="statEmpty" style="color:#dc2626">—</div>
+        <div class="stat-sub">Nothing submitted</div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="db-card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>PIN</th>
+              <th>Company</th>
+              <th>Position</th>
+              <th>Start Date</th>
+              <th>Email</th>
+              <th>201 Progress</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar" id="paginationBar" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="pagination-info" id="pageInfo"></span>
+          <select class="page-size-select" id="pageSizeSelect" onchange="renderTable()">
+            <option value="10">10 / page</option>
+            <option value="25" selected>25 / page</option>
+            <option value="50">50 / page</option>
+          </select>
+        </div>
+        <div class="pagination-controls" id="pageControls"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="inviteModal">
+  <div class="small-modal">
+    <div class="modal-header"><h2>Generate Client Invite Link</h2><button class="modal-close" onclick="closeInviteModal()">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Generate a secure single-use link to send to a client. They can use it to submit new hire information through the onboarding form. Expires in 7 days.</p>
+      <button class="btn primary" id="generateLinkBtn" onclick="generateInviteToken()" style="justify-content:center;padding:12px">Generate Link</button>
+      <div id="inviteResult" style="display:none;flex-direction:column;gap:8px">
+        <label style="font-size:12px;font-weight:700;color:var(--accent)">Share this link:</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="generatedLink" readonly style="flex:1;padding:10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;background:#f9fafb;color:var(--text-secondary)">
+          <button class="btn primary" onclick="copyInviteLink()">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 201 FILES MODAL -->
+<div class="modal-overlay" id="files201Modal">
+  <div class="files-modal-inner">
+    <div class="modal-header">
+      <h2 id="files201Title">201 Files</h2>
+      <button class="modal-close" onclick="close201Modal()">✕</button>
+    </div>
+    <div class="files-tab-bar">
+      <button class="files-tab active" onclick="switch201Tab('upload',this)">📁 Upload File</button>
+      <button class="files-tab" onclick="switch201Tab('link',this)">🔗 Add Link</button>
+      <button class="files-tab" onclick="switch201Tab('checklist',this)">✅ Checklist</button>
+    </div>
+    <div class="files-tab-content active" id="tab201-upload">
+      <div class="dropzone" id="dropzone201"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleFileDrop201(event)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;display:block"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Drag and drop files here, or click to browse</p>
+        <input type="file" id="fileInput201" multiple style="display:none" onchange="handleFileSelect201(this)">
+        <button class="btn primary" onclick="document.getElementById('fileInput201').click()">Browse Files</button>
+      </div>
+      <div id="uploadProgress201" style="display:none;flex-direction:column;gap:4px"></div>
+    </div>
+    <div class="files-tab-content" id="tab201-link">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Paste a Google Drive or any document link.</p>
+      <div class="link-input-row">
+        <input type="url" id="linkUrl201" placeholder="https://docs.google.com/...">
+        <input type="text" id="linkName201" placeholder="Label (e.g. SSS ID)">
+      </div>
+      <button class="btn primary" onclick="saveLink201()" id="saveLinkBtn" style="align-self:flex-start">+ Save Link</button>
+    </div>
+    <div class="files-tab-content" id="tab201-checklist">
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Required pre-employment documents status for this employee.</p>
+      <div id="checklistItems" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div style="padding:0 20px 20px;overflow-y:auto;flex:1" id="fileListWrap">
+      <div class="section-divider" style="margin-bottom:12px">Saved Files & Links</div>
+      <div id="fileList201"><p style="font-size:12.5px;color:var(--text-muted)"><span class="spinner"></span> Loading...</p></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:#e8f0fe;color:var(--accent);border-color:#bfdbfe" onclick="send201EmailFromModal()">✉ Send 201 Link</button>
+      <button class="btn" onclick="close201Modal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS TRANSITION MODAL -->
+<div class="modal-overlay" id="transitionModal">
+  <div class="small-modal">
+    <div class="modal-header"><h2>Move to Next Status</h2><button class="modal-close" onclick="closeTransitionModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="transition-icon">🎉</div>
+      <p style="font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.6">Select the next employment status for <strong id="transitionEmpName"></strong>.</p>
+      <div class="form-group">
+        <label>New Status</label>
+        <select id="transitionStatus">
+          <option value="Probationary">Probationary</option>
+          <option value="Regular">Regular</option>
+          <option value="Ongoing">Ongoing (Intern)</option>
+          <option value="Project-Based">Project-Based</option>
+          <option value="Part-time">Part-time</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Start Date (optional — updates if changed)</label>
+        <input type="date" id="transitionStartDate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeTransitionModal()">Cancel</button>
+      <button class="btn primary" id="confirmTransitionBtn" onclick="confirmTransition()">Confirm & Move</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE 201 FILE MODAL -->
+<div class="modal-overlay" id="delete201Modal">
+  <div class="small-modal">
+    <div class="modal-body" style="text-align:center;padding:28px">
+      <div style="width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:10px">Delete File?</div>
+      <div id="delete201FileName" style="font-size:13px;font-weight:600;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px 14px;display:inline-block;margin-bottom:12px;max-width:280px;white-space:normal;word-break:break-word"></div>
+      <div style="font-size:13px;color:var(--text-muted)">This will permanently remove the file and cannot be undone.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeDelete201Modal()">Cancel</button>
+      <button class="btn danger" id="confirmDelete201Btn" onclick="confirmDelete201()" style="background:#dc2626;color:#fff;border-color:#dc2626">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<script>
+const URL_GET            = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
+const URL_UPDATE         = 'https://primary-production-a810.up.railway.app/webhook/hr-update-employee';
+const URL_GENERATE_TOKEN = 'https://primary-production-a810.up.railway.app/webhook/generate-invite';
+const URL_SAVE_201       = 'https://primary-production-a810.up.railway.app/webhook/save-201-file';
+const URL_GET_201        = 'https://primary-production-a810.up.railway.app/webhook/get-201-files';
+const URL_DELETE_201     = 'https://primary-production-a810.up.railway.app/webhook/delete-201-file';
+const URL_SEND_201_EMAIL = 'https://primary-production-a810.up.railway.app/webhook/send-201-email';
+
+const currentPath = window.location.pathname.split('/');
+currentPath.pop();
+const BASE_URL_PATH = window.location.origin + currentPath.join('/');
+
+const REQUIRED_DOC_IDS = ['sss','philhealth','pagibig','tin','nbi','birth_cert','resume','valid_id'];
+const DOC_NAMES = { sss:'SSS', philhealth:'PhilHealth', pagibig:'Pag-IBIG', tin:'TIN', nbi:'NBI Clearance', birth_cert:'Birth Certificate', resume:'Resume / CV', valid_id:'Valid Government ID' };
+const DOC_ICONS = { sss:'🪪', philhealth:'🏥', pagibig:'🏠', tin:'📋', nbi:'🔍', birth_cert:'📄', resume:'📝', valid_id:'🆔' };
+
+let allEmployees = [], filteredData = [], currentPage = 1;
+let current201EmpId = null, current201Pin = null;
+let pendingTransitionId = null;
+let pending201Delete = { path:null, name:null, type:null };
+
+function safeParse(val){if(!val)return[];if(typeof val==='object')return Array.isArray(val)?val:[];try{return JSON.parse(val);}catch{return[];}}
+function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function v(x){return(x==null||x===''||x==='null'||x==='undefined')?'—':x}
+function showToast(msg,type='success'){const t=document.getElementById('toast');document.getElementById('toastIcon').textContent=type==='success'?'✅':'❌';document.getElementById('toastMsg').textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),4000);}
+function toggleNavGroup(id,btn){document.getElementById(id).classList.toggle('open');btn.classList.toggle('open');}
+
+function getDocProgress(files201) {
+  const files = safeParse(files201);
+  const submittedIds = new Set(files.map(f => f.doc_id).filter(Boolean));
+  const count = REQUIRED_DOC_IDS.filter(id => submittedIds.has(id)).length;
+  return { count, total: 8, submittedIds };
+}
+
+function docProgressHtml(files201) {
+  const { count, total } = getDocProgress(files201);
+  const pct = Math.round((count / total) * 100);
+  const color = count === total ? '#16a34a' : count > 0 ? '#b45309' : '#dc2626';
+  const cls = count === total ? 'complete' : count > 0 ? 'partial' : 'empty';
+  const label = count === total ? '✓ Complete' : `${count}/${total} docs`;
+  return `<div class="doc-progress">
+    <div class="doc-bar"><div class="doc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    <span class="doc-badge ${cls}">${label}</span>
+  </div>`;
+}
+
+async function loadEmployees() {
+  document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr>';
+  document.getElementById('paginationBar').style.display = 'none';
+  try {
+    const res = await fetch(URL_GET);
+    const raw = await res.json();
+    allEmployees = (Array.isArray(raw) ? raw.map(i => i.json ?? i) : [])
+      .filter(e => (e.status || '').toLowerCase() === 'onboarding');
+    updateStats();
+    filterTable();
+  } catch {
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="state-cell" style="color:#dc2626">Failed to connect.</td></tr>';
+  }
+}
+
+function updateStats() {
+  const total = allEmployees.length;
+  let complete = 0, partial = 0, empty = 0;
+  allEmployees.forEach(e => {
+    const { count } = getDocProgress(e.files_201);
+    if (count === 8) complete++;
+    else if (count > 0) partial++;
+    else empty++;
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statComplete').textContent = complete;
+  document.getElementById('statPartial').textContent = partial;
+  document.getElementById('statEmpty').textContent = empty;
+}
+
+function filterTable() {
+  const f = document.getElementById('searchInput').value.toLowerCase();
+  filteredData = allEmployees.filter(emp => {
+    if (!f) return true;
+    const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ');
+    return [fn, emp.pin, emp.email, emp.role_name, emp.company].some(x => String(x||'').toLowerCase().includes(f));
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+function getPageSize() { return parseInt(document.getElementById('pageSizeSelect').value); }
+
+function renderTable() {
+  const data = filteredData;
+  if (!data.length) {
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="state-cell">No employees currently in Onboarding status.</td></tr>';
+    document.getElementById('paginationBar').style.display = 'none';
+    return;
+  }
+  const ps = getPageSize(), total = Math.ceil(data.length / ps);
+  if (currentPage > total) currentPage = total;
+  const start = (currentPage - 1) * ps, items = data.slice(start, start + ps);
+
+  document.getElementById('tableBody').innerHTML = items.map(emp => {
+    const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ') || '—';
+    const pin = emp.pin ? `<span class="emp-pin">${emp.pin}</span>` : '—';
+    return `<tr>
+      <td class="emp-name">${fn}</td>
+      <td>${pin}</td>
+      <td>${v(emp.company)}</td>
+      <td>${v(emp.role_name)}</td>
+      <td>${fmtDate(emp.start_date)}</td>
+      <td>${v(emp.email || emp.personal_email)}</td>
+      <td>${docProgressHtml(emp.files_201)}</td>
+      <td class="actions-cell">
+        <div class="actions">
+          <button class="btn" style="padding:5px 10px;font-size:11.5px" onclick="open201Panel(${emp.id},'${emp.pin||emp.id}','${fn.replace(/'/g,"\\'")}')">📁 Files</button>
+          <button class="btn" style="padding:5px 10px;font-size:11.5px;background:#e8f0fe;color:var(--accent);border-color:#bfdbfe" onclick="send201Email(${emp.id},'${fn.replace(/'/g,"\\'")}')">✉ Send Link</button>
+          <button class="btn" style="padding:5px 10px;font-size:11.5px;background:#f0fdf4;color:#15803d;border-color:#86efac" onclick="openTransitionModal(${emp.id},'${fn.replace(/'/g,"\\'")}')">✓ Move</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const from = start + 1, to = Math.min(start + ps, data.length);
+  document.getElementById('pageInfo').textContent = `${from}–${to} of ${data.length} employees`;
+  document.getElementById('paginationBar').style.display = 'flex';
+
+  let btns = `<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>`;
+  const totalPages = Math.ceil(data.length / ps);
+  for (let p = 1; p <= totalPages; p++) btns += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;
+  btns += `<button class="page-btn" onclick="goToPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&#8250;</button>`;
+  document.getElementById('pageControls').innerHTML = btns;
+}
+
+function goToPage(p) {
+  const t = Math.ceil(filteredData.length / getPageSize());
+  if (p < 1 || p > t) return;
+  currentPage = p; renderTable();
+}
+
+// ── INVITE ──
+function openInviteModal() {
+  document.getElementById('inviteModal').classList.add('active');
+  document.getElementById('inviteResult').style.display = 'none';
+  document.getElementById('generateLinkBtn').style.display = 'flex';
+  document.getElementById('generatedLink').value = '';
+}
+function closeInviteModal() { document.getElementById('inviteModal').classList.remove('active'); }
+async function generateInviteToken() {
+  const btn = document.getElementById('generateLinkBtn');
+  btn.innerHTML = '<span class="spinner"></span> Generating...'; btn.disabled = true;
+  try {
+    const res = await fetch(URL_GENERATE_TOKEN, { method:'POST' });
+    const data = await res.json();
+    if (data.token) {
+      document.getElementById('generatedLink').value = `${BASE_URL_PATH}/onboarding-form.html?token=${data.token}`;
+      document.getElementById('inviteResult').style.display = 'flex';
+      btn.style.display = 'none';
+      showToast('Link generated!');
+    } else showToast('Failed.','error');
+  } catch { showToast('Network error.','error'); }
+  finally { btn.innerHTML = 'Generate Link'; btn.disabled = false; }
+}
+function copyInviteLink() { document.getElementById('generatedLink').select(); document.execCommand('copy'); showToast('Copied!'); }
+
+// ── SEND 201 EMAIL ──
+async function send201Email(empId, name) {
+  if (!confirm(`Send 201 upload link to ${name}?`)) return;
+  showToast('Sending email...');
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ employee_id: empId }) });
+    const data = await res.json();
+    if (res.ok && data.success) showToast('201 upload link sent!', 'success');
+    else showToast(data.message || 'Failed to send email.', 'error');
+  } catch(err) { showToast('Network error: ' + err.message, 'error'); }
+}
+
+async function send201EmailFromModal() {
+  if (!current201EmpId) return;
+  const btn = document.querySelector('#files201Modal .modal-footer .btn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ employee_id: current201EmpId }) });
+    const data = await res.json();
+    if (res.ok && data.success) showToast('201 upload link sent!', 'success');
+    else showToast(data.message || 'Failed.', 'error');
+  } catch(err) { showToast('Error: ' + err.message, 'error'); }
+  finally { btn.textContent = '✉ Send 201 Link'; btn.disabled = false; }
+}
+
+// ── STATUS TRANSITION ──
+function openTransitionModal(empId, name) {
+  pendingTransitionId = empId;
+  document.getElementById('transitionEmpName').textContent = name;
+  document.getElementById('transitionStatus').value = 'Probationary';
+  document.getElementById('transitionStartDate').value = '';
+  document.getElementById('transitionModal').classList.add('active');
+}
+function closeTransitionModal() { document.getElementById('transitionModal').classList.remove('active'); pendingTransitionId = null; }
+
+async function confirmTransition() {
+  if (!pendingTransitionId) return;
+  const status = document.getElementById('transitionStatus').value;
+  const startDate = document.getElementById('transitionStartDate').value;
+  const btn = document.getElementById('confirmTransitionBtn');
+  btn.innerHTML = '<span class="spinner"></span> Saving...'; btn.disabled = true;
+  try {
+    const emp = allEmployees.find(e => String(e.id) === String(pendingTransitionId));
+    if (!emp) throw new Error('Employee not found');
+    const payload = { ...emp, status, id: emp.id };
+    if (startDate) payload.start_date = startDate;
+    // Clean up fields for update
+    payload.dep_id = emp.department_name || null;
+    payload.role_id = emp.role_name || null;
+    payload.dependents = JSON.stringify(safeParse(emp.dependents));
+    payload.cip_notes = JSON.stringify(safeParse(emp.cip_notes));
+    const res = await fetch(URL_UPDATE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if (res.ok) {
+      showToast(`Moved to ${status}!`, 'success');
+      closeTransitionModal();
+      await loadEmployees();
+    } else showToast('Failed to update status.', 'error');
+  } catch(err) { showToast('Error: ' + err.message, 'error'); }
+  finally { btn.innerHTML = 'Confirm & Move'; btn.disabled = false; }
+}
+
+// ── 201 FILES ──
+function switch201Tab(tab, btn) {
+  document.querySelectorAll('.files-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.files-tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab201-${tab}`).classList.add('active');
+  const wrap = document.getElementById('fileListWrap');
+  wrap.style.display = tab === 'checklist' ? 'none' : 'block';
+  if (tab === 'checklist') renderChecklist();
+}
+
+async function open201Panel(empId, pin, name) {
+  current201EmpId = empId; current201Pin = pin;
+  document.getElementById('files201Title').textContent = `201 Files — ${name}`;
+  document.getElementById('files201Modal').classList.add('active');
+  document.getElementById('uploadProgress201').style.display = 'none';
+  document.getElementById('uploadProgress201').innerHTML = '';
+  document.getElementById('linkUrl201').value = '';
+  document.getElementById('linkName201').value = '';
+  document.querySelectorAll('.files-tab').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.files-tab-content').forEach((c,i) => c.classList.toggle('active', i===0));
+  document.getElementById('fileListWrap').style.display = 'block';
+  await load201Files();
+}
+
+function close201Modal() {
+  document.getElementById('files201Modal').classList.remove('active');
+  current201EmpId = null; current201Pin = null;
+}
+
+async function load201Files() {
+  const listEl = document.getElementById('fileList201');
+  listEl.innerHTML = '<p style="font-size:12.5px;color:var(--text-muted)"><span class="spinner"></span> Loading...</p>';
+  try {
+    const res = await fetch(`${URL_GET_201}?employee_id=${current201EmpId}`);
+    const data = await res.json();
+    const raw = Array.isArray(data) ? data[0] : data;
+    const files = raw?.files_201 || [];
+    // Update local cache for checklist
+    const emp = allEmployees.find(e => String(e.id) === String(current201EmpId));
+    if (emp) emp.files_201 = files;
+    if (!files.length) { listEl.innerHTML = '<p style="font-size:12.5px;color:var(--text-muted)">No files or links yet.</p>'; return; }
+    listEl.innerHTML = files.map(f => {
+      const isLink = f.type === 'link';
+      const safePath = (f.path||'').replace(/'/g,"\\'");
+      const safeName = (f.name||'').replace(/'/g,"\\'");
+      return `<div class="file-item ${isLink?'type-link':'type-file'}">
+        <div class="file-item-info">
+          <div class="file-item-icon ${isLink?'icon-link':'icon-file'}">${isLink?'🔗':'📄'}</div>
+          <div>
+            <div class="file-item-name">${f.name}</div>
+            <div class="file-item-meta">${isLink?'Link':'File'} · ${f.uploaded_at||'—'}</div>
+          </div>
+        </div>
+        <div class="file-item-actions">
+          <button class="btn" style="padding:5px 10px;font-size:11.5px" onclick="view201File('${safePath}','${f.type||'file'}')">👁 Open</button>
+          <button class="btn danger" style="padding:5px 10px;font-size:11.5px" onclick="delete201File('${safePath}','${safeName}','${f.type||'file'}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(err) { listEl.innerHTML = `<p style="color:#dc2626;font-size:12.5px">Failed: ${err.message}</p>`; }
+}
+
+function renderChecklist() {
+  const emp = allEmployees.find(e => String(e.id) === String(current201EmpId));
+  const files = safeParse(emp?.files_201);
+  const submittedIds = new Set(files.map(f => f.doc_id).filter(Boolean));
+  const NUMBER_DOCS = new Set(['sss','philhealth','pagibig','tin']);
+  document.getElementById('checklistItems').innerHTML = REQUIRED_DOC_IDS.map(id => {
+    const done = submittedIds.has(id);
+    const submittedFile = files.find(f => f.doc_id === id);
+    const isNum = NUMBER_DOCS.has(id);
+    const submittedLabel = done && submittedFile ? (isNum ? `🔢 ${submittedFile.name}` : '✓ Submitted') : '';
+    return `<div class="checklist-item ${done?'done':'missing'}">
+      <div class="checklist-icon">${DOC_ICONS[id]}</div>
+      <div style="flex:1">
+        <div class="checklist-name">${DOC_NAMES[id]}</div>
+        ${done && submittedLabel ? `<div style="font-size:11px;color:#15803d;margin-top:2px;font-family:'DM Mono',monospace">${submittedLabel}</div>` : ''}
+      </div>
+      <span class="checklist-status ${done?'done':'missing'}">${done?'✓ Submitted':'✗ Missing'}</span>
+    </div>`;
+  }).join('');
+}
+
+async function view201File(path, type) {
+  if (type === 'link') { window.open(path, '_blank'); return; }
+  try {
+    const { data, error } = await _supabase.storage.from('employee-201').createSignedUrl(path, 3600);
+    if (error || !data?.signedUrl) { showToast('Could not open: ' + (error?.message||'unknown'), 'error'); return; }
+    window.open(data.signedUrl, '_blank');
+  } catch(err) { showToast('Error: ' + err.message, 'error'); }
+}
+
+function delete201File(path, name, type) {
+  pending201Delete = { path, name, type };
+  document.getElementById('delete201FileName').textContent = name;
+  document.getElementById('delete201Modal').classList.add('active');
+}
+function closeDelete201Modal() { document.getElementById('delete201Modal').classList.remove('active'); pending201Delete = {path:null,name:null,type:null}; }
+
+async function confirmDelete201() {
+  const { path, name, type } = pending201Delete;
+  if (!path) return;
+  const btn = document.getElementById('confirmDelete201Btn');
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...'; btn.disabled = true;
+  try {
+    if (type !== 'link') {
+      const { error } = await _supabase.storage.from('employee-201').remove([path]);
+      if (error) { showToast('Storage error: ' + error.message, 'error'); return; }
+    }
+    const res = await fetch(URL_DELETE_201, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ path, employee_id: current201EmpId }) });
+    if (!res.ok) { showToast('Metadata removal failed.', 'error'); return; }
+    showToast('Deleted.');
+    closeDelete201Modal();
+    await load201Files();
+    await loadEmployees();
+  } catch(err) { showToast('Error: ' + err.message, 'error'); }
+  finally { btn.innerHTML = 'Yes, Delete'; btn.disabled = false; }
+}
+
+async function saveLink201() {
+  const url = document.getElementById('linkUrl201').value.trim();
+  const name = document.getElementById('linkName201').value.trim();
+  if (!url) { showToast('Please paste a link.','error'); return; }
+  if (!name) { showToast('Please add a label.','error'); return; }
+  const btn = document.getElementById('saveLinkBtn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  try {
+    const res = await fetch(URL_SAVE_201, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ employee_id:current201EmpId, name, path:url, type:'link' }) });
+    if (!res.ok) throw new Error('Failed');
+    showToast('Link saved!');
+    document.getElementById('linkUrl201').value = '';
+    document.getElementById('linkName201').value = '';
+    await load201Files(); await loadEmployees();
+  } catch(err) { showToast('Error: '+err.message,'error'); }
+  finally { btn.textContent = '+ Save Link'; btn.disabled = false; }
+}
+
+function handleFileDrop201(e) { e.preventDefault(); document.getElementById('dropzone201').classList.remove('dragover'); uploadFiles201(Array.from(e.dataTransfer.files)); }
+function handleFileSelect201(input) { uploadFiles201(Array.from(input.files)); input.value = ''; }
+
+async function uploadFiles201(files) {
+  if (!files.length) return;
+  const progressEl = document.getElementById('uploadProgress201');
+  progressEl.style.display = 'flex'; progressEl.innerHTML = '';
+  for (const file of files) {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    const path = `${current201Pin}/${Date.now()}_${safeName}`;
+    const rowId = `prog-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+    progressEl.innerHTML += `<div id="${rowId}" class="upload-row uploading"><span class="spinner" id="${rowId}-spin" style="width:12px;height:12px;border-top-color:#0369a1;flex-shrink:0"></span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px">${file.name}</span><span id="${rowId}-status" style="color:#0369a1;font-weight:600;flex-shrink:0;font-size:12px">Uploading...</span></div>`;
+    try {
+      const { error: uploadError } = await _supabase.storage.from('employee-201').upload(path, file, { upsert:false });
+      if (uploadError) throw new Error(uploadError.message);
+      document.getElementById(`${rowId}-status`).textContent = 'Saving...';
+      const saveRes = await fetch(URL_SAVE_201, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ employee_id:current201EmpId, name:file.name, path, type:'file' }) });
+      if (!saveRes.ok) { await _supabase.storage.from('employee-201').remove([path]); throw new Error('Metadata save failed'); }
+      document.getElementById(rowId).className = 'upload-row done';
+      document.getElementById(`${rowId}-status`).textContent = '✓ Done';
+      document.getElementById(`${rowId}-status`).style.color = '#15803d';
+      document.getElementById(`${rowId}-spin`).style.display = 'none';
+    } catch(err) {
+      document.getElementById(rowId).className = 'upload-row failed';
+      document.getElementById(`${rowId}-status`).textContent = `✗ ${err.message}`;
+      document.getElementById(`${rowId}-status`).style.color = '#dc2626';
+      document.getElementById(`${rowId}-spin`).style.display = 'none';
+    }
+  }
+  await load201Files(); await loadEmployees();
+}
+
+document.getElementById('files201Modal').addEventListener('click', e => { if(e.target===e.currentTarget) close201Modal(); });
+document.getElementById('inviteModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeInviteModal(); });
+document.getElementById('transitionModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeTransitionModal(); });
+document.getElementById('delete201Modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeDelete201Modal(); });
+
+window.onload = () => loadEmployees();
+</script>
+</body>
+</html>
