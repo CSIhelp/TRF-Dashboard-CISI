@@ -1029,7 +1029,12 @@ function closeInviteModal(){document.getElementById('inviteModal').classList.rem
 async function generateInviteToken(){
   const btn=document.getElementById('generateLinkBtn'),type=document.getElementById('inviteType').value;
   btn.innerHTML='<span class="spinner"></span> Generating...';btn.disabled=true;
-  try{const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});const data=await res.json();if(data.token){document.getElementById('generatedLink').value=`${BASE_URL_PATH}/onboarding-form.html?token=${data.token}`;document.getElementById('inviteResult').style.display='flex';btn.style.display='none';showToast('Link generated!');}else showToast('Failed.','error');}catch{showToast('Network error.','error');}
+  try{const res=await fetch(URL_GENERATE_TOKEN,{method:'POST'});const data=await res.json();
+  if(data.token){
+    const page = type === 'intern' ? 'intern-form.html' : 'employee-form.html';
+    document.getElementById('generatedLink').value=`${BASE_URL_PATH}/${page}?token=${data.token}`;
+    document.getElementById('inviteResult').style.display='flex';btn.style.display='none';showToast('Link generated!');
+  }else showToast('Failed.','error');}catch{showToast('Network error.','error');}
   finally{btn.innerHTML='Generate Link';btn.disabled=false;}
 }
 function copyInviteLink(){document.getElementById('generatedLink').select();document.execCommand('copy');showToast('Copied!');}
