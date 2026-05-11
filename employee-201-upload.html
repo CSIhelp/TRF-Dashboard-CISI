@@ -486,11 +486,9 @@ function setDocStatus(docId, status, msg) {
   const statusEl = document.getElementById(`upload-status-${docId}`);
   const pill     = document.getElementById(`pill-${docId}`);
   const card     = document.getElementById(`card-${docId}`);
-  statusEl.style.display = 'block';
-  statusEl.textContent   = msg;
-  pill.className = `status-pill ${status}`;
-  pill.textContent = status==='uploading'?'Uploading...':status==='error'?'Error':'Uploaded';
-  card.className = `doc-card ${status}`;
+  if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = msg; }
+  if (pill) { pill.className = `status-pill ${status}`; pill.textContent = status==='uploading'?'Saving...':status==='error'?'Error':'Uploaded'; }
+  if (card) card.className = `doc-card ${status}`;
 }
 
 function markDocUploaded(docId, entry) {
@@ -499,12 +497,15 @@ function markDocUploaded(docId, entry) {
   card.className = 'doc-card uploaded';
   document.getElementById(`pill-${docId}`).className = 'status-pill uploaded';
   document.getElementById(`pill-${docId}`).textContent = 'Uploaded';
-  document.getElementById(`upload-status-${docId}`).style.display = 'none';
+  const statusEl = document.getElementById(`upload-status-${docId}`);
+  if (statusEl) statusEl.style.display = 'none';
   // Insert uploaded file display at top of body
   const existing = body.querySelector('.uploaded-file');
   if (existing) existing.remove();
   body.insertAdjacentHTML('afterbegin', renderUploadedFile(entry));
-  document.getElementById(`link-${docId}`).value = '';
+  // Only clear link input if it exists (number docs don't have one)
+  const linkEl = document.getElementById(`link-${docId}`);
+  if (linkEl) linkEl.value = '';
   updateProgress();
 }
 
