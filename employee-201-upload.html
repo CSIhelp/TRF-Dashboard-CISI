@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrowdSource – Submit Your 201 Documents</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f0f2f5;--card:#fff;--accent:#1565c0;--accent-light:#e8f0fe;--text:#1a1a2e;--text2:#6b7280;--muted:#9ca3af;--border:#e5e7eb;--success:#16a34a;--error:#dc2626;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,.08)}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+  .header{width:100%;background:#1a1a2e;padding:20px 32px;display:flex;align-items:center;gap:12px}
+  .header-logo{font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px}
+  .header-logo span{color:#64b5f6}
+  .header-sub{font-size:12px;color:rgba(255,255,255,.5);margin-left:auto}
+
+  .container{width:100%;max-width:680px;padding:32px 24px 60px}
+
+  .hero{text-align:center;margin-bottom:28px}
+  .hero-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);background:var(--accent-light);padding:5px 14px;border-radius:20px;margin-bottom:14px}
+  .hero h1{font-size:22px;font-weight:700;margin-bottom:8px}
+  .hero p{font-size:13.5px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto}
+  .hero-name{font-size:15px;font-weight:700;color:var(--accent);margin-top:8px}
+
+  /* PROGRESS OVERVIEW */
+  .progress-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px}
+  .progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .progress-title{font-size:13px;font-weight:700;color:var(--text)}
+  .progress-pct{font-size:13px;font-weight:700;color:var(--accent)}
+  .progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:8px;overflow:hidden;margin-bottom:8px}
+  .progress-bar{height:8px;border-radius:4px;background:var(--accent);transition:width .5s}
+  .progress-sub{font-size:12px;color:var(--muted)}
+
+  /* CHECKLIST */
+  .checklist{display:flex;flex-direction:column;gap:12px}
+
+  .doc-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:border .2s}
+  .doc-card.uploaded{border-color:#86efac}
+  .doc-card.uploading{border-color:var(--accent)}
+
+  .doc-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s}
+  .doc-header:hover{background:#fafbfc}
+  .doc-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .doc-icon.pending{background:#f3f4f6}
+  .doc-icon.uploaded{background:#dcfce7}
+  .doc-icon.uploading{background:#e8f0fe}
+  .doc-info{flex:1;min-width:0}
+  .doc-name{font-size:13.5px;font-weight:600}
+  .doc-desc{font-size:12px;color:var(--muted);margin-top:2px}
+  .doc-status{flex-shrink:0;display:flex;align-items:center;gap:8px}
+  .status-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+  .status-pill.pending{background:#f3f4f6;color:var(--muted)}
+  .status-pill.uploaded{background:#dcfce7;color:var(--success)}
+  .status-pill.uploading{background:#e8f0fe;color:var(--accent)}
+  .status-pill.error{background:#fee2e2;color:var(--error)}
+  .chevron{color:var(--muted);transition:transform .2s;font-size:14px}
+  .chevron.open{transform:rotate(180deg)}
+
+  .doc-body{display:none;border-top:1px solid var(--border);padding:16px 20px;background:#fafbfc}
+  .doc-body.open{display:block}
+
+  /* Uploaded file display */
+  .uploaded-file{display:flex;align-items:center;gap:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
+  .view-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11.5px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:inherit}
+  .view-btn:hover{background:#0d47a1}
+  .uploaded-file-name{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .uploaded-file-date{font-size:11px;color:var(--muted);flex-shrink:0}
+
+  /* Upload area in card */
+  .mini-upload{border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+  .mini-upload:hover,.mini-upload.dragover{border-color:var(--accent);background:#f0f7ff}
+  .mini-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .mini-upload-label{font-size:13px;color:var(--text2)}
+  .mini-upload-label strong{color:var(--accent)}
+  .mini-upload-hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+
+  /* Link input */
+  .link-row{display:flex;gap:8px;margin-top:10px}
+  .link-row input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:border .2s}
+  .link-row input:focus{border-color:var(--accent)}
+  .link-row button{padding:9px 16px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+  .link-row button:hover{background:#0d47a1}
+
+  .upload-btn{width:100%;padding:11px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .upload-btn:hover{background:var(--accent-light);border-color:var(--accent)}
+
+  /* FREE UPLOAD SECTION */
+  .free-section{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 24px;margin-top:20px}
+  .free-title{font-size:13px;font-weight:700;margin-bottom:4px}
+  .free-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .free-upload-area{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+  .free-upload-area:hover,.free-upload-area.dragover{border-color:var(--accent);background:#f0f7ff}
+  .free-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .free-files-list{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+  .free-file-item{display:flex;align-items:center;gap:10px;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12.5px}
+  .free-file-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .free-file-remove{background:none;border:none;color:var(--error);cursor:pointer;font-size:14px;padding:2px}
+  .free-submit-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+  .free-submit-btn:hover{background:#0d47a1}
+  .free-submit-btn:disabled{background:#93c5fd;cursor:not-allowed}
+
+  /* STATES */
+  .state-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+  .loading-state,.error-state,.success-state{text-align:center;padding:60px 28px}
+  .loading-state{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--text2)}
+  .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-state h2{font-size:20px;margin-bottom:8px;color:var(--error)}
+  .error-state p{font-size:14px;color:var(--text2)}
+  .success-icon{width:64px;height:64px;border-radius:50%;background:#e6f9f0;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px}
+  .success-state h2{font-size:22px;margin-bottom:8px;color:var(--success)}
+  .success-state p{font-size:14px;color:var(--text2);line-height:1.6}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .3s,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.error{background:var(--error)}
+  .toast.success{background:var(--success)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-logo"><span>CROWD</span>SOURCE</span>
+  <span class="header-sub">Pre-Employment Document Submission</span>
+</div>
+
+<div class="container">
+
+  <!-- LOADING -->
+  <div class="state-card" id="loadingState">
+    <div class="loading-state"><div class="spinner"></div><span>Loading your document portal...</span></div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="state-card" id="errorState" style="display:none">
+    <div class="error-state"><h2>Link Expired</h2><p id="errorMsg">This upload link is invalid or has expired. Please contact HR for a new link.</p></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent" style="display:none">
+
+    <div class="hero">
+      <div class="hero-badge">Pre-Employment Requirements</div>
+      <h1>Submit Your Documents</h1>
+      <p>Please upload each of the required documents below. You can come back to this page anytime using the same link.</p>
+      <div class="hero-name" id="heroName"></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <span class="progress-title">Submission Progress</span>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+      <div class="progress-sub" id="progressSub">0 of 0 documents submitted</div>
+    </div>
+
+    <!-- REQUIRED DOCUMENTS CHECKLIST -->
+    <div class="checklist" id="docChecklist"></div>
+
+    <!-- FREE UPLOAD -->
+    <div class="free-section">
+      <div class="free-title">📎 Additional Documents</div>
+      <div class="free-sub">Upload any other documents not listed above (e.g. certificates, diplomas, previous employment records).</div>
+      <div class="free-upload-area" id="freeUploadArea"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleFreeDrop(event)">
+        <input type="file" id="freeFileInput" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFreeSelect(this)">
+        <div style="color:var(--muted);margin-bottom:8px">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div style="font-size:13px;color:var(--text2)">Drop files here or <strong style="color:var(--accent)">click to browse</strong></div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px">PDF, DOC, DOCX, JPG, PNG</div>
+      </div>
+      <div class="free-files-list" id="freeFilesList"></div>
+      <button class="free-submit-btn" id="freeSubmitBtn" onclick="submitFreeFiles()" style="display:none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Upload Additional Files
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const _supabaseUrl = 'https://vuycjivcpyncmaiikpfe.supabase.co';
+const _supabaseKey = 'sb_publishable_5StoCQqroJgcqn_Z4NDzqQ_LVXXHabG';
+const _supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+
+const VALIDATE_201_URL = 'https://primary-production-a810.up.railway.app/webhook/validate-201-token';
+const SAVE_201_URL     = 'https://primary-production-a810.up.railway.app/webhook/save-201-file';
+
+// Standard required documents
+const REQUIRED_DOCS = [
+  { id: 'sss',        name: 'SSS',           icon: '🪪', desc: 'SSS ID or SSS E1/E4 form' },
+  { id: 'philhealth', name: 'PhilHealth',    icon: '🏥', desc: 'PhilHealth ID or MDR form' },
+  { id: 'pagibig',    name: 'Pag-IBIG',      icon: '🏠', desc: 'Pag-IBIG ID or membership form' },
+  { id: 'tin',        name: 'TIN',           icon: '📋', desc: 'TIN ID or BIR Form 1902' },
+  { id: 'nbi',        name: 'NBI Clearance', icon: '🔍', desc: 'Valid NBI Clearance' },
+  { id: 'birth_cert', name: 'Birth Certificate', icon: '📄', desc: 'PSA Birth Certificate' },
+  { id: 'resume',     name: 'Resume / CV',   icon: '📝', desc: 'Updated resume or curriculum vitae' },
+  { id: 'valid_id',   name: 'Valid Government ID', icon: '🆔', desc: 'Any valid government-issued ID (front and back)' },
+];
+
+let currentToken   = null;
+let currentEmpId   = null;
+let currentPin     = null;
+let empName        = '';
+let uploadedDocs   = {}; // docId -> { name, path, type, uploaded_at }
+let pendingFreeFiles = [];
+
+// ── INIT ──
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  currentToken = params.get('token');
+  if (!currentToken) { showGlobalError('No token found in the link. Please use the link from your email.'); return; }
+
+  try {
+    const res  = await fetch(`${VALIDATE_201_URL}?token=${currentToken}`);
+    const data = await res.json();
+    if (!res.ok || !data.valid) { showGlobalError(data.message || 'This link is invalid or has expired.'); return; }
+
+    currentEmpId = data.employee_id;
+    currentPin   = data.pin;
+    empName      = data.employee_name || '';
+
+    // Load existing uploaded docs
+    if (data.files_201 && Array.isArray(data.files_201)) {
+      data.files_201.forEach(f => {
+        if (f.doc_id) uploadedDocs[f.doc_id] = f;
+      });
+    }
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display  = 'block';
+    document.getElementById('heroName').textContent = empName ? `Welcome, ${empName}!` : '';
+
+    renderChecklist();
+    updateProgress();
+  } catch { showGlobalError('Could not connect to the server. Please try again later.'); }
+}
+
+function showGlobalError(msg) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorState').style.display = 'block';
+}
+
+// ── CHECKLIST ──
+function renderChecklist() {
+  const container = document.getElementById('docChecklist');
+  container.innerHTML = REQUIRED_DOCS.map(doc => {
+    const uploaded = uploadedDocs[doc.id];
+    const status   = uploaded ? 'uploaded' : 'pending';
+    return `<div class="doc-card ${status}" id="card-${doc.id}">
+      <div class="doc-header" onclick="toggleDoc('${doc.id}')">
+        <div class="doc-icon ${status}">${doc.icon}</div>
+        <div class="doc-info">
+          <div class="doc-name">${doc.name}</div>
+          <div class="doc-desc">${doc.desc}</div>
+        </div>
+        <div class="doc-status">
+          <span class="status-pill ${status}" id="pill-${doc.id}">${uploaded?'Uploaded':'Pending'}</span>
+          <span class="chevron" id="chev-${doc.id}">▼</span>
+        </div>
+      </div>
+      <div class="doc-body" id="body-${doc.id}">
+        ${uploaded ? renderUploadedFile(uploaded) : ''}
+        <div class="mini-upload" id="upload-area-${doc.id}"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleDocDrop(event,'${doc.id}')">
+          <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleDocFileSelect(this,'${doc.id}')">
+          <div class="mini-upload-label">${uploaded?'Replace file — drag here or':'Drop file here or'} <strong>click to browse</strong></div>
+          <div class="mini-upload-hint">PDF, DOC, DOCX, JPG, PNG — max 10MB</div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);text-align:center">— or paste a link —</div>
+        <div class="link-row">
+          <input type="url" id="link-${doc.id}" placeholder="https://drive.google.com/...">
+          <button onclick="submitDocLink('${doc.id}')">Save Link</button>
+        </div>
+        <div id="upload-status-${doc.id}" style="font-size:12px;color:var(--accent);margin-top:8px;text-align:center;display:none"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderUploadedFile(f) {
+  const isLink = f.type === 'link';
+  const safePath = (f.path || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  return `<div class="uploaded-file">
+    <span>${isLink ? '🔗' : '📄'}</span>
+    <span class="uploaded-file-name">${f.name}</span>
+    <span class="uploaded-file-date">${f.uploaded_at || ''}</span>
+    <button class="view-btn" onclick="viewUploadedFile('${safePath}','${f.type||'file'}')">👁 View</button>
+  </div>`;
+}
+
+function toggleDoc(docId) {
+  const body = document.getElementById(`body-${docId}`);
+  const chev = document.getElementById(`chev-${docId}`);
+  const isOpen = body.classList.toggle('open');
+  chev.classList.toggle('open', isOpen);
+}
+
+function updateProgress() {
+  const total    = REQUIRED_DOCS.length;
+  const uploaded = REQUIRED_DOCS.filter(d => uploadedDocs[d.id]).length;
+  const pct      = Math.round((uploaded/total)*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressPct').textContent  = pct+'%';
+  document.getElementById('progressSub').textContent  = `${uploaded} of ${total} required documents submitted`;
+}
+
+// ── UPLOAD DOC FILE ──
+function handleDocDrop(e, docId) {
+  e.preventDefault();
+  document.getElementById(`upload-area-${docId}`).classList.remove('dragover');
+  if (e.dataTransfer.files.length) uploadDocFile(e.dataTransfer.files[0], docId);
+}
+function handleDocFileSelect(input, docId) {
+  if (input.files.length) uploadDocFile(input.files[0], docId);
+}
+
+async function uploadDocFile(file, docId) {
+  if (file.size > 10*1024*1024) { showToast('File too large. Max 10MB.','error'); return; }
+  const doc = REQUIRED_DOCS.find(d=>d.id===docId);
+  setDocStatus(docId,'uploading','Uploading to storage...');
+
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+    const path = `${currentPin}/${docId}_${Date.now()}_${safeName}`;
+
+    // Step 1: Upload directly to Supabase Storage
+    const { error: uploadError } = await _supabase.storage
+      .from('employee-201')
+      .upload(path, file, { upsert: false });
+    if (uploadError) throw new Error(`Storage: ${uploadError.message}`);
+
+    // Step 2: Save metadata to n8n
+    setDocStatus(docId,'uploading','Saving...');
+    const res = await fetch(SAVE_201_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        employee_id: currentEmpId,
+        name:        `${doc.name} — ${file.name}`,
+        path,
+        type:        'file',
+        doc_id:      docId
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      const entry = { name:`${doc.name} — ${file.name}`, path, type:'file', doc_id:docId, uploaded_at: new Date().toISOString().split('T')[0] };
+      uploadedDocs[docId] = entry;
+      markDocUploaded(docId, entry);
+      showToast(`${doc.name} uploaded!`, 'success');
+    } else {
+      await _supabase.storage.from('employee-201').remove([path]);
+      setDocStatus(docId, 'error', data.message || 'Upload failed. Try again.');
+    }
+  } catch(err) {
+    setDocStatus(docId, 'error', `Error: ${err.message}`);
+  }
+}
+
+async function submitDocLink(docId) {
+  const url = document.getElementById(`link-${docId}`).value.trim();
+  if (!url) { showToast('Please paste a link first.','error'); return; }
+  if (!url.startsWith('http')) { showToast('Invalid URL.','error'); return; }
+  const doc = REQUIRED_DOCS.find(d=>d.id===docId);
+  setDocStatus(docId,'uploading','Saving link...');
+
+  try {
+    const res = await fetch(SAVE_201_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        employee_id: currentEmpId,
+        name: `${doc.name} (Link)`,
+        path: url,
+        type: 'link',
+        doc_id: docId,
+        token: currentToken
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      const entry = { name:`${doc.name} (Link)`, path:url, type:'link', doc_id:docId, uploaded_at: new Date().toISOString().split('T')[0] };
+      uploadedDocs[docId] = entry;
+      markDocUploaded(docId, entry);
+      showToast(`${doc.name} link saved!`,'success');
+    } else {
+      setDocStatus(docId,'error', data.message||'Failed to save link.');
+    }
+  } catch(err) {
+    setDocStatus(docId,'error',`Error: ${err.message}`);
+  }
+}
+
+function setDocStatus(docId, status, msg) {
+  const statusEl = document.getElementById(`upload-status-${docId}`);
+  const pill     = document.getElementById(`pill-${docId}`);
+  const card     = document.getElementById(`card-${docId}`);
+  statusEl.style.display = 'block';
+  statusEl.textContent   = msg;
+  pill.className = `status-pill ${status}`;
+  pill.textContent = status==='uploading'?'Uploading...':status==='error'?'Error':'Uploaded';
+  card.className = `doc-card ${status}`;
+}
+
+function markDocUploaded(docId, entry) {
+  const card = document.getElementById(`card-${docId}`);
+  const body = document.getElementById(`body-${docId}`);
+  card.className = 'doc-card uploaded';
+  document.getElementById(`pill-${docId}`).className = 'status-pill uploaded';
+  document.getElementById(`pill-${docId}`).textContent = 'Uploaded';
+  document.getElementById(`upload-status-${docId}`).style.display = 'none';
+  // Insert uploaded file display at top of body
+  const existing = body.querySelector('.uploaded-file');
+  if (existing) existing.remove();
+  body.insertAdjacentHTML('afterbegin', renderUploadedFile(entry));
+  document.getElementById(`link-${docId}`).value = '';
+  updateProgress();
+}
+
+// ── FREE UPLOAD ──
+function handleFreeDrop(e) {
+  e.preventDefault();
+  document.getElementById('freeUploadArea').classList.remove('dragover');
+  Array.from(e.dataTransfer.files).forEach(f => addFreeFile(f));
+}
+function handleFreeSelect(input) {
+  Array.from(input.files).forEach(f => addFreeFile(f));
+  input.value = '';
+}
+
+function addFreeFile(file) {
+  if (file.size > 10*1024*1024) { showToast(`${file.name} is too large. Max 10MB.`,'error'); return; }
+  pendingFreeFiles.push(file);
+  renderFreeFiles();
+}
+
+function removeFreeFile(idx) {
+  pendingFreeFiles.splice(idx, 1);
+  renderFreeFiles();
+}
+
+function renderFreeFiles() {
+  const list = document.getElementById('freeFilesList');
+  const btn  = document.getElementById('freeSubmitBtn');
+  list.innerHTML = pendingFreeFiles.map((f,i) => `<div class="free-file-item">
+    <span>📄</span>
+    <span class="free-file-name">${f.name}</span>
+    <span style="font-size:11px;color:var(--muted);flex-shrink:0">${formatSize(f.size)}</span>
+    <button class="free-file-remove" onclick="removeFreeFile(${i})">✕</button>
+  </div>`).join('');
+  btn.style.display = pendingFreeFiles.length > 0 ? 'flex' : 'none';
+}
+
+async function submitFreeFiles() {
+  if (!pendingFreeFiles.length) return;
+  const btn = document.getElementById('freeSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Uploading...';
+
+  let success = 0;
+  for (const file of pendingFreeFiles) {
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._\-]/g,'_');
+      const path = `${currentPin}/extra_${Date.now()}_${safeName}`;
+
+      // Step 1: Upload directly to Supabase Storage
+      const { error: uploadError } = await _supabase.storage
+        .from('employee-201')
+        .upload(path, file, { upsert: false });
+      if (uploadError) throw new Error(uploadError.message);
+
+      // Step 2: Save metadata to n8n
+      const res = await fetch(SAVE_201_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employee_id:currentEmpId, name:file.name, path, type:'file', doc_id:null })
+      });
+      if (res.ok) success++;
+      else await _supabase.storage.from('employee-201').remove([path]);
+    } catch {}
+  }
+
+  showToast(`${success} of ${pendingFreeFiles.length} files uploaded.`, success===pendingFreeFiles.length?'success':'error');
+  pendingFreeFiles = [];
+  renderFreeFiles();
+  btn.disabled = false;
+  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Upload Additional Files';
+}
+
+// ── HELPERS ──
+function formatSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
+
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='error'?'❌ ':type==='success'?'✅ ':'') + msg;
+  t.className = 'toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 5000);
+}
+
+async function viewUploadedFile(path, type) {
+  if (type === 'link') {
+    window.open(path, '_blank');
+    return;
+  }
+  try {
+    showToast('Opening file...');
+    const { data, error } = await _supabase.storage
+      .from('employee-201')
+      .createSignedUrl(path, 3600);
+    if (error || !data?.signedUrl) {
+      showToast('Could not open file: ' + (error?.message || 'unknown'), 'error');
+      return;
+    }
+    window.open(data.signedUrl, '_blank');
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
