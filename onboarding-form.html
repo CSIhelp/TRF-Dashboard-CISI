@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEWRD – New Hire Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f0f2f5;--card:#fff;--accent:#1565c0;--accent-light:#e8f0fe;--accent-dark:#0d47a1;--text:#1a1a2e;--text2:#6b7280;--muted:#9ca3af;--border:#e5e7eb;--success:#16a34a;--error:#dc2626;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,.08)}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+  .header{width:100%;background:#1a1a2e;padding:20px 32px;display:flex;align-items:center;gap:12px}
+  .header-logo{font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px}
+  .header-logo span{color:#64b5f6}
+  .header-sub{font-size:12px;color:rgba(255,255,255,.5);margin-left:auto}
+
+  .container{width:100%;max-width:780px;padding:32px 24px 60px}
+
+  .hero{text-align:center;margin-bottom:28px}
+  .hero-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);background:var(--accent-light);padding:5px 14px;border-radius:20px;margin-bottom:14px}
+  .hero h1{font-size:24px;font-weight:700;margin-bottom:8px}
+  .hero p{font-size:14px;color:var(--text2);line-height:1.6;max-width:520px;margin:0 auto}
+
+  /* MAIN TABS */
+  .main-tabs{display:flex;gap:0;background:var(--card);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--border);border-bottom:none;overflow:hidden}
+  .main-tab{flex:1;padding:15px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .15s;text-align:center;border-bottom:2px solid transparent}
+  .main-tab:hover{background:#fafbfc;color:var(--text)}
+  .main-tab.active{background:var(--card);color:var(--accent);border-bottom-color:var(--accent)}
+  .main-tab-content{display:none}
+  .main-tab-content.active{display:block}
+
+  .form-card{background:var(--card);border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);border-top:none;overflow:hidden}
+
+  .form-section{padding:24px 28px}
+  .form-section+.form-section{border-top:1px solid var(--border)}
+  .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .section-label .num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-grid .full{grid-column:1/-1}
+
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:12.5px;font-weight:600;color:var(--text2)}
+  .field label .req{color:var(--error);margin-left:2px}
+  .field input,.field select,.field textarea{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13.5px;color:var(--text);outline:none;background:#fff;transition:border .2s;width:100%}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+  .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+  .field textarea{resize:vertical;min-height:80px}
+  .field .hint{font-size:11.5px;color:var(--muted)}
+
+  .upload-area{border:2px dashed var(--border);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+  .upload-area:hover,.upload-area.dragover{border-color:var(--accent);background:#f8fbff}
+  .upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .upload-icon{margin-bottom:10px;color:var(--muted)}
+  .upload-label{font-size:13.5px;color:var(--text2);margin-bottom:4px}
+  .upload-label strong{color:var(--accent);font-weight:600}
+  .upload-hint{font-size:11.5px;color:var(--muted)}
+  .upload-preview{display:none;align-items:center;gap:12px;background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:12px}
+  .upload-preview.show{display:flex}
+  .upload-preview-name{font-size:13px;font-weight:600;flex:1}
+  .upload-preview-size{font-size:11.5px;color:var(--muted)}
+  .upload-preview-remove{background:none;border:none;font-size:16px;color:var(--error);cursor:pointer;line-height:1;padding:4px}
+
+  .submit-wrap{padding:24px 28px;background:#fafbfc;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .submit-note{font-size:12px;color:var(--muted);max-width:300px;line-height:1.5;flex:1}
+  .btn-submit{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;box-shadow:0 2px 10px rgba(21,101,192,.3);white-space:nowrap;flex-shrink:0}
+  .btn-submit:hover{background:var(--accent-dark);transform:translateY(-1px)}
+  .btn-submit:active{transform:translateY(0)}
+  .btn-submit:disabled{background:#93c5fd;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:8px;padding:9px 16px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:var(--text2);transition:all .2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ── CSV SECTION ── */
+  .csv-intro{padding:24px 28px;display:flex;flex-direction:column;gap:14px}
+  .csv-steps{display:flex;gap:12px;flex-wrap:wrap}
+  .csv-step{flex:1;min-width:180px;background:#f8fbff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px}
+  .csv-step-num{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .csv-step-text{font-size:13px;color:var(--text2);line-height:1.5}
+  .csv-step-text strong{color:var(--text);font-weight:600}
+
+  .csv-upload-area{border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin:0 28px}
+  .csv-upload-area:hover,.csv-upload-area.dragover{border-color:var(--accent);background:#f8fbff}
+  .csv-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+  /* CSV PREVIEW TABLE */
+  .csv-preview-wrap{padding:0 28px 24px;display:none}
+  .csv-preview-wrap.show{display:block}
+  .csv-preview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .csv-preview-title{font-size:13px;font-weight:700;color:var(--text)}
+  .csv-preview-count{font-size:12px;color:var(--text2)}
+  .csv-table-scroll{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+  .csv-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+  .csv-table th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+  .csv-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+  .csv-table tr:last-child td{border-bottom:none}
+  .csv-table tr.row-error td{background:#fef2f2}
+  .csv-table tr:hover td{background:#f9fafb}
+  .csv-row-status{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+  .csv-row-status.ok{background:#e6f9f0;color:#15803d}
+  .csv-row-status.err{background:#fef2f2;color:#dc2626}
+  .csv-error-msg{font-size:11px;color:#dc2626;margin-top:2px}
+
+  /* ERROR / SUCCESS / LOADING */
+  .state-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+  .loading-state,.error-state,.success-state{text-align:center;padding:60px 28px}
+  .loading-state{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--text2)}
+  .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-state h2{font-size:20px;margin-bottom:8px;color:var(--error)}
+  .error-state p{font-size:14px;color:var(--text2)}
+  .success-icon{width:64px;height:64px;border-radius:50%;background:#e6f9f0;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px}
+  .success-state h2{font-size:22px;margin-bottom:10px;color:var(--success)}
+  .success-state p{font-size:14px;color:var(--text2);line-height:1.6;max-width:460px;margin:0 auto 16px}
+  .success-list{list-style:none;text-align:left;max-width:400px;margin:12px auto 0;display:flex;flex-direction:column;gap:6px}
+  .success-list li{font-size:13px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px;color:var(--text)}
+
+  /* PROGRESS */
+  .bulk-progress{padding:24px 28px;display:none}
+  .bulk-progress.show{display:block}
+  .progress-title{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text)}
+  .progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:8px;margin-bottom:8px;overflow:hidden}
+  .progress-bar{height:8px;border-radius:4px;background:var(--accent);transition:width .3s}
+  .progress-text{font-size:12px;color:var(--text2)}
+  .progress-log{margin-top:12px;display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto}
+  .progress-log-item{font-size:12px;padding:4px 10px;border-radius:6px}
+  .progress-log-item.ok{background:#f0fdf4;color:#15803d}
+  .progress-log-item.err{background:#fef2f2;color:#dc2626}
+  .progress-log-item.info{background:#f0f9ff;color:#0369a1}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .3s,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.error{background:var(--error)}
+
+  @media(max-width:600px){
+    .form-grid{grid-template-columns:1fr}
+    .form-grid .full{grid-column:1}
+    .submit-wrap{flex-direction:column}
+    .submit-note{max-width:100%;text-align:center}
+    .csv-steps{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-logo"><span>CROWD</span>SOURCE</span>
+  <span class="header-sub">New Hire Onboarding Portal</span>
+</div>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-badge">Onboarding Portal</div>
+    <h1>Submit New Hire Information</h1>
+    <p>Add a single new hire or upload multiple employees at once via CSV. All submissions are sent directly to HR.</p>
+  </div>
+
+  <!-- LOADING -->
+  <div class="state-card" id="loadingState">
+    <div class="loading-state"><div class="spinner"></div><span>Validating your access...</span></div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="state-card" id="errorState" style="display:none">
+    <div class="error-state"><h2>Access Denied</h2><p id="errorMsg">This link is invalid or has expired. Please contact HR for a new onboarding link.</p></div>
+  </div>
+
+  <!-- SUCCESS SINGLE -->
+  <div class="state-card" id="successState" style="display:none">
+    <div class="success-state">
+      <div class="success-icon">✅</div>
+      <h2>Onboarding Submitted!</h2>
+      <p id="successMsg">The new hire has been added to the HR system. An email with pre-employment requirements will be sent to them shortly.</p>
+    </div>
+  </div>
+
+  <!-- SUCCESS BULK -->
+  <div class="state-card" id="successBulkState" style="display:none">
+    <div class="success-state">
+      <div class="success-icon">🎉</div>
+      <h2>Bulk Upload Complete!</h2>
+      <p id="successBulkMsg"></p>
+      <ul class="success-list" id="successBulkList"></ul>
+    </div>
+  </div>
+
+  <!-- MAIN FORM -->
+  <div id="formWrap" style="display:none">
+
+    <div class="main-tabs">
+      <button class="main-tab active" onclick="switchMainTab('single', this)">👤 Single Employee</button>
+      <button class="main-tab" onclick="switchMainTab('bulk', this)">📋 Bulk Upload (CSV)</button>
+    </div>
+
+    <!-- ══════════════════════════════
+         SINGLE EMPLOYEE TAB
+    ══════════════════════════════ -->
+    <div class="main-tab-content active" id="tab-single">
+      <div class="form-card">
+
+        <!-- Personal -->
+        <div class="form-section">
+          <div class="section-label"><span class="num">1</span> Personal Information</div>
+          <div class="form-grid">
+            <div class="field"><label>First Name<span class="req">*</span></label><input type="text" id="f_fn" placeholder="Juan"></div>
+            <div class="field"><label>Last Name<span class="req">*</span></label><input type="text" id="f_ln" placeholder="Dela Cruz"></div>
+            <div class="field"><label>Middle Name</label><input type="text" id="f_mn" placeholder="Santos"></div>
+            <div class="field"><label>Personal Email<span class="req">*</span></label><input type="email" id="f_email" placeholder="juan@email.com"></div>
+            <div class="field"><label>Contact Number<span class="req">*</span></label><input type="text" id="f_contact" placeholder="09XX XXX XXXX"></div>
+            <div class="field full"><label>Address</label><textarea id="f_address" placeholder="Full home address"></textarea></div>
+          </div>
+        </div>
+
+        <!-- Employment -->
+        <div class="form-section">
+          <div class="section-label"><span class="num">2</span> Employment Details</div>
+          <div class="form-grid">
+            <div class="field"><label>Company<span class="req">*</span></label><input type="text" id="f_company" placeholder="e.g. Your Company Name"></div>
+            <div class="field"><label>Job Title / Position<span class="req">*</span></label><input type="text" id="f_job_title" placeholder="e.g. Web Developer"></div>
+            <div class="field"><label>Basic Salary<span class="req">*</span></label>
+              <input type="number" id="f_salary" placeholder="e.g. 25000">
+              <span class="hint">Monthly basic salary in PHP</span>
+            </div>
+            <div class="field"><label>Allowances</label>
+              <input type="number" id="f_allowance" placeholder="e.g. 2000">
+              <span class="hint">Monthly allowance in PHP (if any)</span>
+            </div>
+            <div class="field"><label>Divisor<span class="req">*</span></label>
+              <select id="f_divisor">
+                <option value="261">261 (5-day work week)</option>
+                <option value="313">313 (6-day work week)</option>
+              </select>
+            </div>
+            <div class="field"><label>Tentative Start Date<span class="req">*</span></label><input type="date" id="f_start_date"></div>
+          </div>
+        </div>
+
+        <!-- Resume -->
+        <div class="form-section">
+          <div class="section-label"><span class="num">3</span> Resume / CV</div>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Upload Resume</label>
+              <div class="upload-area" id="uploadArea"
+                ondragover="event.preventDefault();this.classList.add('dragover')"
+                ondragleave="this.classList.remove('dragover')"
+                ondrop="handleDrop(event)">
+                <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFileSelect(this)">
+                <div class="upload-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                <div class="upload-label">Drag and drop or <strong>click to browse</strong></div>
+                <div class="upload-hint">PDF, DOC, DOCX — max 10MB</div>
+              </div>
+              <div class="upload-preview" id="uploadPreview">
+                <span>📄</span>
+                <span class="upload-preview-name" id="previewName"></span>
+                <span class="upload-preview-size" id="previewSize"></span>
+                <button class="upload-preview-remove" onclick="removeFile()" title="Remove">✕</button>
+              </div>
+            </div>
+            <div class="field full">
+              <label>Or paste a resume link <span style="font-size:11px;color:var(--muted)">(Google Drive, Dropbox, etc.)</span></label>
+              <input type="url" id="f_resume_link" placeholder="https://drive.google.com/file/d/...">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="submit-wrap">
+          <div class="submit-note">Submitting will add this employee to the HR system with status <strong>Onboarding</strong> and send them a 201 requirements email.</div>
+          <button class="btn-submit" id="submitBtn" onclick="submitSingle()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit Onboarding
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         BULK UPLOAD TAB
+    ══════════════════════════════ -->
+    <div class="main-tab-content" id="tab-bulk">
+      <div class="form-card">
+
+        <!-- Steps + Download Template -->
+        <div class="csv-intro">
+          <div class="csv-steps">
+            <div class="csv-step">
+              <div class="csv-step-num">Step 1</div>
+              <div class="csv-step-text"><strong>Download</strong> the CSV template below and fill in your employees' details.</div>
+            </div>
+            <div class="csv-step">
+              <div class="csv-step-num">Step 2</div>
+              <div class="csv-step-text"><strong>Upload</strong> your filled CSV file. We'll preview all rows before submitting.</div>
+            </div>
+            <div class="csv-step">
+              <div class="csv-step-num">Step 3</div>
+              <div class="csv-step-text"><strong>Confirm</strong> and submit. All employees are created and emailed automatically.</div>
+            </div>
+          </div>
+          <div>
+            <button class="btn" onclick="downloadTemplate()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download CSV Template
+            </button>
+          </div>
+        </div>
+
+        <!-- CSV Upload Area -->
+        <div class="form-section" style="padding-top:0">
+          <div class="csv-upload-area" id="csvUploadArea"
+            style="margin:0"
+            ondragover="event.preventDefault();this.classList.add('dragover')"
+            ondragleave="this.classList.remove('dragover')"
+            ondrop="handleCsvDrop(event)">
+            <input type="file" id="csvFile" accept=".csv" onchange="handleCsvSelect(this)">
+            <div class="upload-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="upload-label">Drop your CSV here or <strong>click to browse</strong></div>
+            <div class="upload-hint">CSV files only — max 5MB</div>
+          </div>
+        </div>
+
+        <!-- CSV Preview -->
+        <div class="csv-preview-wrap" id="csvPreviewWrap">
+          <div class="csv-preview-header">
+            <span class="csv-preview-title">Preview</span>
+            <span class="csv-preview-count" id="csvPreviewCount"></span>
+          </div>
+          <div class="csv-table-scroll">
+            <table class="csv-table" id="csvPreviewTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bulk Progress -->
+        <div class="bulk-progress" id="bulkProgress">
+          <div class="progress-title">Submitting employees...</div>
+          <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+          <div class="progress-text" id="progressText">0 / 0</div>
+          <div class="progress-log" id="progressLog"></div>
+        </div>
+
+        <!-- Bulk Submit -->
+        <div class="submit-wrap" id="bulkSubmitWrap" style="display:none">
+          <div class="submit-note">All <strong id="bulkCount">0</strong> employees will be added with status <strong>Onboarding</strong> and emailed a 201 requirements link.</div>
+          <div style="display:flex;gap:10px">
+            <button class="btn" onclick="clearCsv()">Clear</button>
+            <button class="btn-submit" id="bulkSubmitBtn" onclick="submitBulk()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Submit All
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VALIDATE_URL  = 'https://primary-production-a810.up.railway.app/webhook/validate-invite';
+const SUBMIT_URL    = 'https://primary-production-a810.up.railway.app/webhook/submit-onboarding';
+const BULK_URL      = 'https://primary-production-a810.up.railway.app/webhook/submit-onboarding-bulk';
+
+const CSV_COLUMNS = ['first_name','last_name','middle_name','email','contact','address','company','job_title','salary','allowance','divisor','start_date'];
+const CSV_REQUIRED = ['first_name','last_name','email','contact','job_title','salary','start_date'];
+
+let currentToken = null;
+let selectedFile = null;
+let fileBase64   = null;
+let csvRows      = [];
+
+// ── INIT ──
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  currentToken = params.get('token');
+  if (!currentToken) { showGlobalError('No access token found. Please use the onboarding link sent by HR.'); return; }
+  try {
+    const res = await fetch(`${VALIDATE_URL}?token=${currentToken}`);
+    let valid = true;
+    let message = '';
+    if (res.ok) {
+      try {
+        const data = await res.json();
+        valid = data.valid !== false;
+        message = data.message || '';
+      } catch { valid = true; }
+    } else if (res.status === 401 || res.status === 403) {
+      valid = false;
+      message = 'This link is invalid or has expired.';
+    }
+    if (!valid) { showGlobalError(message || 'This link is invalid or has expired.'); return; }
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('formWrap').style.display = 'block';
+  } catch {
+    console.warn('validate-invite unavailable, proceeding. Token will be validated on submit.');
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('formWrap').style.display = 'block';
+  }
+}
+
+function showGlobalError(msg) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorState').style.display = 'block';
+}
+
+// ── TABS ──
+function switchMainTab(tab, btn) {
+  document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.main-tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// ── RESUME FILE ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('dragover');
+  if (e.dataTransfer.files.length) processFile(e.dataTransfer.files[0]);
+}
+function handleFileSelect(input) { if (input.files.length) processFile(input.files[0]); }
+function processFile(file) {
+  if (file.size > 10*1024*1024) { showToast('File too large. Max 10MB.', 'error'); return; }
+  selectedFile = file;
+  document.getElementById('previewName').textContent = file.name;
+  document.getElementById('previewSize').textContent = formatSize(file.size);
+  document.getElementById('uploadPreview').classList.add('show');
+  const reader = new FileReader();
+  reader.onload = () => { fileBase64 = reader.result.split(',')[1]; };
+  reader.readAsDataURL(file);
+}
+function removeFile() {
+  selectedFile = null; fileBase64 = null;
+  document.getElementById('resumeFile').value = '';
+  document.getElementById('uploadPreview').classList.remove('show');
+}
+function formatSize(b) { if(b<1024)return b+'B'; if(b<1048576)return(b/1024).toFixed(1)+'KB'; return(b/1048576).toFixed(1)+'MB'; }
+
+// ── SUBMIT SINGLE ──
+async function submitSingle() {
+  const fn        = document.getElementById('f_fn').value.trim();
+  const ln        = document.getElementById('f_ln').value.trim();
+  const email     = document.getElementById('f_email').value.trim();
+  const contact   = document.getElementById('f_contact').value.trim();
+  const jobTitle  = document.getElementById('f_job_title').value.trim();
+  const salary    = document.getElementById('f_salary').value;
+  const startDate = document.getElementById('f_start_date').value;
+
+  if (!fn||!ln) { showToast('First and Last Name are required.','error'); return; }
+  if (!email)   { showToast('Email is required.','error'); return; }
+  if (!contact) { showToast('Contact number is required.','error'); return; }
+  if (!jobTitle){ showToast('Job Title is required.','error'); return; }
+  if (!salary)  { showToast('Basic Salary is required.','error'); return; }
+  if (!startDate){ showToast('Start Date is required.','error'); return; }
+  if (!document.getElementById('f_company').value) { showToast('Company is required.','error'); return; }
+  if (!selectedFile && !document.getElementById('f_resume_link').value.trim()) {
+    showToast('Please upload a resume or paste a link.','error'); return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Submitting...';
+
+  const payload = {
+    token: currentToken, fn, ln,
+    mn: document.getElementById('f_mn').value.trim(),
+    email, contact,
+    address: document.getElementById('f_address').value.trim(),
+    company: document.getElementById('f_company').value,
+    job_title: jobTitle,
+    salary: Number(salary),
+    allowance: Number(document.getElementById('f_allowance').value)||0,
+    divisor: Number(document.getElementById('f_divisor').value),
+    start_date: startDate,
+    resume_link: document.getElementById('f_resume_link').value.trim()||null,
+    resume_filename: selectedFile?.name||null,
+    resume_mimetype: selectedFile?.type||null,
+    resume_base64: fileBase64||null
+  };
+
+  try {
+    const res  = await fetch(SUBMIT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      document.getElementById('formWrap').style.display = 'none';
+      document.getElementById('successMsg').textContent = `${data.employee_name || fn+' '+ln} has been added to the HR system. A 201 requirements email will be sent to ${email} shortly.`;
+      document.getElementById('successState').style.display = 'block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {
+      showToast(data.message||'Submission failed. Please try again.','error');
+      btn.disabled=false;
+      btn.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Submit Onboarding';
+    }
+  } catch {
+    showToast('Network error. Please try again.','error');
+    btn.disabled=false;
+    btn.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Submit Onboarding';
+  }
+}
+
+// ── CSV TEMPLATE ──
+function downloadTemplate() {
+  const headers = CSV_COLUMNS.join(',');
+  const example = 'Juan,Dela Cruz,Santos,juan@email.com,09171234567,"123 Main St Manila",CIS,Web Developer,25000,2000,261,2026-06-01';
+  const note    = '# Required: first_name last_name email contact job_title salary start_date | company: CIS or JB Pro | divisor: 261 or 313';
+  const csv     = `${note}\n${headers}\n${example}`;
+  const blob    = new Blob([csv], {type:'text/csv'});
+  const url     = URL.createObjectURL(blob);
+  const a       = document.createElement('a');
+  a.href=url; a.download='onboarding_template.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── CSV UPLOAD ──
+function handleCsvDrop(e) {
+  e.preventDefault();
+  document.getElementById('csvUploadArea').classList.remove('dragover');
+  if (e.dataTransfer.files.length) parseCsv(e.dataTransfer.files[0]);
+}
+function handleCsvSelect(input) { if (input.files.length) parseCsv(input.files[0]); }
+
+function parseCsv(file) {
+  if (!file.name.endsWith('.csv')) { showToast('Please upload a .csv file.','error'); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.split('\n').map(l=>l.trim()).filter(l=>l&&!l.startsWith('#'));
+    if (lines.length < 2) { showToast('CSV must have a header row and at least one data row.','error'); return; }
+
+    const headers = parseCsvLine(lines[0]).map(h=>h.toLowerCase().trim().replace(/\s+/g,'_'));
+    csvRows = [];
+
+    for (let i=1; i<lines.length; i++) {
+      const vals = parseCsvLine(lines[i]);
+      const row  = {};
+      headers.forEach((h,idx) => { row[h] = (vals[idx]||'').trim(); });
+
+      // Validate
+      const errors = [];
+      CSV_REQUIRED.forEach(f => { if (!row[f]) errors.push(`${f} is required`); });
+      if (row.email && !/\S+@\S+\.\S+/.test(row.email)) errors.push('invalid email');
+      if (row.salary && isNaN(Number(row.salary))) errors.push('salary must be a number');
+      if (row.start_date && isNaN(new Date(row.start_date).getTime())) errors.push('invalid start_date');
+      if (row.company && !['CIS','JB Pro'].includes(row.company)) row.company = 'CIS';
+      if (row.divisor && !['261','313'].includes(row.divisor)) row.divisor = '261';
+
+      csvRows.push({ row, errors, index: i });
+    }
+
+    renderCsvPreview();
+  };
+  reader.readAsText(file);
+}
+
+function parseCsvLine(line) {
+  const result=[], re=/(?:^|,)("(?:[^"]*(?:""[^"]*)*)""|[^,]*)/g;
+  let m;
+  while((m=re.exec(line))!==null){
+    let val=m[1];
+    if(val.startsWith('"')&&val.endsWith('"'))val=val.slice(1,-1).replace(/""/g,'"');
+    result.push(val);
+  }
+  return result;
+}
+
+function renderCsvPreview() {
+  const valid  = csvRows.filter(r=>r.errors.length===0);
+  const invalid= csvRows.filter(r=>r.errors.length>0);
+
+  document.getElementById('csvPreviewCount').textContent = `${csvRows.length} row${csvRows.length!==1?'s':''} found — ${valid.length} valid, ${invalid.length} with errors`;
+  document.getElementById('csvPreviewWrap').classList.add('show');
+
+  const table = document.getElementById('csvPreviewTable');
+  table.querySelector('thead').innerHTML = `<tr><th>#</th><th>Name</th><th>Email</th><th>Job Title</th><th>Salary</th><th>Start Date</th><th>Status</th></tr>`;
+
+  table.querySelector('tbody').innerHTML = csvRows.map((r,i) => {
+    const {row,errors} = r;
+    const name = [row.first_name, row.middle_name, row.last_name].filter(Boolean).join(' ') || '—';
+    const statusHtml = errors.length===0
+      ? '<span class="csv-row-status ok">✓ Valid</span>'
+      : `<span class="csv-row-status err">✗ Error</span><div class="csv-error-msg">${errors.join(', ')}</div>`;
+    return `<tr class="${errors.length>0?'row-error':''}">
+      <td>${i+1}</td>
+      <td>${name}</td>
+      <td>${row.email||'—'}</td>
+      <td>${row.job_title||'—'}</td>
+      <td>${row.company||'CIS'}</td>
+      <td>${row.salary?'₱'+Number(row.salary).toLocaleString('en-PH'):'—'}</td>
+      <td>${row.start_date||'—'}</td>
+      <td>${statusHtml}</td>
+    </tr>`;
+  }).join('');
+
+  const submitWrap = document.getElementById('bulkSubmitWrap');
+  if (valid.length > 0) {
+    document.getElementById('bulkCount').textContent = valid.length;
+    submitWrap.style.display = 'flex';
+  } else {
+    submitWrap.style.display = 'none';
+    showToast('No valid rows to submit. Please fix the errors.','error');
+  }
+}
+
+function clearCsv() {
+  csvRows = [];
+  document.getElementById('csvFile').value = '';
+  document.getElementById('csvPreviewWrap').classList.remove('show');
+  document.getElementById('bulkSubmitWrap').style.display = 'none';
+  document.getElementById('bulkProgress').classList.remove('show');
+}
+
+// ── SUBMIT BULK ──
+async function submitBulk() {
+  const valid = csvRows.filter(r=>r.errors.length===0);
+  if (!valid.length) { showToast('No valid rows to submit.','error'); return; }
+
+  const btn = document.getElementById('bulkSubmitBtn');
+  btn.disabled = true;
+  document.getElementById('bulkSubmitWrap').style.display = 'none';
+  document.getElementById('bulkProgress').classList.add('show');
+
+  const progressBar  = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const progressLog  = document.getElementById('progressLog');
+  progressLog.innerHTML = '';
+
+  const results = { success:[], failed:[] };
+
+  for (let i=0; i<valid.length; i++) {
+    const { row } = valid[i];
+    const name = [row.first_name, row.middle_name, row.last_name].filter(Boolean).join(' ');
+    progressText.textContent = `${i+1} / ${valid.length} — Processing ${name}...`;
+    progressBar.style.width = `${Math.round(((i+1)/valid.length)*100)}%`;
+
+    try {
+      const res = await fetch(SUBMIT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token:        currentToken,
+          fn:           row.first_name,
+          ln:           row.last_name,
+          mn:           row.middle_name||null,
+          email:        row.email,
+          contact:      row.contact,
+          address:      row.address||null,
+          company:      row.company||'CIS',
+          job_title:    row.job_title,
+          salary:       Number(row.salary)||0,
+          allowance:    Number(row.allowance)||0,
+          divisor:      Number(row.divisor)||261,
+          start_date:   row.start_date,
+          resume_link:  null,
+          resume_base64:null
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        results.success.push(name);
+        progressLog.innerHTML += `<div class="progress-log-item ok">✓ ${name} — Added successfully</div>`;
+      } else {
+        results.failed.push(name);
+        progressLog.innerHTML += `<div class="progress-log-item err">✗ ${name} — ${data.message||'Failed'}</div>`;
+      }
+    } catch {
+      results.failed.push(name);
+      progressLog.innerHTML += `<div class="progress-log-item err">✗ ${name} — Network error</div>`;
+    }
+
+    progressLog.scrollTop = progressLog.scrollHeight;
+    // Small delay to avoid rate limiting
+    if (i < valid.length-1) await new Promise(r => setTimeout(r, 400));
+  }
+
+  progressText.textContent = `Done — ${results.success.length} added, ${results.failed.length} failed`;
+
+  // Show success state
+  setTimeout(() => {
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('successBulkMsg').textContent =
+      `${results.success.length} of ${valid.length} employees were added to the HR system. Each will receive a 201 requirements email.`;
+    document.getElementById('successBulkList').innerHTML =
+      results.success.map(n=>`<li>✅ ${n}</li>`).join('') +
+      results.failed.map(n=>`<li style="background:#fef2f2;border-color:#fecaca;color:#dc2626">✗ ${n} — failed</li>`).join('');
+    document.getElementById('successBulkState').style.display = 'block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 1500);
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='error'?'❌ ':'✅ ') + msg;
+  t.className = 'toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 5000);
+}
+
+init();
+</script>
+</body>
+</html>
