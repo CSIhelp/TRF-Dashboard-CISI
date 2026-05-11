@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Intern Onboarding — CrowdSource</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:        #2FAAE1;
+      --brand-dark:   #1d8ec4;
+      --brand-darker: #1677a8;
+      --brand-light:  #e8f7fd;
+      --brand-mid:    #bce8f8;
+      --brand-text:   #0d5f82;
+
+      --bg: #f4f9fc;
+      --topbar-bg: #ffffff;
+      --topbar-border: #d6edf7;
+      --card-bg: #ffffff;
+      --card-border: #d6edf7;
+      --text-primary: #0d2d3a;
+      --text-secondary: #5a8fa4;
+      --text-label: #1e5570;
+      --input-bg: #f0f8fd;
+      --input-border: #b8dff0;
+      --input-focus-shadow: rgba(47,170,225,0.15);
+      --section-border: #d6edf7;
+      --note-color: #7ab5ce;
+    }
+
+    body.dark {
+      --bg: #071820;
+      --topbar-bg: #0d2535;
+      --topbar-border: #1a3f55;
+      --card-bg: #0d2535;
+      --card-border: #1a3f55;
+      --text-primary: #e0f4fd;
+      --text-secondary: #7ab5ce;
+      --text-label: #a8d8ee;
+      --input-bg: #071820;
+      --input-border: #1a3f55;
+      --input-focus-shadow: rgba(47,170,225,0.25);
+      --section-border: #1a3f55;
+      --note-color: #3d7a96;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); min-height: 100vh; color: var(--text-primary); transition: background 0.2s, color 0.2s; }
+
+    .topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--topbar-border); padding: 0 32px; height: 60px; display: flex; align-items: center; gap: 12px; transition: background 0.2s, border-color 0.2s; }
+    .brand-name { display: flex; align-items: center; }
+    .brand-name img { max-height: 34px; width: auto; display: block; }
+    .brand-sep  { width: 1px; height: 18px; background: var(--topbar-border); margin: 0 4px; }
+    .brand-module { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .topbar-right { margin-left: auto; }
+
+    .dark-toggle { background: none; border: 1px solid var(--input-border); border-radius: 20px; padding: 5px 12px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .dark-toggle:hover { border-color: var(--brand); color: var(--brand); }
+
+    .page { max-width: 640px; margin: 40px auto; padding: 0 20px 60px; }
+    .page-heading { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .page-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 28px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 32px; transition: background 0.2s, border-color 0.2s; box-shadow: 0 2px 12px rgba(47,170,225,0.07); }
+    
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--section-border); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .card { padding: 24px 18px; } }
+    
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field.full { grid-column: 1 / -1; }
+    
+    label { font-size: 12px; font-weight: 500; color: var(--text-label); }
+    .req { color: var(--brand); }
+    
+    input, select, textarea { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 7px; padding: 9px 12px; font-family: 'Inter', sans-serif; font-size: 13.5px; color: var(--text-primary); width: 100%; outline: none; transition: border-color 0.15s, box-shadow 0.15s, background 0.2s; -webkit-appearance: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: var(--card-bg); box-shadow: 0 0 0 3px var(--input-focus-shadow); }
+    input::placeholder, textarea::placeholder { color: var(--text-secondary); opacity: 0.8; }
+    
+    select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%232FAAE1' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; }
+    select option { background: var(--card-bg); color: var(--text-primary); }
+    textarea { resize: vertical; min-height: 84px; line-height: 1.55; }
+
+    .pin-wrap { position: relative; }
+    .pin-wrap input { padding-right: 38px; letter-spacing: 3px; }
+    .pin-eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 15px; padding: 2px; line-height: 1; transition: color 0.15s; }
+    .pin-eye:hover { color: var(--brand); }
+
+    /* Submit Button */
+    .submit-row { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-submit { width: 100%; padding: 11px 20px; background: var(--brand); border: none; border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover { background: var(--brand-dark); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { background: var(--brand-mid); cursor: not-allowed; }
+    .note { text-align: center; font-size: 11.5px; color: var(--note-color); }
+
+    /* Status Screens */
+    .state-screen { display: none; text-align: center; padding: 40px 20px; }
+    .state-screen h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .state-screen p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    
+    .state-screen.success h2 { color: var(--brand); }
+    .state-screen.error h2 { color: #dc2626; }
+    body.dark .state-screen.error h2 { color: #f87171; }
+
+    /* Toast & Spinner */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #0d2535; color: #fff; font-size: 13px; font-weight: 500; padding: 11px 20px; border-radius: 8px; display: flex; align-items: center; gap: 8px; z-index: 999; opacity: 0; transition: transform 0.35s ease, opacity 0.3s; white-space: nowrap; box-shadow: 0 4px 16px rgba(47,170,225,0.2); }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #059669; }
+    .toast.error { background: #991b1b; }
+    
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: spin 0.65s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Confirmation Modal Styles ── */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px); }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--card-bg); width: 440px; max-width: 92%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden; animation: popIn 0.2s ease; display: flex; flex-direction: column; border: 1px solid var(--card-border); max-height: 90vh; }
+    @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-header { padding: 18px 24px; border-bottom: 1px solid var(--section-border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); line-height: 1; transition: color 0.15s; }
+    .modal-close:hover { color: var(--brand); }
+    .modal-body { padding: 24px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; overflow-y: auto; }
+    .summary-box { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; padding: 16px; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--section-border); padding-bottom: 8px; }
+    .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .summary-label { font-weight: 500; color: var(--text-label); flex-shrink: 0; }
+    .summary-value { color: var(--text-primary); text-align: right; font-weight: 600; word-break: break-word; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--section-border); display: flex; gap: 10px; background: var(--bg); }
+    .modal-footer .btn { flex: 1; justify-content: center; padding: 11px 0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid var(--input-border); background: var(--card-bg); color: var(--text-primary); }
+    .modal-footer .btn:hover { background: var(--input-bg); }
+    .modal-footer .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .modal-footer .btn-primary:hover { background: var(--brand-dark); }
+    .modal-footer .btn-primary:disabled { background: var(--brand-mid); border-color: var(--brand-mid); cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand-name">
+      <img src="stewrd-logo.png" alt="Stewrd Logo" onerror="this.style.display='none'">
+    </div>
+    <div class="brand-sep"></div>
+    <div class="brand-module">Intern Onboarding</div>
+    <div class="topbar-right">
+      <button class="dark-toggle" id="darkToggle" onclick="toggleDark()">
+        <span id="darkIcon">🌙</span>
+        <span id="darkLabel">Dark</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-heading" id="pageTitle">Welcome to the Team</div>
+    <div class="page-sub" id="pageSubtitle">Please complete your personal and OJT details securely below.</div>
+
+    <div class="card">
+      
+      <form id="onboardingForm" novalidate onsubmit="event.preventDefault();">
+        
+        <div class="section">
+          <div class="section-title">Personal Information</div>
+          <div class="grid-2">
+            <div class="field">
+              <label>First Name <span class="req">*</span></label>
+              <input type="text" id="f_fn" placeholder="John" required />
+            </div>
+            <div class="field">
+              <label>Middle Name</label>
+              <input type="text" id="f_mn" placeholder="e.g. Santos" />
+            </div>
+            <div class="field">
+              <label>Last Name <span class="req">*</span></label>
+              <input type="text" id="f_ln" placeholder="Doe" required />
+            </div>
+            <div class="field">
+              <label>Date of Birth <span class="req">*</span></label>
+              <input type="date" id="f_birthdate" required />
+            </div>
+            
+            <div class="field full">
+              <label>Create a 4-Digit PIN <span class="req">*</span> <span style="font-size:11px;font-weight:400;color:var(--note-color)">(This will be used to sign your timesheets and forms)</span></label>
+              <div class="pin-wrap">
+                <input type="password" id="f_pin" placeholder="••••" maxlength="4" required />
+                <button type="button" class="pin-eye" onclick="togglePin(this)">👁</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Gender</label>
+              <select id="f_gender">
+                <option value="" disabled selected>— Select —</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Civil Status</label>
+              <select id="f_civil_status">
+                <option value="" disabled selected>— Select —</option>
+                <option>Single</option>
+                <option>Married</option>
+                <option>Widowed</option>
+                <option>Separated</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Personal Email <span class="req">*</span></label>
+              <input type="email" id="f_personal_email" placeholder="john@gmail.com" required />
+            </div>
+            <div class="field">
+              <label>Contact Number <span class="req">*</span></label>
+              <input type="text" id="f_contact" placeholder="09XX XXX XXXX" required />
+            </div>
+            <div class="field full">
+              <label>Complete Address</label>
+              <textarea id="f_address" placeholder="Full residential address"></textarea>
+            </div>
+            <div class="field full" style="margin-bottom:0">
+              <label>Emergency Contact</label>
+              <input type="text" id="f_emergency_contact" placeholder="Name — Relationship — Contact Number" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-bottom:0">
+          <div class="section-title">University & OJT Information</div>
+          <div class="grid-2">
+            <div class="field full">
+              <label>University / School <span class="req">*</span></label>
+              <input type="text" id="f_university" placeholder="e.g. University of Santo Tomas" required>
+            </div>
+            <div class="field">
+              <label>Total OJT Hours Required <span class="req">*</span></label>
+              <input type="number" id="f_total_hours" placeholder="e.g. 400" required>
+            </div>
+            <div class="field">
+              <label>OJT Advisor Name</label>
+              <input type="text" id="f_ojt_advisor" placeholder="Prof. Juan Dela Cruz">
+            </div>
+            <div class="field">
+              <label>OJT Advisor Number</label>
+              <input type="text" id="f_ojt_advisor_number" placeholder="09XX XXX XXXX">
+            </div>
+            <div class="field">
+              <label>OJT Advisor Email</label>
+              <input type="email" id="f_ojt_advisor_email" placeholder="advisor@school.edu.ph">
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button type="button" class="btn-submit" id="initSubmitBtn" onclick="initiateSubmission()">Review & Submit</button>
+          <div class="note">🔒 Securely transmitted to the HR Department</div>
+        </div>
+      </form>
+
+      <div class="state-screen success" id="successScreen">
+        <h2>🎉 Submission Successful!</h2>
+        <p>Your records have been securely sent to HR.<br>You may now close this window.</p>
+      </div>
+
+      <div class="state-screen error" id="errorScreen">
+        <h2>⚠️ Invalid Link</h2>
+        <p id="errorText">This onboarding link is missing, expired, or has already been used. Please contact HR for a new invite link.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Confirm Details</h2>
+        <button type="button" class="modal-close" onclick="closeConfirmation()">✕</button>
+      </div>
+      <div class="modal-body">
+        Please double-check your core details below before submitting.
+        <div class="summary-box" id="summaryBox">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="closeConfirmation()">Edit Details</button>
+        <button type="button" class="btn btn-primary" id="confirmSubmitBtn" onclick="executeSubmission()">Confirm & Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toastIcon"></span>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script>
+    // ── Dark mode Logic ──
+    function toggleDark() {
+      const isDark = document.body.classList.toggle('dark');
+      document.getElementById('darkIcon').textContent  = isDark ? '☀️' : '🌙';
+      document.getElementById('darkLabel').textContent = isDark ? 'Light' : 'Dark';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('darkIcon').textContent  = '☀️';
+      document.getElementById('darkLabel').textContent = 'Light';
+    }
+
+    // ── PIN Toggle Logic ──
+    function togglePin(btn) {
+      const input = document.getElementById('f_pin');
+      const show  = input.type === 'password';
+      input.type  = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁';
+    }
+
+    // ── Token Validation ──
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteToken = urlParams.get('token');
+
+    window.onload = () => {
+      // Hide form and show error if the URL doesn't contain a token
+      if (!inviteToken) {
+        document.getElementById('onboardingForm').style.display = 'none';
+        document.getElementById('pageTitle').style.display = 'none';
+        document.getElementById('pageSubtitle').style.display = 'none';
+        document.getElementById('errorScreen').style.display = 'block';
+      }
+    };
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      document.getElementById('toastIcon').textContent = type === 'success' ? '✔' : '✖';
+      document.getElementById('toastMsg').textContent  = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 4500);
+    }
+
+    // ── Pre-Submit Validation & Modal ──
+    let pendingPayload = null;
+
+    function initiateSubmission() {
+      const fn = document.getElementById('f_fn').value.trim();
+      const ln = document.getElementById('f_ln').value.trim();
+      const pin = document.getElementById('f_pin').value.trim();
+      const email = document.getElementById('f_personal_email').value.trim();
+      const contact = document.getElementById('f_contact').value.trim();
+      const bd = document.getElementById('f_birthdate').value;
+      const totalHours = document.getElementById('f_total_hours').value.trim();
+      const university = document.getElementById('f_university').value.trim();
+      
+      if (!fn || !ln) return showToast('First and Last name are required.', 'error');
+      if (!pin) return showToast('Please create a 4-digit PIN.', 'error');
+      if (!bd) return showToast('Date of birth is required.', 'error');
+      if (!email) return showToast('Personal Email is required.', 'error');
+      if (!contact) return showToast('Contact Number is required.', 'error');
+      if (!totalHours) return showToast('Total OJT Hours is required.', 'error');
+      if (!university) return showToast('University / School is required.', 'error');
+
+      pendingPayload = {
+        token: inviteToken,
+        fn: fn,
+        mn: document.getElementById('f_mn').value.trim(),
+        ln: ln,
+        pin: pin,
+        birthdate: bd,
+        gender: document.getElementById('f_gender').value,
+        civil_status: document.getElementById('f_civil_status').value,
+        personal_email: email,
+        contact: contact,
+        address: document.getElementById('f_address').value.trim(),
+        emergency_contact: document.getElementById('f_emergency_contact').value.trim(),
+        
+        // Intern Specific Fields
+        university: university,
+        total_hours: Number(totalHours),
+        ojt_advisor: document.getElementById('f_ojt_advisor').value.trim(),
+        ojt_advisor_number: document.getElementById('f_ojt_advisor_number').value.trim(),
+        ojt_advisor_email: document.getElementById('f_ojt_advisor_email').value.trim(),
+
+        // Hardcode status to Ongoing for interns
+        status: 'Ongoing',
+        cip_status: 'Pending'
+      };
+
+      const summaryHtml = `
+        <div class="summary-row"><span class="summary-label">Full Name:</span><span class="summary-value">${fn} ${ln}</span></div>
+        <div class="summary-row"><span class="summary-label">Email:</span><span class="summary-value">${email}</span></div>
+        <div class="summary-row"><span class="summary-label">Contact:</span><span class="summary-value">${contact}</span></div>
+        <div class="summary-row"><span class="summary-label">Birthdate:</span><span class="summary-value">${bd}</span></div>
+        <div class="summary-row"><span class="summary-label">University:</span><span class="summary-value">${university}</span></div>
+        <div class="summary-row"><span class="summary-label">OJT Hours:</span><span class="summary-value">${totalHours} hrs</span></div>
+      `;
+
+      document.getElementById('summaryBox').innerHTML = summaryHtml;
+      document.getElementById('confirmationModal').classList.add('active');
+    }
+
+    function closeConfirmation() {
+      document.getElementById('confirmationModal').classList.remove('active');
+    }
+
+    // ── Actual Submission ──
+    async function executeSubmission() {
+      const btn = document.getElementById('confirmSubmitBtn');
+      const initBtn = document.getElementById('initSubmitBtn');
+      
+      btn.innerHTML = '<span class="spinner"></span>Submitting…';
+      btn.disabled = true;
+      initBtn.disabled = true;
+
+      try {
+        const WEBHOOK_URL = 'https://primary-production-a810.up.railway.app/webhook/employee-onboarding';
+        
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pendingPayload)
+        });
+
+        if (res.ok) {
+          closeConfirmation();
+          document.getElementById('onboardingForm').style.display = 'none';
+          document.getElementById('pageTitle').style.display = 'none';
+          document.getElementById('pageSubtitle').style.display = 'none';
+          document.getElementById('successScreen').style.display = 'block';
+        } else if (res.status === 401 || res.status === 403) {
+          closeConfirmation();
+          document.getElementById('onboardingForm').style.display = 'none';
+          document.getElementById('pageTitle').style.display = 'none';
+          document.getElementById('pageSubtitle').style.display = 'none';
+          document.getElementById('errorScreen').style.display = 'block';
+        } else {
+          showToast('Submission failed. Please try again.', 'error');
+          btn.innerHTML = 'Confirm & Submit';
+          btn.disabled = false;
+          initBtn.disabled = false;
+        }
+      } catch(err) {
+        showToast('Network error. Please check your connection.', 'error');
+        btn.innerHTML = 'Confirm & Submit';
+        btn.disabled = false;
+        initBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
