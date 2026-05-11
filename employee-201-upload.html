@@ -39,6 +39,9 @@
   .doc-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:border .2s}
   .doc-card.uploaded{border-color:#86efac}
   .doc-card.uploading{border-color:var(--accent)}
+  .doc-card.skipped{border-color:#fde68a}
+  .doc-icon.skipped{background:#fff8e1}
+  .status-pill.skipped{background:#fff8e1;color:#92400e}
 
   .doc-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s}
   .doc-header:hover{background:#fafbfc}
@@ -75,6 +78,13 @@
   .mini-upload-label{font-size:13px;color:var(--text2)}
   .mini-upload-label strong{color:var(--accent)}
   .mini-upload-hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+
+  /* Number input */
+  .number-input-wrap{margin-top:4px}
+  .number-input-wrap input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Mono',monospace;font-size:14px;color:var(--text);outline:none;transition:border .2s;letter-spacing:.05em}
+  .number-input-wrap input:focus{border-color:var(--accent)}
+  .number-save-btn{width:100%;margin-top:8px;padding:10px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+  .number-save-btn:hover{background:#0d47a1}
 
   /* Link input */
   .link-row{display:flex;gap:8px;margin-top:10px}
@@ -198,10 +208,10 @@ const SAVE_201_URL     = 'https://primary-production-a810.up.railway.app/webhook
 
 // Standard required documents
 const REQUIRED_DOCS = [
-  { id: 'sss',        name: 'SSS',           icon: '🪪', desc: 'SSS ID or SSS E1/E4 form' },
-  { id: 'philhealth', name: 'PhilHealth',    icon: '🏥', desc: 'PhilHealth ID or MDR form' },
-  { id: 'pagibig',    name: 'Pag-IBIG',      icon: '🏠', desc: 'Pag-IBIG ID or membership form' },
-  { id: 'tin',        name: 'TIN',           icon: '📋', desc: 'TIN ID or BIR Form 1902' },
+  { id: 'sss',        name: 'SSS',           icon: '🪪', desc: 'SSS Number (e.g. 34-1234567-8)', type: 'number' },
+  { id: 'philhealth', name: 'PhilHealth',    icon: '🏥', desc: 'PhilHealth Number (e.g. 12-123456789-0)', type: 'number' },
+  { id: 'pagibig',    name: 'Pag-IBIG',      icon: '🏠', desc: 'Pag-IBIG Number (e.g. 1234-5678-9012)', type: 'number' },
+  { id: 'tin',        name: 'TIN',           icon: '📋', desc: 'TIN Number (e.g. 123-456-789-000)', type: 'number' },
   { id: 'nbi',        name: 'NBI Clearance', icon: '🔍', desc: 'Valid NBI Clearance' },
   { id: 'birth_cert', name: 'Birth Certificate', icon: '📄', desc: 'PSA Birth Certificate' },
   { id: 'resume',     name: 'Resume / CV',   icon: '📝', desc: 'Updated resume or curriculum vitae' },
@@ -213,6 +223,7 @@ let currentEmpId   = null;
 let currentPin     = null;
 let empName        = '';
 let uploadedDocs   = {}; // docId -> { name, path, type, uploaded_at }
+let skippedDocs    = {}; // docId -> true
 let pendingFreeFiles = [];
 
 // ── INIT ──
@@ -257,7 +268,9 @@ function renderChecklist() {
   const container = document.getElementById('docChecklist');
   container.innerHTML = REQUIRED_DOCS.map(doc => {
     const uploaded = uploadedDocs[doc.id];
-    const status   = uploaded ? 'uploaded' : 'pending';
+    const skipped  = skippedDocs[doc.id];
+    const status   = uploaded ? 'uploaded' : skipped ? 'skipped' : 'pending';
+    const pillText = uploaded ? 'Uploaded' : skipped ? 'Skipped' : 'Pending';
     return `<div class="doc-card ${status}" id="card-${doc.id}">
       <div class="doc-header" onclick="toggleDoc('${doc.id}')">
         <div class="doc-icon ${status}">${doc.icon}</div>
@@ -266,12 +279,19 @@ function renderChecklist() {
           <div class="doc-desc">${doc.desc}</div>
         </div>
         <div class="doc-status">
-          <span class="status-pill ${status}" id="pill-${doc.id}">${uploaded?'Uploaded':'Pending'}</span>
+          <span class="status-pill ${status}" id="pill-${doc.id}">${pillText}</span>
           <span class="chevron" id="chev-${doc.id}">▼</span>
         </div>
       </div>
       <div class="doc-body" id="body-${doc.id}">
         ${uploaded ? renderUploadedFile(uploaded) : ''}
+        ${skipped && !uploaded ? `<div style="background:#fff8e1;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;color:#92400e">⏭ Skipped — you can come back and submit this anytime using the same link.</div>` : ''}
+        ${doc.type === 'number' ? `
+        <div class="number-input-wrap">
+          <input type="text" id="numval-${doc.id}" placeholder="${doc.desc}" value="${uploaded ? uploaded.name.replace(doc.name + ' — ','') : ''}">
+        </div>
+        <button class="number-save-btn" onclick="submitDocNumber('${doc.id}')">💾 Save Number</button>
+        ` : `
         <div class="mini-upload" id="upload-area-${doc.id}"
           ondragover="event.preventDefault();this.classList.add('dragover')"
           ondragleave="this.classList.remove('dragover')"
@@ -285,20 +305,37 @@ function renderChecklist() {
           <input type="url" id="link-${doc.id}" placeholder="https://drive.google.com/...">
           <button onclick="submitDocLink('${doc.id}')">Save Link</button>
         </div>
+        `}
+        ${!uploaded ? `<button onclick="skipDoc('${doc.id}')" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1.5px dashed var(--border);background:transparent;font-family:inherit;font-size:12.5px;color:var(--muted);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#92400e'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⏭ Submit later</button>` : ''}
         <div id="upload-status-${doc.id}" style="font-size:12px;color:var(--accent);margin-top:8px;text-align:center;display:none"></div>
       </div>
     </div>`;
   }).join('');
 }
 
+function skipDoc(docId) {
+  skippedDocs[docId] = true;
+  const card = document.getElementById(`card-${docId}`);
+  const pill = document.getElementById(`pill-${docId}`);
+  card.className = 'doc-card skipped';
+  pill.className = 'status-pill skipped';
+  pill.textContent = 'Skipped';
+  // Close the body
+  document.getElementById(`body-${docId}`).classList.remove('open');
+  document.getElementById(`chev-${docId}`).classList.remove('open');
+}
+
 function renderUploadedFile(f) {
   const isLink = f.type === 'link';
+  const isNumber = f.type === 'number';
+  const icon = isNumber ? '🔢' : isLink ? '🔗' : '📄';
   const safePath = (f.path || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const viewBtn = isNumber ? '' : `<button class="view-btn" onclick="viewUploadedFile('${safePath}','${f.type||'file'}')">👁 View</button>`;
   return `<div class="uploaded-file">
-    <span>${isLink ? '🔗' : '📄'}</span>
+    <span>${icon}</span>
     <span class="uploaded-file-name">${f.name}</span>
     <span class="uploaded-file-date">${f.uploaded_at || ''}</span>
-    <button class="view-btn" onclick="viewUploadedFile('${safePath}','${f.type||'file'}')">👁 View</button>
+    ${viewBtn}
   </div>`;
 }
 
@@ -369,6 +406,37 @@ async function uploadDocFile(file, docId) {
     }
   } catch(err) {
     setDocStatus(docId, 'error', `Error: ${err.message}`);
+  }
+}
+
+async function submitDocNumber(docId) {
+  const val = document.getElementById(`numval-${docId}`)?.value.trim();
+  if (!val) { showToast('Please enter a number first.','error'); return; }
+  const doc = REQUIRED_DOCS.find(d=>d.id===docId);
+  setDocStatus(docId,'uploading','Saving...');
+  try {
+    const res = await fetch(SAVE_201_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        employee_id: currentEmpId,
+        name: `${doc.name} — ${val}`,
+        path: val,
+        type: 'number',
+        doc_id: docId
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      const entry = { name:`${doc.name} — ${val}`, path:val, type:'number', doc_id:docId, uploaded_at: new Date().toISOString().split('T')[0] };
+      uploadedDocs[docId] = entry;
+      markDocUploaded(docId, entry);
+      showToast(`${doc.name} saved!`, 'success');
+    } else {
+      setDocStatus(docId,'error', data.message||'Failed to save.');
+    }
+  } catch(err) {
+    setDocStatus(docId,'error',`Error: ${err.message}`);
   }
 }
 
