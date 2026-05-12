@@ -42,6 +42,9 @@
   .doc-card.skipped{border-color:#fde68a}
   .doc-icon.skipped{background:#fff8e1}
   .status-pill.skipped{background:#fff8e1;color:#92400e}
+  .doc-required-star{color:#dc2626;font-size:10px;margin-left:4px;font-weight:700}
+  .doc-group-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:8px}
+  .doc-group-header.prev{color:#b45309;background:#fff8e1;padding:8px 14px;border-radius:6px;border-color:#fde68a}
 
   .doc-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s}
   .doc-header:hover{background:#fafbfc}
@@ -208,14 +211,24 @@ const SAVE_201_URL     = 'https://primary-production-a810.up.railway.app/webhook
 
 // Standard required documents
 const REQUIRED_DOCS = [
-  { id: 'sss',        name: 'SSS',           icon: '🪪', desc: 'SSS Number (e.g. 34-1234567-8)', type: 'number' },
-  { id: 'philhealth', name: 'PhilHealth',    icon: '🏥', desc: 'PhilHealth Number (e.g. 12-123456789-0)', type: 'number' },
-  { id: 'pagibig',    name: 'Pag-IBIG',      icon: '🏠', desc: 'Pag-IBIG Number (e.g. 1234-5678-9012)', type: 'number' },
-  { id: 'tin',        name: 'TIN',           icon: '📋', desc: 'TIN Number (e.g. 123-456-789-000)', type: 'number' },
-  { id: 'nbi',        name: 'NBI Clearance', icon: '🔍', desc: 'Valid NBI Clearance' },
-  { id: 'birth_cert', name: 'Birth Certificate', icon: '📄', desc: 'PSA Birth Certificate' },
-  { id: 'resume',     name: 'Resume / CV',   icon: '📝', desc: 'Updated resume or curriculum vitae' },
-  { id: 'valid_id',   name: 'Valid Government ID', icon: '🆔', desc: 'Any valid government-issued ID (front and back)' },
+  { id: 'sss',            name: 'SSS Number',                    icon: '🪪', desc: 'SSS Number (e.g. 34-1234567-8)', type: 'number', required: true },
+  { id: 'philhealth',     name: 'PhilHealth Number',             icon: '🏥', desc: 'PhilHealth Number (e.g. 12-123456789-0)', type: 'number', required: true },
+  { id: 'pagibig',        name: 'Pag-IBIG Number',               icon: '🏠', desc: 'Pag-IBIG Number (e.g. 1234-5678-9012)', type: 'number', required: true },
+  { id: 'tin',            name: 'TIN',                           icon: '📋', desc: 'TIN Number (e.g. 123-456-789-000)', type: 'number', required: true },
+  { id: 'resume',         name: 'Resume / CV',                   icon: '📝', desc: 'Updated resume or curriculum vitae', required: true },
+  { id: 'sss_e1',         name: 'Copy of SSS E1',                icon: '📄', desc: 'SSS E1 form (Member Data Record)', required: true },
+  { id: 'pagibig_mdf',    name: 'Pag-IBIG Member Data Form',     icon: '📋', desc: 'Pag-IBIG Member Data Form', required: true },
+  { id: 'philhealth_mdr', name: 'Proof of PhilHealth PIN/MDR',   icon: '🏥', desc: 'PhilHealth Member Data Record', required: true },
+  { id: 'nbi',            name: 'NBI Clearance',                 icon: '🔍', desc: 'Valid NBI Clearance', required: true },
+  { id: 'unionbank',      name: 'Unionbank Account/Card',        icon: '🏦', desc: 'Unionbank account number or card photo for payroll', required: true },
+  { id: 'birth_cert',     name: 'PSA Birth Certificate',         icon: '📄', desc: 'PSA-issued birth certificate' },
+  { id: 'tor',            name: 'Transcript of Records / TOR',   icon: '🎓', desc: 'Official TOR from school or university' },
+  { id: 'barangay',       name: 'Barangay Clearance',            icon: '🏛️', desc: 'Barangay clearance from place of residence' },
+  { id: 'police',         name: 'Police Clearance',              icon: '👮', desc: 'Police clearance certificate' },
+  { id: 'medical',        name: 'Medical Results',               icon: '🩺', desc: 'Pre-employment medical examination results' },
+  { id: 'coe',            name: 'COE (Previous Employer)',       icon: '📃', desc: 'Certificate of Employment — if previously employed', group: 'prev' },
+  { id: 'payslips',       name: 'Last 2 Payslips / Contract',    icon: '💰', desc: 'Copy of last 2 payslips or employment contract — if previously employed', group: 'prev' },
+  { id: 'bir2316',        name: 'BIR Form 2316',                 icon: '📑', desc: 'Copy of BIR 2316 from previous employer — if previously employed', group: 'prev' },
 ];
 
 let currentToken   = null;
@@ -266,16 +279,24 @@ function showGlobalError(msg) {
 // ── CHECKLIST ──
 function renderChecklist() {
   const container = document.getElementById('docChecklist');
+  let lastGroup = null;
   container.innerHTML = REQUIRED_DOCS.map(doc => {
     const uploaded = uploadedDocs[doc.id];
     const skipped  = skippedDocs[doc.id];
     const status   = uploaded ? 'uploaded' : skipped ? 'skipped' : 'pending';
-    const pillText = uploaded ? 'Uploaded' : skipped ? 'Skipped' : 'Pending';
-    return `<div class="doc-card ${status}" id="card-${doc.id}">
+    const pillText = uploaded ? 'Uploaded' : skipped ? 'Skipped' : doc.required ? 'Required' : 'Optional';
+    const groupHeader = (doc.group === 'prev' && lastGroup !== 'prev')
+      ? `<div class="doc-group-header prev">📋 If Previously Employed</div>`
+      : (!doc.group && lastGroup === null && doc.id === REQUIRED_DOCS[0].id)
+      ? `<div class="doc-group-header">📌 Required Documents</div>`
+      : '';
+    lastGroup = doc.group || null;
+    const requiredStar = doc.required ? `<span class="doc-required-star">★</span>` : '';
+    return groupHeader + `<div class="doc-card ${status}" id="card-${doc.id}">
       <div class="doc-header" onclick="toggleDoc('${doc.id}')">
         <div class="doc-icon ${status}">${doc.icon}</div>
         <div class="doc-info">
-          <div class="doc-name">${doc.name}</div>
+          <div class="doc-name">${doc.name}${doc.required ? '<span class=\"doc-required-star\">★</span>' : ''}</div>
           <div class="doc-desc">${doc.desc}</div>
         </div>
         <div class="doc-status">
@@ -311,6 +332,7 @@ function renderChecklist() {
       </div>
     </div>`;
   }).join('');
+  lastGroup = null;
 
   // Pre-populate number inputs AFTER DOM is ready
   REQUIRED_DOCS.filter(d => d.type === 'number').forEach(doc => {
