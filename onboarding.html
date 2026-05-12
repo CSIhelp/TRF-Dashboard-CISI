@@ -62,15 +62,15 @@
     .btn.primary:hover{background:#0f4c92}
     .btn.dark{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
     .btn.dark:hover{background:#2d2d4e}
+    .btn.danger{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+    .btn.danger:hover{background:#fca5a5}
     .btn:disabled{opacity:.5;cursor:not-allowed}
     .db-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden}
-    /* STATS */
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     .stat-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:20px 24px}
     .stat-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
     .stat-value{font-size:28px;font-weight:700;color:var(--text-primary);line-height:1}
     .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
-    /* TABLE */
     .table-scroll{overflow-x:auto}
     table{width:100%;border-collapse:collapse;text-align:left;min-width:900px}
     th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
@@ -82,7 +82,6 @@
     .emp-pin{font-family:'DM Mono',monospace;font-size:11px;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:var(--text-muted)}
     .actions{display:flex;gap:5px;flex-wrap:wrap}
     .actions .btn{padding:5px 10px;font-size:11.5px}
-    /* 201 PROGRESS */
     .doc-progress{display:flex;align-items:center;gap:8px}
     .doc-bar{background:#e5e7eb;border-radius:4px;height:6px;width:80px;overflow:hidden}
     .doc-bar-fill{height:6px;border-radius:4px;transition:width .3s}
@@ -90,7 +89,6 @@
     .doc-badge.complete{background:#dcfce7;color:#15803d}
     .doc-badge.partial{background:#fef9c3;color:#854d0e}
     .doc-badge.empty{background:#fee2e2;color:#dc2626}
-    /* PAGINATION */
     .pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:#fafbfc;flex-wrap:wrap;gap:10px}
     .pagination-info{font-size:12.5px;color:var(--text-muted)}
     .pagination-controls{display:flex;align-items:center;gap:4px}
@@ -99,16 +97,15 @@
     .page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
     .page-btn:disabled{opacity:.4;cursor:not-allowed}
     .page-size-select{border:1.5px solid var(--border);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12.5px;color:var(--text-secondary);outline:none;cursor:pointer}
-    /* MODALS */
     .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;justify-content:center;align-items:center;z-index:100;backdrop-filter:blur(2px)}
     .modal-overlay.active{display:flex}
-    .small-modal{background:#fff;width:440px;max-width:90%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
+    .small-modal{background:#fff;width:480px;max-width:92%;border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .18s ease;display:flex;flex-direction:column;max-height:90vh}
     @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
     .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
     .modal-header h2{font-size:16px;font-weight:700}
     .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1}
-    .modal-body{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
-    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
+    .modal-body{padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex:1}
+    .modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc;flex-shrink:0}
     .form-group{display:flex;flex-direction:column;gap:6px}
     .form-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
     .form-group select,.form-group input{padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:#fff;transition:border .2s;width:100%}
@@ -140,18 +137,28 @@
     .link-input-row input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;transition:border .2s}
     .link-input-row input:focus{border-color:var(--accent)}
     .section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border)}
-    /* CHECKLIST MODAL */
-    .checklist-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#fafbfc}
+    /* CHECKLIST */
+    .checklist-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
+    .checklist-group-label.required{color:var(--accent)}
+    .checklist-group-label.prev{color:#b45309}
+    .checklist-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:#fafbfc}
     .checklist-item.done{background:#f0fdf4;border-color:#bbf7d0}
-    .checklist-item.missing{background:#fef2f2;border-color:#fecaca}
-    .checklist-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+    .checklist-item.missing-req{background:#fef2f2;border-color:#fecaca}
+    .checklist-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:#f3f4f6}
+    .checklist-item.done .checklist-icon{background:#dcfce7}
     .checklist-name{font-size:13px;font-weight:600;flex:1}
-    .checklist-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+    .checklist-value{font-size:11px;color:#15803d;font-family:'DM Mono',monospace;margin-top:2px}
+    .checklist-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0}
     .checklist-status.done{background:#dcfce7;color:#15803d}
-    .checklist-status.missing{background:#fee2e2;color:#dc2626}
-    /* STATUS TRANSITION MODAL */
+    .checklist-status.missing{background:#f3f4f6;color:var(--text-muted)}
+    .checklist-status.required{background:#fef2f2;color:#dc2626}
+    /* CHECKLIST PROGRESS */
+    .checklist-progress{padding:0 0 12px}
+    .checklist-progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:6px;overflow:hidden;margin-bottom:6px}
+    .checklist-progress-bar{height:6px;border-radius:4px;background:var(--accent);transition:width .5s}
+    .checklist-progress-text{font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between}
+    /* TRANSITION */
     .transition-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px}
-    /* SPINNER / TOAST */
     .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
@@ -159,8 +166,6 @@
     .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
     .toast.success{background:#16a34a}
     .toast.error{background:#dc2626}
-    .btn.danger{background:#fee2e2;color:#dc2626;border-color:#fecaca}
-    .btn.danger:hover{background:#fca5a5}
   </style>
 </head>
 <body>
@@ -221,44 +226,19 @@
       </div>
     </div>
 
-    <!-- STATS -->
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Total Onboarding</div>
-        <div class="stat-value" id="statTotal">—</div>
-        <div class="stat-sub">Active in pipeline</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Docs Complete</div>
-        <div class="stat-value" id="statComplete" style="color:#16a34a">—</div>
-        <div class="stat-sub">All 8 docs submitted</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Docs Partial</div>
-        <div class="stat-value" id="statPartial" style="color:#b45309">—</div>
-        <div class="stat-sub">Some docs missing</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">No Docs Yet</div>
-        <div class="stat-value" id="statEmpty" style="color:#dc2626">—</div>
-        <div class="stat-sub">Nothing submitted</div>
-      </div>
+      <div class="stat-card"><div class="stat-label">Total Onboarding</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">Active in pipeline</div></div>
+      <div class="stat-card"><div class="stat-label">Docs Complete</div><div class="stat-value" id="statComplete" style="color:#16a34a">—</div><div class="stat-sub">All required docs submitted</div></div>
+      <div class="stat-card"><div class="stat-label">Docs Partial</div><div class="stat-value" id="statPartial" style="color:#b45309">—</div><div class="stat-sub">Some docs missing</div></div>
+      <div class="stat-card"><div class="stat-label">No Docs Yet</div><div class="stat-value" id="statEmpty" style="color:#dc2626">—</div><div class="stat-sub">Nothing submitted</div></div>
     </div>
 
-    <!-- TABLE -->
     <div class="db-card">
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>PIN</th>
-              <th>Company</th>
-              <th>Position</th>
-              <th>Start Date</th>
-              <th>Email</th>
-              <th>201 Progress</th>
-              <th>Actions</th>
+              <th>Name</th><th>PIN</th><th>Company</th><th>Position</th><th>Start Date</th><th>Email</th><th>201 Progress</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -270,9 +250,7 @@
         <div style="display:flex;align-items:center;gap:10px">
           <span class="pagination-info" id="pageInfo"></span>
           <select class="page-size-select" id="pageSizeSelect" onchange="renderTable()">
-            <option value="10">10 / page</option>
-            <option value="25" selected>25 / page</option>
-            <option value="50">50 / page</option>
+            <option value="10">10 / page</option><option value="25" selected>25 / page</option><option value="50">50 / page</option>
           </select>
         </div>
         <div class="pagination-controls" id="pageControls"></div>
@@ -286,7 +264,7 @@
   <div class="small-modal">
     <div class="modal-header"><h2>Generate Client Invite Link</h2><button class="modal-close" onclick="closeInviteModal()">✕</button></div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Generate a secure single-use link to send to a client. They can use it to submit new hire information through the onboarding form. Expires in 7 days.</p>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Generate a secure single-use link for a client to submit new hire information. Expires in 7 days.</p>
       <button class="btn primary" id="generateLinkBtn" onclick="generateInviteToken()" style="justify-content:center;padding:12px">Generate Link</button>
       <div id="inviteResult" style="display:none;flex-direction:column;gap:8px">
         <label style="font-size:12px;font-weight:700;color:var(--accent)">Share this link:</label>
@@ -331,9 +309,13 @@
       </div>
       <button class="btn primary" onclick="saveLink201()" id="saveLinkBtn" style="align-self:flex-start">+ Save Link</button>
     </div>
+    <!-- CHECKLIST TAB -->
     <div class="files-tab-content" id="tab201-checklist">
-      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Required pre-employment documents status for this employee.</p>
-      <div id="checklistItems" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="checklist-progress">
+        <div class="checklist-progress-text"><span id="checklistProgressLabel">Loading...</span><span id="checklistProgressPct">0%</span></div>
+        <div class="checklist-progress-bar-wrap" style="margin-top:6px"><div class="checklist-progress-bar" id="checklistProgressBar" style="width:0%"></div></div>
+      </div>
+      <div id="checklistItems" style="display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto;padding-right:4px"></div>
     </div>
     <div style="padding:0 20px 20px;overflow-y:auto;flex:1" id="fileListWrap">
       <div class="section-divider" style="margin-bottom:12px">Saved Files & Links</div>
@@ -364,7 +346,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Start Date (optional — updates if changed)</label>
+        <label>Start Date (optional)</label>
         <input type="date" id="transitionStartDate">
       </div>
     </div>
@@ -406,9 +388,29 @@ const currentPath = window.location.pathname.split('/');
 currentPath.pop();
 const BASE_URL_PATH = window.location.origin + currentPath.join('/');
 
-const REQUIRED_DOC_IDS = ['sss','philhealth','pagibig','tin','nbi','birth_cert','resume','valid_id'];
-const DOC_NAMES = { sss:'SSS', philhealth:'PhilHealth', pagibig:'Pag-IBIG', tin:'TIN', nbi:'NBI Clearance', birth_cert:'Birth Certificate', resume:'Resume / CV', valid_id:'Valid Government ID' };
-const DOC_ICONS = { sss:'🪪', philhealth:'🏥', pagibig:'🏠', tin:'📋', nbi:'🔍', birth_cert:'📄', resume:'📝', valid_id:'🆔' };
+// ── Full 18-doc required list ──
+const REQUIRED_DOCS_201 = [
+  { id:'sss',            name:'SSS Number',                   icon:'🪪', type:'number', required:true },
+  { id:'philhealth',     name:'PhilHealth Number',            icon:'🏥', type:'number', required:true },
+  { id:'pagibig',        name:'Pag-IBIG Number',              icon:'🏠', type:'number', required:true },
+  { id:'tin',            name:'TIN',                          icon:'📋', type:'number', required:true },
+  { id:'resume',         name:'Resume / CV',                  icon:'📝', required:true },
+  { id:'sss_e1',         name:'Copy of SSS E1',               icon:'📄', required:true },
+  { id:'pagibig_mdf',    name:'Pag-IBIG Member Data Form',    icon:'📋', required:true },
+  { id:'philhealth_mdr', name:'Proof of PhilHealth PIN/MDR',  icon:'🏥', required:true },
+  { id:'nbi',            name:'NBI Clearance',                icon:'🔍', required:true },
+  { id:'unionbank',      name:'Unionbank Account/Card',       icon:'🏦', required:true },
+  { id:'birth_cert',     name:'PSA Birth Certificate',        icon:'📄' },
+  { id:'tor',            name:'Transcript of Records / TOR',  icon:'🎓' },
+  { id:'barangay',       name:'Barangay Clearance',           icon:'🏛️' },
+  { id:'police',         name:'Police Clearance',             icon:'👮' },
+  { id:'medical',        name:'Medical Results',              icon:'🩺' },
+  { id:'coe',            name:'COE (Previous Employer)',      icon:'📃', group:'prev' },
+  { id:'payslips',       name:'Last 2 Payslips / Contract',  icon:'💰', group:'prev' },
+  { id:'bir2316',        name:'BIR Form 2316',               icon:'📑', group:'prev' },
+];
+const REQUIRED_IDS = REQUIRED_DOCS_201.filter(d => d.required).map(d => d.id);
+const TOTAL_REQUIRED = REQUIRED_IDS.length; // 10
 
 let allEmployees = [], filteredData = [], currentPage = 1;
 let current201EmpId = null, current201Pin = null;
@@ -424,8 +426,8 @@ function toggleNavGroup(id,btn){document.getElementById(id).classList.toggle('op
 function getDocProgress(files201) {
   const files = safeParse(files201);
   const submittedIds = new Set(files.map(f => f.doc_id).filter(Boolean));
-  const count = REQUIRED_DOC_IDS.filter(id => submittedIds.has(id)).length;
-  return { count, total: 8, submittedIds };
+  const count = REQUIRED_IDS.filter(id => submittedIds.has(id)).length;
+  return { count, total: TOTAL_REQUIRED, submittedIds };
 }
 
 function docProgressHtml(files201) {
@@ -433,7 +435,7 @@ function docProgressHtml(files201) {
   const pct = Math.round((count / total) * 100);
   const color = count === total ? '#16a34a' : count > 0 ? '#b45309' : '#dc2626';
   const cls = count === total ? 'complete' : count > 0 ? 'partial' : 'empty';
-  const label = count === total ? '✓ Complete' : `${count}/${total} docs`;
+  const label = count === total ? '✓ Complete' : `${count}/${total} required`;
   return `<div class="doc-progress">
     <div class="doc-bar"><div class="doc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
     <span class="doc-badge ${cls}">${label}</span>
@@ -460,7 +462,7 @@ function updateStats() {
   let complete = 0, partial = 0, empty = 0;
   allEmployees.forEach(e => {
     const { count } = getDocProgress(e.files_201);
-    if (count === 8) complete++;
+    if (count === TOTAL_REQUIRED) complete++;
     else if (count > 0) partial++;
     else empty++;
   });
@@ -519,8 +521,8 @@ function renderTable() {
   document.getElementById('pageInfo').textContent = `${from}–${to} of ${data.length} employees`;
   document.getElementById('paginationBar').style.display = 'flex';
 
-  let btns = `<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>`;
   const totalPages = Math.ceil(data.length / ps);
+  let btns = `<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>`;
   for (let p = 1; p <= totalPages; p++) btns += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goToPage(${p})">${p}</button>`;
   btns += `<button class="page-btn" onclick="goToPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&#8250;</button>`;
   document.getElementById('pageControls').innerHTML = btns;
@@ -603,7 +605,6 @@ async function confirmTransition() {
     if (!emp) throw new Error('Employee not found');
     const payload = { ...emp, status, id: emp.id };
     if (startDate) payload.start_date = startDate;
-    // Clean up fields for update
     payload.dep_id = emp.department_name || null;
     payload.role_id = emp.role_name || null;
     payload.dependents = JSON.stringify(safeParse(emp.dependents));
@@ -624,8 +625,7 @@ function switch201Tab(tab, btn) {
   btn.classList.add('active');
   document.querySelectorAll('.files-tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById(`tab201-${tab}`).classList.add('active');
-  const wrap = document.getElementById('fileListWrap');
-  wrap.style.display = tab === 'checklist' ? 'none' : 'block';
+  document.getElementById('fileListWrap').style.display = tab === 'checklist' ? 'none' : 'block';
   if (tab === 'checklist') renderChecklist();
 }
 
@@ -656,24 +656,27 @@ async function load201Files() {
     const data = await res.json();
     const raw = Array.isArray(data) ? data[0] : data;
     const files = raw?.files_201 || [];
-    // Update local cache for checklist
     const emp = allEmployees.find(e => String(e.id) === String(current201EmpId));
     if (emp) emp.files_201 = files;
     if (!files.length) { listEl.innerHTML = '<p style="font-size:12.5px;color:var(--text-muted)">No files or links yet.</p>'; return; }
     listEl.innerHTML = files.map(f => {
       const isLink = f.type === 'link';
+      const isNumber = f.type === 'number';
+      const icon = isNumber ? '🔢' : isLink ? '🔗' : '📄';
+      const iconCls = isLink ? 'icon-link' : 'icon-file';
       const safePath = (f.path||'').replace(/'/g,"\\'");
       const safeName = (f.name||'').replace(/'/g,"\\'");
-      return `<div class="file-item ${isLink?'type-link':'type-file'}">
+      const openBtn = isNumber ? '' : `<button class="btn" style="padding:5px 10px;font-size:11.5px" onclick="view201File('${safePath}','${f.type||'file'}')">👁 Open</button>`;
+      return `<div class="file-item ${isLink?'type-link':'type-file'}" style="${isNumber?'background:#f0fdf4;border-color:#86efac':''}">
         <div class="file-item-info">
-          <div class="file-item-icon ${isLink?'icon-link':'icon-file'}">${isLink?'🔗':'📄'}</div>
+          <div class="file-item-icon ${iconCls}">${icon}</div>
           <div>
             <div class="file-item-name">${f.name}</div>
-            <div class="file-item-meta">${isLink?'Link':'File'} · ${f.uploaded_at||'—'}</div>
+            <div class="file-item-meta">${isNumber?'Number':isLink?'Link':'File'} · ${f.uploaded_at||'—'}</div>
           </div>
         </div>
         <div class="file-item-actions">
-          <button class="btn" style="padding:5px 10px;font-size:11.5px" onclick="view201File('${safePath}','${f.type||'file'}')">👁 Open</button>
+          ${openBtn}
           <button class="btn danger" style="padding:5px 10px;font-size:11.5px" onclick="delete201File('${safePath}','${safeName}','${f.type||'file'}')">Delete</button>
         </div>
       </div>`;
@@ -684,20 +687,45 @@ async function load201Files() {
 function renderChecklist() {
   const emp = allEmployees.find(e => String(e.id) === String(current201EmpId));
   const files = safeParse(emp?.files_201);
-  const submittedIds = new Set(files.map(f => f.doc_id).filter(Boolean));
-  const NUMBER_DOCS = new Set(['sss','philhealth','pagibig','tin']);
-  document.getElementById('checklistItems').innerHTML = REQUIRED_DOC_IDS.map(id => {
-    const done = submittedIds.has(id);
-    const submittedFile = files.find(f => f.doc_id === id);
-    const isNum = NUMBER_DOCS.has(id);
-    const submittedLabel = done && submittedFile ? (isNum ? `🔢 ${submittedFile.name}` : '✓ Submitted') : '';
-    return `<div class="checklist-item ${done?'done':'missing'}">
-      <div class="checklist-icon">${DOC_ICONS[id]}</div>
-      <div style="flex:1">
-        <div class="checklist-name">${DOC_NAMES[id]}</div>
-        ${done && submittedLabel ? `<div style="font-size:11px;color:#15803d;margin-top:2px;font-family:'DM Mono',monospace">${submittedLabel}</div>` : ''}
+  const uploadedMap = {};
+  files.forEach(f => { if (f.doc_id) uploadedMap[f.doc_id] = f; });
+
+  const doneReq = REQUIRED_IDS.filter(id => uploadedMap[id]).length;
+  const pct = Math.round((doneReq / TOTAL_REQUIRED) * 100);
+  document.getElementById('checklistProgressBar').style.width = pct + '%';
+  document.getElementById('checklistProgressLabel').textContent = `${doneReq} of ${TOTAL_REQUIRED} required docs submitted`;
+  document.getElementById('checklistProgressPct').textContent = pct + '%';
+
+  let lastGroup = null;
+  document.getElementById('checklistItems').innerHTML = REQUIRED_DOCS_201.map(doc => {
+    const f = uploadedMap[doc.id];
+    const isDone = !!f;
+    const isNumber = f?.type === 'number';
+    const valueText = isDone
+      ? (isNumber ? f.name.replace(doc.name + ' — ', '') : f.type === 'link' ? '🔗 Link saved' : '📄 ' + f.name.replace(doc.name + ' — ', ''))
+      : '';
+
+    let groupHtml = '';
+    if (doc.group === 'prev' && lastGroup !== 'prev') {
+      groupHtml = '<div class="checklist-group-label prev">📋 If Previously Employed</div>';
+    } else if (!doc.group && lastGroup === null) {
+      groupHtml = '<div class="checklist-group-label required">📌 Required Documents</div>';
+    }
+    lastGroup = doc.group || null;
+
+    const statusHtml = isDone
+      ? '<span class="checklist-status done">✓ Done</span>'
+      : doc.required
+        ? '<span class="checklist-status required">★ Required</span>'
+        : '<span class="checklist-status missing">Optional</span>';
+
+    return groupHtml + `<div class="checklist-item ${isDone ? 'done' : doc.required ? 'missing-req' : ''}">
+      <div class="checklist-icon">${doc.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="checklist-name">${doc.name}</div>
+        ${isDone && valueText ? `<div class="checklist-value">${valueText}</div>` : ''}
       </div>
-      <span class="checklist-status ${done?'done':'missing'}">${done?'✓ Submitted':'✗ Missing'}</span>
+      ${statusHtml}
     </div>`;
   }).join('');
 }
@@ -724,7 +752,7 @@ async function confirmDelete201() {
   const btn = document.getElementById('confirmDelete201Btn');
   btn.innerHTML = '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px"></span> Deleting...'; btn.disabled = true;
   try {
-    if (type !== 'link') {
+    if (type !== 'link' && type !== 'number') {
       const { error } = await _supabase.storage.from('employee-201').remove([path]);
       if (error) { showToast('Storage error: ' + error.message, 'error'); return; }
     }
