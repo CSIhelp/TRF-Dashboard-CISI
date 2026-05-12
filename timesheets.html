@@ -89,26 +89,43 @@
   /* ── CONTROLS ── */
   .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-  .employee-select {
+  .employee-select, .month-select {
     appearance: none; border: 1.5px solid var(--border); border-radius: 8px;
     padding: 9px 36px 9px 14px; font-family: inherit; font-size: 13.5px; font-weight: 600;
     color: var(--text-primary); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;
-    cursor: pointer; outline: none; min-width: 220px; transition: border .2s;
-  }
-  .employee-select:focus { border-color: var(--accent); }
-
-  .month-select {
-    appearance: none; border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 9px 36px 9px 14px; font-family: inherit; font-size: 13px; font-weight: 500;
-    color: var(--text-primary); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;
     cursor: pointer; outline: none; transition: border .2s;
   }
-  .month-select:focus { border-color: var(--accent); }
+  .employee-select { min-width: 220px; }
+  .month-select { font-size: 13px; font-weight: 500; }
+  .employee-select:focus, .month-select:focus { border-color: var(--accent); }
 
   .btn-refresh { display: flex; align-items: center; gap: 6px; background: #fff; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 14px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: border .2s, color .2s; }
   .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
   .btn-refresh.loading svg { animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── APPROVAL BANNER ── */
+  .approval-banner {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 14px 20px; box-shadow: var(--shadow-sm); flex-wrap: wrap;
+  }
+  .approval-banner-info { display: flex; align-items: center; gap: 12px; }
+  .approval-status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: #d1d5db; }
+  .approval-status-dot.submitted { background: #f59e0b; }
+  .approval-status-dot.approved  { background: #15803d; }
+  .approval-banner-text strong { font-size: 13.5px; font-weight: 600; color: var(--text-primary); display: block; }
+  .approval-banner-text span { font-size: 12px; color: var(--text-muted); }
+
+  .btn-approve {
+    display: inline-flex; align-items: center; gap: 6px; background: #15803d; color: #fff;
+    border: none; border-radius: 8px; padding: 9px 16px; font-family: inherit; font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; white-space: nowrap;
+  }
+  .btn-approve:hover:not(:disabled) { background: #166534; }
+  .btn-approve:active { transform: scale(0.98); }
+  .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-approve.already-approved { background: #6b7280; cursor: default; }
 
   /* ── SUMMARY CARDS ── */
   .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
@@ -127,7 +144,7 @@
 
   /* ── TABLE CARD ── */
   .table-card { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
-  .table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 320px); }
+  .table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 380px); }
   .table-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
   .table-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
@@ -168,17 +185,38 @@
   .state-row td { text-align: center; padding: 48px !important; color: var(--text-muted); font-size: 13.5px; }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; vertical-align: middle; }
   tr.divider td { padding: 0 !important; height: 6px; background: #f4f5f7; border-bottom: 1px solid var(--border); }
+  
+  /* Editable Cells */
   [contenteditable="true"] { outline: none; border-radius: 4px; transition: background 0.2s, box-shadow 0.2s; cursor: text; }
   [contenteditable="true"]:hover { border-color: #cbd5e1; background: #fff; }
   [contenteditable="true"]:focus { background: #fff; box-shadow: 0 0 0 2px var(--accent); }
   tr.edited td { background-color: #fffbeb !important; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.2); padding: 32px 28px; max-width: 440px; width: 90%; animation: modalIn .2s ease; }
+  @keyframes modalIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-icon { width: 52px; height: 52px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .modal-body { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px; }
+  .modal-warning { font-size: 12.5px; color: #b45309; background: #fff8e1; border-radius: 8px; padding: 10px 14px; margin: 14px 0; display: flex; align-items: flex-start; gap: 8px; }
+  .modal-warning svg { flex-shrink: 0; margin-top: 1px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .btn-cancel { padding: 9px 18px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-secondary); transition: border .2s; }
+  .btn-cancel:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-confirm-approve { padding: 9px 18px; background: #15803d; color: #fff; border: none; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .btn-confirm-approve:hover { background: #166534; }
+  .btn-confirm-approve:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <a class="logo" href="#">
-    <img src="favicon.ico" alt="CrowdSource Logo" class="logo-img">
+    <img src="favicon.ico" alt="CrowdSource Logo" class="logo-img" onerror="this.style.display='none'">
     <span class="logo-text"><span>CROWD</span>SOURCE</span>
   </a>
   <div class="topbar-user">
@@ -251,6 +289,10 @@
         <select class="employee-select" id="employeeSelect">
           <option value="">— Loading Employees... —</option>
         </select>
+        <select class="month-select" id="cutoffSelect">
+          <option value="Q1">Cutoff 1 (1-15)</option>
+          <option value="Q2">Cutoff 2 (16-EOM)</option>
+        </select>
         <select class="month-select" id="monthSelect">
           <option value="1">January</option>
           <option value="2">February</option>
@@ -282,6 +324,20 @@
           Open Sheet
         </a>
       </div>
+    </div>
+
+    <div class="approval-banner" id="approvalBanner" style="display:none;">
+      <div class="approval-banner-info">
+        <div class="approval-status-dot" id="approvalDot"></div>
+        <div class="approval-banner-text">
+          <strong id="approvalStatusLabel">Loading cutoff status…</strong>
+          <span id="approvalStatusSub">Checking approval state for this cutoff.</span>
+        </div>
+      </div>
+      <button class="btn-approve" id="approveCutoffBtn" onclick="openApproveModal()" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Approve Entire Cutoff
+      </button>
     </div>
 
     <div class="error-banner" id="errorBanner">
@@ -342,15 +398,46 @@
   </main>
 </div>
 
+<div class="modal-overlay" id="approveModal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="modal-title">Approve Entire Cutoff?</div>
+    <div class="modal-body" id="modalBody">
+      You are about to approve all timesheets for this cutoff period.
+    </div>
+    <div class="modal-warning">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      This will lock the timesheet data and forward it to Accounting. This action cannot be undone.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeApproveModal()">Cancel</button>
+      <button class="btn-confirm-approve" id="confirmApproveBtn" onclick="confirmApproval()">
+        Yes, Approve Cutoff
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ── WEBHOOK URLs ──
+  // ── WEBHOOK URLs & CONFIG ──
   const N8N_EMPLOYEES_URL = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
   const N8N_TIMESHEET_URL = 'https://primary-production-a810.up.railway.app/webhook/get-timesheet';
   const N8N_SAVE_URL      = 'https://primary-production-a810.up.railway.app/webhook/update-timesheet';
+  const HR_APPROVE_URL    = 'https://primary-production-a810.up.railway.app/webhook/hr-approve-timesheet';
+  const HR_QUEUE_URL      = 'https://primary-production-a810.up.railway.app/webhook/hr-get-queue';
+  const COMPANY           = 'CISI';
 
   const DAYS      = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MONTHS    = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const MON_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let cutoffState = {
+    endUserSubmitted: false,
+    hrApproved: false,
+    timesheetApproved: false
+  };
 
   // ── DYNAMIC EMPLOYEE LOADING ──
   async function fetchEmployeesForDropdown() {
@@ -359,11 +446,20 @@
       const res = await fetch(N8N_EMPLOYEES_URL);
       const raw = await res.json();
       let employees = Array.isArray(raw) ? raw.map(i => i.json ?? i) : [];
+
+      // Filter out statuses that should not appear in timesheets
+      const excludedStatuses = ['resigned', 'terminated', 'completed', 'onboarding'];
+      employees = employees.filter(emp => {
+        const status = (emp.status || '').toLowerCase().trim();
+        return !excludedStatuses.includes(status);
+      });
+
       let namesList = employees.map(emp => {
         let ln = (emp.ln || '').trim();
         let fn = (emp.fn || '').trim();
         return ln && fn ? `${ln}, ${fn}` : (ln || fn || `PIN ${emp.pin}`);
       }).filter(Boolean).sort((a, b) => a.localeCompare(b));
+
       empSel.innerHTML = '<option value="">— Select Employee —</option>';
       namesList.forEach(name => {
         const opt = document.createElement('option');
@@ -375,20 +471,37 @@
       empSel.innerHTML = '<option value="">— Failed to load employees —</option>';
     }
   }
-  fetchEmployeesForDropdown();
 
-  // ── INITIALIZE DATE DROPDOWNS ──
-  const now = new Date();
-  document.getElementById('monthSelect').value = String(now.getMonth() + 1);
+  // ── INITIALIZATION ON LOAD ──
+  window.addEventListener('DOMContentLoaded', async () => {
+    const now = new Date();
+    document.getElementById('monthSelect').value = String(now.getMonth() + 1);
 
-  const yearSel = document.getElementById('yearSelect');
-  const curYear = now.getFullYear();
-  for (let y = curYear; y >= curYear - 3; y--) {
-    const opt = document.createElement('option');
-    opt.value = y; opt.textContent = y;
-    if (y === curYear) opt.selected = true;
-    yearSel.appendChild(opt);
-  }
+    const yearSel = document.getElementById('yearSelect');
+    const curYear = now.getFullYear();
+    for (let y = curYear; y >= curYear - 3; y--) {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y;
+      if (y === curYear) opt.selected = true;
+      yearSel.appendChild(opt);
+    }
+
+    await fetchEmployeesForDropdown();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('cutoff') && urlParams.has('month') && urlParams.has('year')) {
+      document.getElementById('cutoffSelect').value = urlParams.get('cutoff');
+      document.getElementById('monthSelect').value = urlParams.get('month');
+      document.getElementById('yearSelect').value = urlParams.get('year');
+      const empSelect = document.getElementById('employeeSelect');
+      if (empSelect.options.length > 1) {
+        empSelect.selectedIndex = 1;
+        loadTimesheet();
+      }
+    }
+
+    loadCutoffStatus();
+  });
 
   // ── UTILITIES ──
   function showError(msg) {
@@ -412,7 +525,7 @@
 
   function timeStrToHours(str) {
     if (!str || str === '0:00:00' || str === '0:00' || str === '-8:00:00') return 0;
-    if (String(str).startsWith('-')) return 0; // don't count negative hours
+    if (String(str).startsWith('-')) return 0;
     const parts = String(str).split(':');
     if (parts.length < 2) return parseFloat(str) || 0;
     return (parseInt(parts[0]) || 0) + (parseInt(parts[1]) || 0) / 60;
@@ -431,25 +544,21 @@
     return (h * 60) + m;
   }
 
-  // ── FIX 1: calculateAccurateHours ──
   function calculateAccurateHours(tIn, bIn, bOut, tOut, sheetHoursStr) {
     const i  = parseTimeToMinutes(tIn);
     const o  = parseTimeToMinutes(tOut);
-    const bi = parseTimeToMinutes(bIn);
-    const bo = parseTimeToMinutes(bOut);
+    let   bi = parseTimeToMinutes(bIn);
+    let   bo = parseTimeToMinutes(bOut);
 
     if (i !== null && o !== null) {
       let totalMins = o - i;
-      if (totalMins < 0) totalMins += 24 * 60; // overnight shift
+      if (totalMins < 0) totalMins += 24 * 60;
 
       if (bi !== null && bo !== null) {
+        if (bo < bi) { const tmp = bi; bi = bo; bo = tmp; }
         let bMins = bo - bi;
-        if (bMins < 0) bMins += 24 * 60;
         if (bMins > 0 && bMins <= 240) {
           totalMins -= bMins;
-        }
-        else if (bMins <= 0 || bMins > 240) {
-          return sheetHoursStr || '0:00';
         }
       }
 
@@ -457,7 +566,6 @@
         return `${Math.floor(totalMins / 60)}:${String(Math.round(totalMins % 60)).padStart(2, '0')}`;
       }
     }
-
     return sheetHoursStr || '0:00';
   }
 
@@ -475,9 +583,164 @@
     return days;
   }
 
+  function getSelectedMonthName() {
+    const monthNum = parseInt(document.getElementById('monthSelect').value);
+    return MONTHS[monthNum - 1];
+  }
+
   function markAsEdited(cell) {
-    cell.closest('tr').classList.add('edited');
+    const row = cell.closest('tr');
+    row.classList.add('edited');
     document.getElementById('saveBtn').style.display = 'flex';
+
+    const cellIndex = Array.from(row.cells).indexOf(cell);
+    if ([2, 3, 4, 5].includes(cellIndex)) {
+      const getText = (i) => {
+        const c = row.cells[i];
+        return c ? c.innerText.replace('—', '').trim() : '';
+      };
+      const tIn  = getText(2);
+      const bIn  = getText(3);
+      const bOut = getText(4);
+      const tOut = getText(5);
+      const hoursCell = row.cells[6];
+      if (hoursCell && tIn && tOut) {
+        const recalc = calculateAccurateHours(tIn, bIn, bOut, tOut, '');
+        if (recalc && recalc !== '0:00') {
+          hoursCell.style.color = 'var(--accent)';
+          hoursCell.style.fontWeight = '600';
+          hoursCell.innerText = recalc;
+        }
+      }
+    }
+  }
+
+  // ── CUTOFF APPROVAL STATUS LOGIC ──
+  async function loadCutoffStatus() {
+    const cutoff    = document.getElementById('cutoffSelect').value;
+    const monthName = getSelectedMonthName();
+    const year      = document.getElementById('yearSelect').value;
+
+    const banner = document.getElementById('approvalBanner');
+    const dot    = document.getElementById('approvalDot');
+    const label  = document.getElementById('approvalStatusLabel');
+    const sub    = document.getElementById('approvalStatusSub');
+    const btn    = document.getElementById('approveCutoffBtn');
+
+    banner.style.display = 'flex';
+    dot.className = 'approval-status-dot';
+    label.textContent = 'Checking cutoff status…';
+    sub.textContent = '';
+    btn.disabled = true;
+
+    try {
+      const params = new URLSearchParams({ company: COMPANY, cutoff, month: monthName, year });
+      const res = await fetch(HR_QUEUE_URL + '?' + params.toString());
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      const entry = (data.result && data.result.length > 0) ? data.result[0] : null;
+      const isTrue = (val) => val === true || val === 'true';
+
+      cutoffState = {
+        endUserSubmitted:  entry ? isTrue(entry.endUserSubmitted)  : false,
+        hrApproved:        entry ? isTrue(entry.hrApproved)        : false,
+        timesheetApproved: entry ? isTrue(entry.timesheetApproved) : false,
+      };
+    } catch (err) {
+      console.warn('Could not load cutoff status:', err.message);
+      cutoffState = { endUserSubmitted: false, hrApproved: false, timesheetApproved: false };
+    }
+
+    updateApprovalBanner(cutoff, monthName, year);
+  }
+
+  function updateApprovalBanner(cutoff, monthName, year) {
+    const dot    = document.getElementById('approvalDot');
+    const label  = document.getElementById('approvalStatusLabel');
+    const sub    = document.getElementById('approvalStatusSub');
+    const btn    = document.getElementById('approveCutoffBtn');
+    const period = `${cutoff === 'Q1' ? 'Cutoff 1' : 'Cutoff 2'} of ${monthName} ${year}`;
+
+    if (cutoffState.timesheetApproved || cutoffState.hrApproved) {
+      dot.className = 'approval-status-dot approved';
+      label.textContent = `${period} — Approved by HR`;
+      sub.textContent = 'Timesheet is locked and visible to Accounting.';
+      btn.textContent = 'Already Approved';
+      btn.className = 'btn-approve already-approved';
+      btn.disabled = true;
+      btn.onclick = null;
+    } else if (cutoffState.endUserSubmitted) {
+      dot.className = 'approval-status-dot submitted';
+      label.textContent = `${period} — Pending HR Approval`;
+      sub.textContent = 'The end user has submitted this cutoff. Review and approve to forward to Accounting.';
+      btn.className = 'btn-approve';
+      btn.disabled = false;
+      btn.onclick = openApproveModal;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Approve Entire Cutoff`;
+    } else {
+      dot.className = 'approval-status-dot';
+      label.textContent = `${period} — Awaiting End User Submission`;
+      sub.textContent = 'The end user has not yet confirmed this cutoff. No action needed yet.';
+      btn.className = 'btn-approve';
+      btn.disabled = true;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Approve Entire Cutoff`;
+    }
+  }
+
+  // ── APPROVAL MODAL ──
+  function openApproveModal() {
+    const cutoff    = document.getElementById('cutoffSelect').value;
+    const monthName = getSelectedMonthName();
+    const year      = document.getElementById('yearSelect').value;
+    const period    = `${cutoff === 'Q1' ? 'Cutoff 1' : 'Cutoff 2'} of ${monthName} ${year}`;
+
+    document.getElementById('modalBody').textContent = `You are about to approve all timesheets for ${period}. Once approved, Accounting will be able to generate the payroll register.`;
+    document.getElementById('confirmApproveBtn').disabled = false;
+    document.getElementById('confirmApproveBtn').textContent = 'Yes, Approve Cutoff';
+    document.getElementById('approveModal').classList.add('show');
+  }
+
+  function closeApproveModal() {
+    document.getElementById('approveModal').classList.remove('show');
+  }
+
+  document.getElementById('approveModal').addEventListener('click', function(e) {
+    if (e.target === this) closeApproveModal();
+  });
+
+  async function confirmApproval() {
+    const cutoff     = document.getElementById('cutoffSelect').value;
+    const monthName  = getSelectedMonthName();
+    const year       = parseInt(document.getElementById('yearSelect').value);
+    const confirmBtn = document.getElementById('confirmApproveBtn');
+
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Approving…';
+
+    try {
+      const res = await fetch(HR_APPROVE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company: COMPANY, cutoff, month: monthName, year })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      if (data.hrApproved === true || data.timesheetApproved === true) {
+        cutoffState.hrApproved = true;
+        cutoffState.timesheetApproved = true;
+        closeApproveModal();
+        updateApprovalBanner(cutoff, monthName, year);
+        alert(`✓ ${cutoff === 'Q1' ? 'Cutoff 1' : 'Cutoff 2'} of ${monthName} ${year} has been approved and forwarded to Accounting.`);
+      } else {
+        throw new Error(data.error || 'Unexpected response from server.');
+      }
+    } catch (err) {
+      alert('Approval failed: ' + err.message);
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Yes, Approve Cutoff';
+    }
   }
 
   // ── RENDER TIMESHEET ──
@@ -527,27 +790,15 @@
       let hoursStr = calculateAccurateHours(timeIn, breakIn, breakOut, timeOut, sheetHours);
 
       const absent   = parseFloat(getV('absent') || 0);
-
-      const late = parseFloat(
-        getV('late / undertime') ||
-        getV('late / ut') ||
-        getV('late/undertime') ||
-        getV('late/ut') ||
-        getV('undertime') ||
-        getV('late') ||
-        0
-      );
-
-      const nightDif = parseFloat(
-        getV('night dif') || getV('night diff') || getV('nightdif') || 0
-      );
-      const otHol  = parseFloat(getV('ot holiday') || getV('ot hol') || 0);
-      const otSHol = parseFloat(getV('ot s holiday') || getV('ot s.hol') || getV('ot special holiday') || 0);
-      const otReg  = parseFloat(getV('ot reg') || getV('ot regular') || 0);
-      const otRest = parseFloat(getV('ot rest') || getV('ot restday') || 0);
-      const notes   = getV('notes');
-      const trfLink = getV('trf') || getV('link') || '';
-      const status  = getV('status');
+      const late     = parseFloat(getV('late / undertime') || getV('late / ut') || getV('late/undertime') || getV('late/ut') || getV('undertime') || getV('late') || 0);
+      const nightDif = parseFloat(getV('night dif') || getV('night diff') || getV('nightdif') || 0);
+      const otHol    = parseFloat(getV('ot holiday') || getV('ot hol') || 0);
+      const otSHol   = parseFloat(getV('ot s holiday') || getV('ot s.hol') || getV('ot special holiday') || 0);
+      const otReg    = parseFloat(getV('ot reg') || getV('ot regular') || 0);
+      const otRest   = parseFloat(getV('ot rest') || getV('ot restday') || 0);
+      const notes    = getV('notes');
+      const trfLink  = getV('trf') || getV('link') || '';
+      const status   = getV('status');
       const sanction = getV('sanction');
 
       const hoursNum = timeStrToHours(hoursStr);
@@ -583,7 +834,7 @@
     };
 
     const totalRow = (label, h, a, l, oh, o, n) => {
-      const fh = h > 0 ? Math.floor(h) + ':' + String(Math.round((h%1)*60)).padStart(2,'0') : '—';
+      const fh = h > 0 ? Math.floor(h) + ':' + String(Math.round((h%1)*60)).padStart(2,'00') : '—';
       return `<tr class="row-total">
         <td class="col-date">${label}</td>
         <td></td><td></td><td></td><td></td><td></td>
@@ -617,14 +868,15 @@
 
   // ── LOAD TIMESHEET DATA ──
   async function loadTimesheet() {
-    const employee = document.getElementById('employeeSelect').value;
-    const month    = document.getElementById('monthSelect').value;
-    const year     = document.getElementById('yearSelect').value;
+    const employee     = document.getElementById('employeeSelect').value;
+    const month        = document.getElementById('monthSelect').value;
+    const year         = document.getElementById('yearSelect').value;
+    const cutoff       = document.getElementById('cutoffSelect').value;
     const sheetLinkBtn = document.getElementById('sheetLinkBtn');
-    
+
     clearError();
     sheetLinkBtn.style.display = 'none';
-    
+
     if (!employee) {
       document.getElementById('timesheetBody').innerHTML =
         '<tr class="state-row"><td colspan="18">Please select an employee.</td></tr>';
@@ -636,24 +888,27 @@
     document.getElementById('timesheetBody').innerHTML =
       '<tr class="state-row"><td colspan="18"><span class="spinner"></span> Loading timesheet…</td></tr>';
     document.getElementById('summaryCards').style.display = 'none';
+
+    const cutoffText = cutoff === 'Q1' ? 'Cutoff 1' : 'Cutoff 2';
     document.getElementById('pageSubtitle').textContent =
-      employee + ' — ' + MONTHS[parseInt(month)-1] + ' ' + year;
-      
+      employee + ' — ' + cutoffText + ' of ' + MONTHS[parseInt(month)-1] + ' ' + year;
+
     try {
       const url = N8N_TIMESHEET_URL + '?employee=' + encodeURIComponent(employee) +
-                  '&month=' + encodeURIComponent(month) + '&year=' + encodeURIComponent(year);
+                  '&month=' + encodeURIComponent(month) + '&year=' + encodeURIComponent(year) +
+                  '&cutoff=' + encodeURIComponent(cutoff);
       const res = await fetch(url);
       const responseText = await res.text();
-      
+
       if (!res.ok) {
         let errMsg = 'HTTP ' + res.status;
         try { const e = JSON.parse(responseText); errMsg = e.message || e.error || errMsg; } catch (_) {}
         throw new Error(errMsg);
       }
-      
+
       let data = {};
       try { data = responseText ? JSON.parse(responseText) : {}; } catch (e) {}
-      
+
       let rows = [];
       if (data && Array.isArray(data.rows)) rows = data.rows;
       else if (Array.isArray(data) && data.length > 0) {
@@ -661,15 +916,13 @@
         else if (data[0].json && data[0].json.rows) rows = data[0].json.rows;
         else rows = data.map(i => i.json ?? i);
       }
-      
-      // Update the button link with the retrieved spreadsheetId
+
       if (data && data.meta && data.meta.spreadsheetId) {
-          sheetLinkBtn.href = `https://docs.google.com/spreadsheets/d/${data.meta.spreadsheetId}/edit`;
-          sheetLinkBtn.style.display = 'inline-flex';
+        sheetLinkBtn.href = `https://docs.google.com/spreadsheets/d/${data.meta.spreadsheetId}/edit`;
+        sheetLinkBtn.style.display = 'inline-flex';
       }
-      
+
       if (rows.length === 0) throw new Error("Connected successfully, but the employee's sheet is completely empty.");
-      
       renderTimesheet(rows, parseInt(year), parseInt(month));
     } catch (err) {
       showError(err.message || 'Failed to load timesheet. Please try again.');
@@ -686,8 +939,10 @@
     const year       = document.getElementById('yearSelect').value;
     const editedRows = Array.from(document.querySelectorAll('tr.edited'));
     if (editedRows.length === 0) return;
+
     const btn = document.getElementById('saveBtn');
     btn.classList.add('loading'); btn.disabled = true;
+
     const payload = {
       employee, month, year,
       updates: editedRows.map(row => {
@@ -733,9 +988,19 @@
     }
   }
 
+  // ── EVENT LISTENERS ──
+  function onCutoffChange() {
+    loadCutoffStatus();
+    if (document.getElementById('employeeSelect').value) {
+      loadTimesheet();
+    }
+  }
+
   document.getElementById('employeeSelect').addEventListener('change', loadTimesheet);
-  document.getElementById('monthSelect').addEventListener('change', loadTimesheet);
-  document.getElementById('yearSelect').addEventListener('change', loadTimesheet);
+  document.getElementById('monthSelect').addEventListener('change', onCutoffChange);
+  document.getElementById('yearSelect').addEventListener('change', onCutoffChange);
+  document.getElementById('cutoffSelect').addEventListener('change', onCutoffChange);
+
 </script>
 
 </body>
