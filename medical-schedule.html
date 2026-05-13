@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrowdSource – Medical Exam Scheduling</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f0f2f5;--card:#fff;--accent:#1565c0;--accent-light:#e8f0fe;--accent-dark:#0d47a1;--text:#1a1a2e;--text2:#6b7280;--muted:#9ca3af;--border:#e5e7eb;--success:#16a34a;--error:#dc2626;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,.08)}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+    .header{width:100%;background:#1a1a2e;padding:20px 32px;display:flex;align-items:center;gap:12px}
+    .header-logo{font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px}
+    .header-logo span{color:#64b5f6}
+    .header-sub{font-size:12px;color:rgba(255,255,255,.5);margin-left:auto}
+
+    .container{width:100%;max-width:600px;padding:32px 24px 60px}
+
+    .hero{text-align:center;margin-bottom:28px}
+    .hero-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);background:var(--accent-light);padding:5px 14px;border-radius:20px;margin-bottom:14px}
+    .hero h1{font-size:22px;font-weight:700;margin-bottom:8px}
+    .hero p{font-size:13.5px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto}
+    .hero-name{font-size:15px;font-weight:700;color:var(--accent);margin-top:8px}
+
+    /* STATE CARDS */
+    .state-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+    .loading-state{text-align:center;padding:60px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--text2)}
+    .error-state,.success-state{text-align:center;padding:60px 28px}
+    .error-state h2{font-size:20px;margin-bottom:8px;color:var(--error)}
+    .error-state p{font-size:14px;color:var(--text2)}
+    .success-icon{width:64px;height:64px;border-radius:50%;background:#e6f9f0;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px}
+    .success-state h2{font-size:22px;margin-bottom:8px;color:var(--success)}
+    .success-state p{font-size:14px;color:var(--text2);line-height:1.6}
+
+    /* CLINIC INFO CARD */
+    .clinic-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px}
+    .clinic-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:12px}
+    .clinic-row{display:flex;gap:10px;font-size:13px;color:var(--text2);margin-bottom:6px;align-items:flex-start}
+    .clinic-row:last-child{margin-bottom:0}
+    .clinic-row-label{font-weight:600;color:var(--text);min-width:80px;flex-shrink:0}
+
+    /* CALENDAR */
+    .schedule-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+    .schedule-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .schedule-title{font-size:14px;font-weight:700;color:var(--text)}
+    .month-nav{display:flex;align-items:center;gap:12px}
+    .month-btn{background:none;border:1.5px solid var(--border);border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:all .15s;font-family:inherit}
+    .month-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .month-label{font-size:14px;font-weight:700;color:var(--text);min-width:130px;text-align:center}
+
+    .cal-grid{padding:16px 20px 20px}
+    .cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
+    .cal-day-name{text-align:center;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;padding:4px 0}
+    .cal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1.5px solid transparent;position:relative}
+    .cal-cell.empty{pointer-events:none}
+    .cal-cell.disabled{color:var(--muted);background:#fafbfc;cursor:not-allowed;pointer-events:none}
+    .cal-cell.available{color:var(--text);background:#fff;border-color:var(--border)}
+    .cal-cell.available:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+    .cal-cell.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .cal-cell.today{font-weight:700}
+    .cal-cell.today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:currentColor}
+
+    /* TIME SLOTS */
+    .time-section{padding:0 20px 20px}
+    .time-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:10px}
+    .time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .time-slot{padding:9px 6px;border:1.5px solid var(--border);border-radius:8px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;background:#fff;color:var(--text);font-family:inherit}
+    .time-slot:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+    .time-slot.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    /* SELECTED SUMMARY */
+    .selected-summary{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px 18px;margin:0 20px 20px;display:none;align-items:center;gap:12px;font-size:13.5px}
+    .selected-summary.show{display:flex}
+    .selected-summary-icon{font-size:20px;flex-shrink:0}
+    .selected-summary-text{flex:1;color:var(--text)}
+    .selected-summary-text strong{display:block;font-weight:700;margin-bottom:2px}
+    .selected-summary-text span{font-size:12px;color:var(--text2)}
+
+    /* SUBMIT */
+    .submit-wrap{padding:0 20px 24px}
+    .notes-field{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:72px;margin-bottom:12px;transition:border .2s}
+    .notes-field:focus{border-color:var(--accent)}
+    .notes-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block}
+    .submit-btn{width:100%;padding:13px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .submit-btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+    .submit-btn:active{transform:translateY(0)}
+    .submit-btn:disabled{background:#93c5fd;cursor:not-allowed;transform:none}
+
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:8px;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transition:transform .3s,opacity .3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .toast.error{background:var(--error)}
+    .toast.success{background:var(--success)}
+
+    @media(max-width:480px){
+      .time-grid{grid-template-columns:repeat(3,1fr)}
+      .container{padding:20px 16px 60px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-logo"><span>CROWD</span>SOURCE</span>
+  <span class="header-sub">Medical Exam Scheduling</span>
+</div>
+
+<div class="container">
+
+  <!-- LOADING -->
+  <div class="state-card" id="loadingState">
+    <div class="loading-state">
+      <div class="spinner" style="border-color:#e5e7eb;border-top-color:var(--accent);width:28px;height:28px;border-width:3px"></div>
+      <span>Loading your scheduling portal...</span>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="state-card" id="errorState" style="display:none">
+    <div class="error-state">
+      <h2>⚠️ Link Invalid</h2>
+      <p id="errorMsg">This scheduling link is invalid or has expired. Please contact HR for a new link.</p>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="state-card" id="successState" style="display:none">
+    <div class="success-state">
+      <div class="success-icon">✅</div>
+      <h2>Schedule Submitted!</h2>
+      <p id="successMsg">Your preferred medical exam schedule has been sent to HR. They will confirm your appointment via email shortly.</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent" style="display:none">
+
+    <div class="hero">
+      <div class="hero-badge">Pre-Employment Medical Exam</div>
+      <h1>Select Your Preferred Schedule</h1>
+      <p>Choose a date and time that works for you. HR will confirm your appointment.</p>
+      <div class="hero-name" id="heroName"></div>
+    </div>
+
+    <!-- CLINIC INFO -->
+    <div class="clinic-card">
+      <div class="clinic-label">🏥 Clinic Details</div>
+      <div class="clinic-row"><span class="clinic-row-label">Name</span><span id="clinicName">Healthbridge Medical Services, Inc.</span></div>
+      <div class="clinic-row"><span class="clinic-row-label">Address</span><span>A&N Building, 9694 Kamagong St., Cor. St. Paul Road, Makati</span></div>
+      <div class="clinic-row"><span class="clinic-row-label">Schedule</span><span>8:00 AM – 3:00 PM | Monday – Friday</span></div>
+      <div class="clinic-row"><span class="clinic-row-label">Bring</span><span>Pea-sized stool sample, Valid ID (original + photocopy), 1x1 or 2x2 ID photo, Ballpen</span></div>
+    </div>
+
+    <!-- CALENDAR + TIME -->
+    <div class="schedule-card">
+      <div class="schedule-header">
+        <div class="schedule-title">📅 Pick a Date</div>
+        <div class="month-nav">
+          <button class="month-btn" onclick="prevMonth()">‹</button>
+          <div class="month-label" id="monthLabel"></div>
+          <button class="month-btn" onclick="nextMonth()">›</button>
+        </div>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days-header">
+          <div class="cal-day-name">Sun</div>
+          <div class="cal-day-name">Mon</div>
+          <div class="cal-day-name">Tue</div>
+          <div class="cal-day-name">Wed</div>
+          <div class="cal-day-name">Thu</div>
+          <div class="cal-day-name">Fri</div>
+          <div class="cal-day-name">Sat</div>
+        </div>
+        <div class="cal-cells" id="calCells"></div>
+      </div>
+
+      <!-- TIME SLOTS -->
+      <div class="time-section" id="timeSection" style="display:none">
+        <div class="time-label">⏰ Pick a Time</div>
+        <div class="time-grid" id="timeGrid"></div>
+      </div>
+
+      <!-- SELECTED SUMMARY -->
+      <div class="selected-summary" id="selectedSummary">
+        <div class="selected-summary-icon">📋</div>
+        <div class="selected-summary-text">
+          <strong id="summaryDate">—</strong>
+          <span id="summaryTime">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="schedule-card">
+      <div class="submit-wrap" style="padding-top:20px">
+        <label class="notes-label">Additional Notes (optional)</label>
+        <textarea class="notes-field" id="notesField" placeholder="e.g. I am available after 10 AM, I have a prior appointment in the morning..."></textarea>
+        <button class="submit-btn" id="submitBtn" onclick="submitSchedule()">
+          Confirm My Schedule →
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VALIDATE_URL    = 'https://primary-production-a810.up.railway.app/webhook/validate-schedule-token';
+const SAVE_URL        = 'https://primary-production-a810.up.railway.app/webhook/save-medical-schedule';
+
+const TIME_SLOTS = ['8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM'];
+
+let currentToken   = null;
+let currentEmpId   = null;
+let selectedDate   = null;
+let selectedTime   = null;
+let viewYear       = new Date().getFullYear();
+let viewMonth      = new Date().getMonth();
+let toastTimer;
+
+// ── INIT ──
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  currentToken = params.get('token');
+  if (!currentToken) { showError('No scheduling token found. Please use the link sent to your email.'); return; }
+
+  try {
+    const res  = await fetch(`${VALIDATE_URL}?token=${currentToken}`);
+    const data = await res.json();
+    if (!res.ok || !data.valid) { showError(data.message || 'This link is invalid or has expired.'); return; }
+
+    currentEmpId = data.employee_id;
+    const empName  = data.employee_name || '';
+    const clinicName = data.clinic_name || 'Healthbridge Medical Services, Inc.';
+
+    document.getElementById('heroName').textContent = empName ? `Welcome, ${empName}!` : '';
+    document.getElementById('clinicName').textContent = clinicName;
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display  = 'block';
+
+    renderCalendar();
+  } catch(err) {
+    showError('Could not connect to the server. Please try again later.');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorState').style.display = 'block';
+}
+
+// ── CALENDAR ──
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('monthLabel').textContent = `${months[viewMonth]} ${viewYear}`;
+
+  const today     = new Date(); today.setHours(0,0,0,0);
+  const firstDay  = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  let html = '';
+
+  // Empty cells before first day
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-cell empty"></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date    = new Date(viewYear, viewMonth, d);
+    const dow     = date.getDay(); // 0=Sun, 6=Sat
+    const isToday = date.getTime() === today.getTime();
+    const isPast  = date < today;
+    const isWeekend = dow === 0 || dow === 6;
+    const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isSelected = selectedDate === dateStr;
+
+    let cls = 'cal-cell';
+    if (isPast || isWeekend)     cls += ' disabled';
+    else if (isSelected)         cls += ' selected';
+    else                         cls += ' available';
+    if (isToday)                 cls += ' today';
+
+    const onclick = (!isPast && !isWeekend) ? `onclick="selectDate('${dateStr}')"` : '';
+    html += `<div class="${cls}" ${onclick}>${d}</div>`;
+  }
+
+  document.getElementById('calCells').innerHTML = html;
+}
+
+function prevMonth() {
+  viewMonth--;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  renderCalendar();
+}
+
+function nextMonth() {
+  viewMonth++;
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  renderCalendar();
+}
+
+function selectDate(dateStr) {
+  selectedDate = dateStr;
+  selectedTime = null;
+  renderCalendar();
+  renderTimeSlots();
+  updateSummary();
+}
+
+// ── TIME SLOTS ──
+function renderTimeSlots() {
+  const section = document.getElementById('timeSection');
+  section.style.display = 'block';
+
+  document.getElementById('timeGrid').innerHTML = TIME_SLOTS.map(t => {
+    const isSel = selectedTime === t;
+    return `<button class="time-slot${isSel?' selected':''}" onclick="selectTime('${t}')">${t}</button>`;
+  }).join('');
+}
+
+function selectTime(time) {
+  selectedTime = time;
+  renderTimeSlots();
+  updateSummary();
+}
+
+// ── SUMMARY ──
+function updateSummary() {
+  const el = document.getElementById('selectedSummary');
+  if (selectedDate && selectedTime) {
+    const d = new Date(selectedDate + 'T00:00:00');
+    const dateLabel = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    document.getElementById('summaryDate').textContent = dateLabel;
+    document.getElementById('summaryTime').textContent = selectedTime;
+    el.classList.add('show');
+  } else if (selectedDate) {
+    const d = new Date(selectedDate + 'T00:00:00');
+    const dateLabel = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    document.getElementById('summaryDate').textContent = dateLabel;
+    document.getElementById('summaryTime').textContent = 'Please select a time';
+    el.classList.add('show');
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+// ── SUBMIT ──
+async function submitSchedule() {
+  if (!selectedDate) { showToast('Please select a date first.', 'error'); return; }
+  if (!selectedTime) { showToast('Please select a time slot.', 'error'); return; }
+
+  const btn   = document.getElementById('submitBtn');
+  const notes = document.getElementById('notesField').value.trim();
+
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+  btn.disabled  = true;
+
+  try {
+    const res = await fetch(SAVE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token:          currentToken,
+        employee_id:    currentEmpId,
+        preferred_date: selectedDate,
+        preferred_time: selectedTime,
+        notes:          notes || null
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      document.getElementById('mainContent').style.display = 'none';
+      const d = new Date(selectedDate + 'T00:00:00');
+      const dateLabel = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+      document.getElementById('successMsg').textContent =
+        `Your preferred schedule (${dateLabel} at ${selectedTime}) has been sent to HR. They will confirm your appointment shortly.`;
+      document.getElementById('successState').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      showToast(data.message || 'Submission failed. Please try again.', 'error');
+      btn.innerHTML = 'Confirm My Schedule →';
+      btn.disabled  = false;
+    }
+  } catch(err) {
+    showToast('Network error. Please check your connection.', 'error');
+    btn.innerHTML = 'Confirm My Schedule →';
+    btn.disabled  = false;
+  }
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+init();
+</script>
+</body>
+</html>
