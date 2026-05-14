@@ -657,12 +657,15 @@ const ONBOARDING_STEPS = [
   {
     num: 4, key: 'Step 4', icon: '🗓️', label: 'Step 4 of 5',
     title: 'Orientation',
-    desc: 'Schedule the employee orientation and confirm the official start date.',
+    desc: 'Send the orientation scheduling email. The employee will pick their preferred slot. Once they book, approve and send the Google Meet confirmation from here.',
     fields: [
-      { id: 'f_orientation_date', type: 'date', label: 'Orientation Date' },
-      { id: 'f_start_date_final', type: 'date', label: 'Official Start Date ★', required: true },
-      { id: 'f_orientation_notes', type: 'textarea', label: 'Orientation Notes (optional)', placeholder: 'Venue, agenda, items to bring...' }
-    ]
+      { id: 'f_orientation_notes', type: 'textarea', label: 'Additional Notes (optional)', placeholder: 'e.g. Any special instructions for the employee...' }
+    ],
+    emailTrigger: true,
+    hasEmailBtn: true,
+    emailBtnLabel: '✉ Send Scheduling Email',
+    emailBtnFn: 'sendOrientationEmailNow',
+    hasApproveBtn: true
   },
   {
     num: 5, key: 'Step 5', icon: '📝', label: 'Step 5 of 5',
@@ -742,11 +745,17 @@ function renderStepModal() {
     }
   });
 
-  // Add Send Email button for Step 2
+  // Add Send Email button for steps that have emailTrigger
   if (step.hasEmailBtn) {
+    const btnId  = step.num === 2 ? 'sendMedEmailBtn' : 'sendOrientationEmailBtn';
+    const btnFn  = step.emailBtnFn || 'sendMedicalEmailNow';
+    const btnLbl = step.emailBtnLabel || '✉ Send Email';
+    const desc   = step.num === 2
+      ? 'Sends the medical exam email with clinic details and booking link to the employee.'
+      : 'Sends the orientation scheduling email with a slot picker link to the employee.';
     fieldsHtml += `<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div style="font-size:12.5px;color:#0369a1;line-height:1.5"><strong>📧 Send Scheduling Email</strong><br><span style="font-size:11.5px">Sends the medical exam email with clinic details and booking link to the employee.</span></div>
-      <button type="button" id="sendMedEmailBtn" onclick="sendMedicalEmailNow()" style="flex-shrink:0;padding:8px 16px;border-radius:8px;border:none;background:#1565c0;color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">✉ Send Email</button>
+      <div style="font-size:12.5px;color:#0369a1;line-height:1.5"><strong>📧 Send Scheduling Email</strong><br><span style="font-size:11.5px">${desc}</span></div>
+      <button type="button" id="${btnId}" onclick="${btnFn}()" style="flex-shrink:0;padding:8px 16px;border-radius:8px;border:none;background:#1565c0;color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">${btnLbl}</button>
     </div>`;
   }
   fieldsEl.innerHTML = fieldsHtml;
@@ -803,6 +812,36 @@ async function sendMedicalEmailNow() {
     }
   } catch(err) {
     btn.textContent = '✉ Send Email';
+    btn.disabled = false;
+    showToast('Network error: ' + err.message, 'error');
+  }
+}
+
+async function sendOrientationEmailNow() {
+  const btn   = document.getElementById('sendOrientationEmailBtn');
+  const notes = document.getElementById('f_orientation_notes')?.value?.trim() || null;
+  if (!pendingTransitionId) { showToast('No employee selected.', 'error'); return; }
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL.replace('send-201-email', 'send-orientation-schedule'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employee_id: pendingTransitionId, notes })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      btn.textContent = '✅ Email Sent!';
+      btn.style.background = '#16a34a';
+      showToast('Orientation scheduling email sent!', 'success');
+    } else {
+      btn.textContent = '✉ Send Scheduling Email';
+      btn.disabled = false;
+      btn.style.background = '';
+      showToast(data.message || 'Failed to send email.', 'error');
+    }
+  } catch(err) {
+    btn.textContent = '✉ Send Scheduling Email';
     btn.disabled = false;
     showToast('Network error: ' + err.message, 'error');
   }
