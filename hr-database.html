@@ -201,6 +201,26 @@
     .link-input-row input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;outline:none;transition:border .2s}
     .link-input-row input:focus{border-color:var(--accent)}
     .section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding-bottom:8px;border-bottom:1px solid var(--border)}
+    /* ── 201 CHECKLIST ── */
+    .req201-list{display:flex;flex-direction:column;gap:6px;padding:0 20px 16px}
+    .req201-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
+    .req201-group-label.prev{color:#b45309}
+    .req201-item{display:flex;align-items:center;gap:10px;background:#fafbfc;border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:12.5px;transition:border .15s}
+    .req201-item.done{background:#f0fdf4;border-color:#86efac}
+    .req201-item.missing{background:#fff;border-color:var(--border)}
+    .req201-icon{width:28px;height:28px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+    .req201-item.done .req201-icon{background:#dcfce7}
+    .req201-name{flex:1;font-weight:600;color:var(--text-primary)}
+    .req201-value{font-size:11.5px;color:var(--text-muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .req201-item.done .req201-value{color:#15803d}
+    .req201-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0}
+    .req201-status.ok{background:#dcfce7;color:#15803d}
+    .req201-status.missing{background:#f3f4f6;color:var(--text-muted)}
+    .req201-status.required{background:#fef2f2;color:#dc2626}
+    .req201-progress{padding:12px 20px 0;border-top:1px solid var(--border)}
+    .req201-progress-bar-wrap{background:#e5e7eb;border-radius:4px;height:6px;overflow:hidden;margin-bottom:6px}
+    .req201-progress-bar{height:6px;border-radius:4px;background:var(--accent);transition:width .5s}
+    .req201-progress-text{font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between}
 
     /* ── CARD GRID ── */
     .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:20px}
@@ -248,7 +268,8 @@
       <div class="sub-nav open" id="hr-db-sub">
         <a href="#" class="sub-nav-item active" onclick="setEmpFilter('regular',this);return false;">Employees</a>
         <a href="#" class="sub-nav-item" onclick="setEmpFilter('intern',this);return false;">Interns</a>
-        <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive',this);return false;">Archived</a>
+        <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive-employee',this);return false;">Archived Employees</a>
+        <a href="#" class="sub-nav-item" onclick="setEmpFilter('archive-intern',this);return false;">Archived Interns</a>
       </div>
     </div>
     <div class="nav-group">
@@ -286,7 +307,7 @@
     </div>
     <div class="db-card">
       <div class="tab-bar" id="mainTabBar"></div>
-      <div class="archive-banner" id="archiveBanner">📁 Showing resigned/archived employees. These records are read-only.</div>
+      <div class="archive-banner" id="archiveBanner">📁 Showing archived records.</div>
       <div class="table-scroll" id="tableArea"></div>
       <div class="pagination-bar" id="paginationBar" style="display:none">
         <div style="display:flex;align-items:center;gap:10px">
@@ -357,10 +378,11 @@
       <button class="modal-close" onclick="close201Modal()">✕</button>
     </div>
 
-    <!-- TABS: Upload File | Add Link -->
+    <!-- TABS: Upload File | Add Link | Checklist -->
     <div class="files-tab-bar">
       <button class="files-tab active" onclick="switch201Tab('upload',this)">📁 Upload File</button>
       <button class="files-tab" onclick="switch201Tab('link',this)">🔗 Add Link</button>
+      <button class="files-tab" onclick="switch201Tab('checklist',this)">✅ Checklist</button>
     </div>
 
     <!-- UPLOAD TAB -->
@@ -385,6 +407,15 @@
         <input type="text" id="linkName201" placeholder="Label (e.g. Employment Contract)">
       </div>
       <button class="btn primary" onclick="saveLink201()" id="saveLinkBtn" style="align-self:flex-start">+ Save Link</button>
+    </div>
+
+    <!-- CHECKLIST TAB -->
+    <div class="files-tab-content" id="tab201-checklist">
+      <div class="req201-progress" id="req201Progress">
+        <div class="req201-progress-text"><span id="req201ProgressLabel">Loading...</span><span id="req201ProgressPct">0%</span></div>
+        <div class="req201-progress-bar-wrap" style="margin-top:6px"><div class="req201-progress-bar" id="req201ProgressBar" style="width:0%"></div></div>
+      </div>
+      <div class="req201-list" id="req201List" style="margin-top:12px;max-height:380px;overflow-y:auto;padding-right:4px"><p style="font-size:12.5px;color:var(--text-muted);padding:12px 0">Loading checklist...</p></div>
     </div>
 
     <!-- FILE LIST -->
@@ -416,6 +447,28 @@
 <div class="toast" id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
 
 <script>
+// ── 201 REQUIRED DOCS ──
+const REQUIRED_DOCS_201 = [
+  { id:'sss',            name:'SSS Number',                    icon:'🪪', desc:'SSS Number (e.g. 34-1234567-8)', type:'number', required:true },
+  { id:'philhealth',     name:'PhilHealth Number',             icon:'🏥', desc:'PhilHealth Number', type:'number', required:true },
+  { id:'pagibig',        name:'Pag-IBIG Number',               icon:'🏠', desc:'Pag-IBIG Number', type:'number', required:true },
+  { id:'tin',            name:'TIN',                           icon:'📋', desc:'TIN Number', type:'number', required:true },
+  { id:'resume',         name:'Resume / CV',                   icon:'📝', desc:'Updated resume or CV', required:true },
+  { id:'sss_e1',         name:'Copy of SSS E1',                icon:'📄', desc:'SSS E1 form', required:true },
+  { id:'pagibig_mdf',    name:'Pag-IBIG Member Data Form',     icon:'📋', desc:'Pag-IBIG MDF', required:true },
+  { id:'philhealth_mdr', name:'Proof of PhilHealth PIN/MDR',   icon:'🏥', desc:'PhilHealth MDR', required:true },
+  { id:'nbi',            name:'NBI Clearance',                 icon:'🔍', desc:'Valid NBI Clearance', required:true },
+  { id:'unionbank',      name:'Unionbank Account/Card',        icon:'🏦', desc:'Unionbank account/card for payroll', required:true },
+  { id:'birth_cert',     name:'PSA Birth Certificate',         icon:'📄', desc:'PSA birth certificate', required:true },
+  { id:'tor',            name:'Transcript of Records / TOR',   icon:'🎓', desc:'Official TOR', required:true },
+  { id:'barangay',       name:'Barangay Clearance',            icon:'🏛️', desc:'Barangay clearance', required:true },
+  { id:'police',         name:'Police Clearance',              icon:'👮', desc:'Police clearance', required:true },
+  { id:'medical',        name:'Medical Results',               icon:'🩺', desc:'Pre-employment medical results', required:true },
+  { id:'coe',            name:'COE (Previous Employer)',       icon:'📃', desc:'Certificate of Employment', group:'prev' },
+  { id:'payslips',       name:'Last 2 Payslips / Contract',   icon:'💰', desc:'Last 2 payslips or contract', group:'prev' },
+  { id:'bir2316',        name:'BIR Form 2316',                icon:'📑', desc:'BIR 2316 from previous employer', group:'prev' },
+];
+
 // ── URLs ──
 const URL_GET           = 'https://primary-production-a810.up.railway.app/webhook/hr-get-employees';
 const URL_CREATE        = 'https://primary-production-a810.up.railway.app/webhook/hr-create-employee';
@@ -466,7 +519,10 @@ function getDynamicEndDate(startDateStr,totalHours,renderedHours){
 
 const TABS_EMPLOYEE=[{id:'personal',label:'Personal Details'},{id:'company',label:'Company Details'},{id:'sil',label:'SIL Credits'},{id:'benefits',label:"Gov't Benefits & Liabilities"},{id:'cip',label:'CIP'},{id:'files',label:'201 Files'}];
 const TABS_INTERN=[{id:'personal',label:'Personal Details'},{id:'company',label:'Company Details'},{id:'tracker',label:'OJT Tracker'},{id:'cip',label:'CIP'},{id:'files',label:'201 Files'}];
-function getTabDefs(){return currentEmpFilter==='intern'?TABS_INTERN:TABS_EMPLOYEE;}
+function getTabDefs(){
+  if(currentEmpFilter==='intern'||currentEmpFilter==='archive-intern') return TABS_INTERN;
+  return TABS_EMPLOYEE;
+}
 
 function buildTabBar(){
   const defs=getTabDefs();
@@ -476,7 +532,7 @@ function buildTabBar(){
 }
 
 function tableHead(id){
-  const ii=currentEmpFilter==='intern';
+  const ii=currentEmpFilter==='intern'||currentEmpFilter==='archive-intern';
   const h={
     personal:ii?'<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Civil Status</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>University</th><th>OJT Advisor</th><th>Advisor No.</th><th>Advisor Email</th><th>Actions</th></tr></thead>':'<thead><tr><th>Name</th><th>PIN</th><th>Contact</th><th>Birthdate</th><th>Age</th><th>Gender</th><th>Civil Status</th><th>Dependents</th><th>Email</th><th>Emergency Contact</th><th>Address</th><th>SSS</th><th>Pag-IBIG</th><th>PhilHealth</th><th>TIN</th><th>Payroll</th><th>Actions</th></tr></thead>',
     company:ii?'<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Expected End</th><th>Completion Bonus</th><th>Supervisor</th><th>Actions</th></tr></thead>':'<thead><tr><th>Name</th><th>Company</th><th>Position</th><th>Department</th><th>Status</th><th>Start Date</th><th>Regularization</th><th>Company Email</th><th>Supervisor</th><th>Actions</th></tr></thead>',
@@ -496,11 +552,22 @@ function setEmpFilter(type,btn){
   currentEmpFilter=type;
   document.querySelectorAll('.sub-nav-item').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  const subtitles={regular:'Manage employee records, roles, and access.',intern:'Manage intern OJT records and details.',archive:'View resigned and archived employee records.'};
-  const titles={regular:'Employee Database',intern:'Intern Database',archive:'Archive'};
+  const subtitles={
+    regular:'Manage employee records, roles, and access.',
+    intern:'Manage intern OJT records and details.',
+    'archive-employee':'View resigned and archived employee records.',
+    'archive-intern':'View completed and archived intern records.'
+  };
+  const titles={
+    regular:'Employee Database',
+    intern:'Intern Database',
+    'archive-employee':'Archived Employees',
+    'archive-intern':'Archived Interns'
+  };
   document.getElementById('viewSubtitle').innerText=subtitles[type]||'';
   document.getElementById('pageTitle').innerText=titles[type]||'Employee Database';
-  document.getElementById('archiveBanner').classList.toggle('show',type==='archive');
+  const isArchive = type==='archive-employee'||type==='archive-intern';
+  document.getElementById('archiveBanner').classList.toggle('show', isArchive);
   const s=document.getElementById('syncOjtBtn');if(s)s.style.display=type==='intern'?'inline-flex':'none';
   buildTabBar();buildModalPanels();filterTable();
 }
@@ -632,10 +699,13 @@ function filterTable(){
   const f=document.getElementById('searchInput').value.toLowerCase();
   filteredData=employeesData.filter(emp=>{
     const isResigned=emp.status==='Resigned'||emp.status==='Terminated'||emp.status==='Completed';
-    if(currentEmpFilter==='archive'&&!isResigned)return false;
-    if(currentEmpFilter!=='archive'&&isResigned)return false;
     const role=String(emp.role_name||'').toLowerCase(),dept=String(emp.department_name||'').toLowerCase();
     const isIntern=role.includes('intern')||dept.includes('intern');
+    const isArchive=currentEmpFilter==='archive-employee'||currentEmpFilter==='archive-intern';
+    if(isArchive&&!isResigned)return false;
+    if(!isArchive&&isResigned)return false;
+    if(currentEmpFilter==='archive-employee'&&isIntern)return false;
+    if(currentEmpFilter==='archive-intern'&&!isIntern)return false;
     if(currentEmpFilter==='regular'&&isIntern)return false;
     if(currentEmpFilter==='intern'&&!isIntern)return false;
     if(!f)return true;
@@ -654,8 +724,9 @@ function renderTable(){
   const ps=getPageSize(),total=Math.ceil(data.length/ps);
   if(currentPage>total)currentPage=total;
   const start=(currentPage-1)*ps,items=data.slice(start,start+ps);
-  const isArchive=currentEmpFilter==='archive',isIntern=currentEmpFilter==='intern';
-  const ab=(emp)=>{const gi=employeesData.indexOf(emp);if(isArchive)return`<div class="actions"><button class="btn" onclick="openModal(${gi})">View</button></div>`;return`<div class="actions"><button class="btn" onclick="openModal(${gi},currentTab)">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;};
+  const isArchive=currentEmpFilter==='archive-employee'||currentEmpFilter==='archive-intern';
+  const isIntern=currentEmpFilter==='intern'||currentEmpFilter==='archive-intern';
+  const ab=(emp)=>{const gi=employeesData.indexOf(emp);if(isArchive)return`<div class="actions"><button class="btn" onclick="openModal(${gi},currentTab)">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;return`<div class="actions"><button class="btn" onclick="openModal(${gi},currentTab)">Edit</button><button class="btn danger" onclick="deleteEmployee(${emp.id})">Delete</button></div>`;};
   const btr=(content,idx)=>{const dIdx=start+idx;return`<tr class="grab-row" draggable="true" ondragstart="dragStart(event,${dIdx})" ondragover="dragOver(event)" ondrop="dropRow(event,${dIdx})" ondragend="dragEnd(event)">${content}</tr>`;};
 
   // Personal
@@ -765,6 +836,59 @@ function close201Modal() {
   current201EmpId = null; current201Pin = null;
 }
 
+function render201Checklist(files) {
+  const listEl  = document.getElementById('req201List');
+  const progBar = document.getElementById('req201ProgressBar');
+  const progLbl = document.getElementById('req201ProgressLabel');
+  const progPct = document.getElementById('req201ProgressPct');
+  if (!listEl) return;
+
+  // Build a map of doc_id -> file entry
+  const uploaded = {};
+  files.forEach(f => { if (f.doc_id) uploaded[f.doc_id] = f; });
+
+  const required = REQUIRED_DOCS_201.filter(d => d.required);
+  const doneReq  = required.filter(d => uploaded[d.id]).length;
+  const pct      = required.length > 0 ? Math.round((doneReq / required.length) * 100) : 0;
+
+  if (progBar) progBar.style.width = pct + '%';
+  if (progLbl) progLbl.textContent = `${doneReq} of ${required.length} required docs submitted`;
+  if (progPct) progPct.textContent = pct + '%';
+
+  let lastGroup = null;
+  listEl.innerHTML = REQUIRED_DOCS_201.map(doc => {
+    const f = uploaded[doc.id];
+    const isDone = !!f;
+    const isNumber = f?.type === 'number';
+    const isLink = f?.type === 'link';
+    const valueText = isDone
+      ? (isNumber ? f.name.replace(doc.name + ' — ', '') : isLink ? '🔗 Link saved' : '📄 ' + f.name.replace(doc.name + ' — ', ''))
+      : '—';
+    const statusHtml = isDone
+      ? '<span class="req201-status ok">✓ Done</span>'
+      : doc.required
+        ? '<span class="req201-status required">★ Required</span>'
+        : '<span class="req201-status missing">Optional</span>';
+
+    let groupHtml = '';
+    if (doc.group === 'prev' && lastGroup !== 'prev') {
+      groupHtml = '<div class="req201-group-label prev">📋 If Previously Employed</div>';
+    } else if (!doc.group && lastGroup === null) {
+      groupHtml = '<div class="req201-group-label">📌 Required Documents</div>';
+    }
+    lastGroup = doc.group || null;
+
+    return groupHtml + `<div class="req201-item ${isDone ? 'done' : 'missing'}">
+      <div class="req201-icon">${doc.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="req201-name">${doc.name}</div>
+        <div class="req201-value">${valueText}</div>
+      </div>
+      ${statusHtml}
+    </div>`;
+  }).join('');
+}
+
 async function load201Files() {
   const listEl = document.getElementById('fileList201');
   listEl.innerHTML = '<p style="font-size:12.5px;color:var(--text-muted)"><span class="spinner"></span> Loading...</p>';
@@ -773,6 +897,9 @@ async function load201Files() {
     const data = await res.json();
     const raw  = Array.isArray(data) ? data[0] : data;
     const files = raw?.files_201 || [];
+
+    // Always render checklist regardless of files
+    render201Checklist(files);
 
     if (!files.length) {
       listEl.innerHTML = '<p style="font-size:12.5px;color:var(--text-muted)">No files or links yet. Upload a file or add a link above.</p>';
@@ -975,7 +1102,7 @@ async function uploadFiles201(files) {
 
 // ── MODAL PANELS ──
 function buildModalPanels(){
-  const isIntern=currentEmpFilter==='intern';
+  const isIntern=currentEmpFilter==='intern'||currentEmpFilter==='archive-intern';
   const tabs=isIntern?[{id:'m-personal',label:'Personal'},{id:'m-company',label:'Company'},{id:'m-cip',label:'CIP'}]:[{id:'m-personal',label:'Personal'},{id:'m-company',label:'Company'},{id:'m-sil',label:'SIL'},{id:'m-gov',label:'Gov IDs'},{id:'m-cip',label:'CIP'},{id:'m-benefits',label:'Benefits'},{id:'m-liabilities',label:'Liabilities'}];
   document.getElementById('modalTabBar').innerHTML=tabs.map((t,i)=>`<button class="modal-tab-btn ${i===0?'active':''}" onclick="switchModalTab('${t.id}',this)">${t.label}</button>`).join('');
   document.getElementById('modalBodies').innerHTML=`
@@ -1018,11 +1145,12 @@ async function openModal(index=-1, jumpToTab=null){
   openModalAtTab=jumpToTab;
   buildModalPanels();document.getElementById('empModal').classList.add('active');
   document.getElementById('liabilityList')&&(document.getElementById('liabilityList').innerHTML='<p style="color:var(--text-muted);font-size:12.5px">No liabilities recorded.</p>');
-  const isArchive=currentEmpFilter==='archive',isIntern=currentEmpFilter==='intern';
+  const isArchive=currentEmpFilter==='archive-employee'||currentEmpFilter==='archive-intern';
+  const isIntern=currentEmpFilter==='intern'||currentEmpFilter==='archive-intern';
   if(index>=0){
     const e=employeesData[index];currentEmpId=e.id;
-    document.getElementById('modalTitle').innerText=isArchive?'View Archived Record':isIntern?'Edit Intern':'Edit Employee';
-    document.getElementById('saveBtn').style.display=isArchive?'none':'inline-flex';
+    document.getElementById('modalTitle').innerText=isArchive?'Edit Archived Record':isIntern?'Edit Intern':'Edit Employee';
+    document.getElementById('saveBtn').style.display='inline-flex';
     currentDependents=safeParse(e.dependents);currentCIP=safeParse(e.cip_notes);
     renderDependents();renderCIP();
     // Await dropdowns so dep/role options exist before we set values
@@ -1072,13 +1200,70 @@ async function openModal(index=-1, jumpToTab=null){
 function closeModal(){document.getElementById('empModal').classList.remove('active');document.getElementById('newRoleRow')?.classList.remove('show');currentEmpId=null;}
 
 async function saveEmployee(){
-  const g=id=>document.getElementById(id)?.value||'';
-  const fn=g('f_fn').trim(),ln=g('f_ln').trim(),pin=g('f_pin').trim();
+  // gf: get field value, returns null if field missing from DOM or empty
+  const gf = id => { const el=document.getElementById(id); return el ? el.value : null; };
+  const gs = id => { const v=gf(id); return (v==null||v.trim()==='') ? null : v.trim(); };
+  const gn = id => { const v=gf(id); if(v==null||v.trim()==='') return null; const n=Number(v); return isNaN(n)?null:n; };
+
+  const fn=(gs('f_fn')||''), ln=(gs('f_ln')||''), pin=(gs('f_pin')||'');
   if(!fn||!ln){showToast('First Name and Last Name are required.','error');return;}
   if(!pin){showToast('PIN is required.','error');return;}
   const btn=document.getElementById('saveBtn');btn.innerHTML='<span class="spinner"></span> Saving...';btn.disabled=true;
-  const rawId=g('f_id'),supId=g('f_supervisor_id');
-  const payload={id:rawId?Number(rawId):null,pin,fn,mn:g('f_mn'),ln,company:g('f_company'),email:g('f_email')||null,personal_email:g('f_personal_email')||null,contact:g('f_contact'),birthdate:g('f_birthdate')||null,gender:g('f_gender'),civil_status:g('f_civil_status'),dependents:JSON.stringify(currentDependents),cip_notes:JSON.stringify(currentCIP),address:g('f_address'),emergency_contact:g('f_emergency_contact'),dep_id:g('f_dep_id'),role_id:g('f_role_id'),status:g('f_status'),start_date:g('f_start_date')||null,end_date:g('f_end_date')||null,regularization_date:g('f_regularization_date')||null,salary:Number(g('f_salary'))||0,de_minimis:Number(g('f_de_minimis'))||0,allowance:Number(g('f_allowance'))||0,sil_balance:Number(g('f_sil_balance'))||0,parental_leave_balance:Number(g('f_parental_leave'))||0,sss:g('f_sss'),pagibig:g('f_pagibig'),philhealth:g('f_philhealth'),tin:g('f_tin'),payroll:g('f_payroll'),cip_status:g('f_cip_status'),supervisor_id:supId?Number(supId):null,university:g('f_university'),ojt_advisor:g('f_ojt_advisor'),ojt_advisor_number:g('f_ojt_advisor_number'),ojt_advisor_email:g('f_ojt_advisor_email'),total_hours:Number(g('f_total_hours'))||null,rendered_hours:g('f_rendered_hours')!==''?Number(g('f_rendered_hours')):null};
+  const rawId=gf('f_id')||'';
+  const supEl=document.getElementById('f_supervisor_id');
+  const supId=supEl?.value||'';
+
+  // Merge: field value takes priority; if field absent/empty, keep existing DB value
+  const ex = rawId ? (employeesData.find(e=>String(e.id)===String(rawId))||{}) : {};
+  const mv = (fieldVal, existingVal, defaultVal=null) => {
+    if(fieldVal!==null && fieldVal!=='' && fieldVal!==undefined) return fieldVal;
+    return (existingVal!==null&&existingVal!==undefined&&existingVal!=='') ? existingVal : defaultVal;
+  };
+  const mn = (fieldVal, existingVal, def=0) => {
+    if(fieldVal!==null) return fieldVal;
+    return (existingVal!==null&&existingVal!==undefined) ? existingVal : def;
+  };
+
+  const payload={
+    id:                    rawId ? Number(rawId) : null,
+    pin,fn,ln,
+    mn:                    gs('f_mn') ?? ex.mn ?? '',
+    company:               mv(gs('f_company'), ex.company, 'CIS'),
+    email:                 mv(gs('f_email'), ex.email),
+    personal_email:        mv(gs('f_personal_email'), ex.personal_email),
+    contact:               mv(gs('f_contact'), ex.contact),
+    birthdate:             mv(gs('f_birthdate'), ex.birthdate ? ex.birthdate.split('T')[0] : null),
+    gender:                mv(gs('f_gender'), ex.gender),
+    civil_status:          mv(gs('f_civil_status'), ex.civil_status),
+    dependents:            JSON.stringify(currentDependents),
+    cip_notes:             JSON.stringify(currentCIP),
+    address:               mv(gs('f_address'), ex.address),
+    emergency_contact:     mv(gs('f_emergency_contact'), ex.emergency_contact),
+    dep_id:                mv(gs('f_dep_id'), ex.department_name),
+    role_id:               mv(gs('f_role_id'), ex.role_name),
+    status:                mv(gs('f_status'), ex.status),
+    start_date:            mv(gs('f_start_date'), ex.start_date ? ex.start_date.split('T')[0] : null),
+    end_date:              mv(gs('f_end_date'), ex.end_date ? ex.end_date.split('T')[0] : null),
+    regularization_date:   mv(gs('f_regularization_date'), ex.regularization_date ? ex.regularization_date.split('T')[0] : null),
+    salary:                mn(gn('f_salary'), ex.salary, 0),
+    de_minimis:            mn(gn('f_de_minimis'), ex.de_minimis, 0),
+    allowance:             mn(gn('f_allowance'), ex.allowance, 0),
+    sil_balance:           mn(gn('f_sil_balance'), ex.sil_balance, 0),
+    parental_leave_balance:mn(gn('f_parental_leave'), ex.parental_leave_balance, 0),
+    sss:                   mv(gs('f_sss'), ex.sss),
+    pagibig:               mv(gs('f_pagibig'), ex.pagibig),
+    philhealth:            mv(gs('f_philhealth'), ex.philhealth),
+    tin:                   mv(gs('f_tin'), ex.tin),
+    payroll:               mv(gs('f_payroll'), ex.payroll),
+    cip_status:            mv(gs('f_cip_status'), ex.cip_status),
+    supervisor_id:         supId ? Number(supId) : (ex.supervisor_id||null),
+    university:            mv(gs('f_university'), ex.university),
+    ojt_advisor:           mv(gs('f_ojt_advisor'), ex.ojt_advisor),
+    ojt_advisor_number:    mv(gs('f_ojt_advisor_number'), ex.ojt_advisor_number),
+    ojt_advisor_email:     mv(gs('f_ojt_advisor_email'), ex.ojt_advisor_email),
+    total_hours:           mn(gn('f_total_hours'), ex.total_hours, null),
+    rendered_hours:        gf('f_rendered_hours')!==null&&gf('f_rendered_hours')!=='' ? Number(gf('f_rendered_hours')) : (ex.rendered_hours??null)
+  };
   try{const res=await fetch(rawId?URL_UPDATE:URL_CREATE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(res.ok){showToast(rawId?'Saved!':'Added!');closeModal();loadEmployees();}else showToast('Failed to save.','error');}catch{showToast('Network error.','error');}
   finally{btn.innerHTML='Save';btn.disabled=false;}
 }
