@@ -66,11 +66,7 @@
     .btn.danger:hover{background:#fca5a5}
     .btn:disabled{opacity:.5;cursor:not-allowed}
     .db-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden}
-    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .stat-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:20px 24px}
-    .stat-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-    .stat-value{font-size:28px;font-weight:700;color:var(--text-primary);line-height:1}
-    .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
     .table-scroll{overflow-x:auto}
     table{width:100%;border-collapse:collapse;text-align:left;min-width:900px}
     th{background:#fafbfc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
@@ -159,6 +155,22 @@
     .checklist-progress-text{font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between}
     /* TRANSITION */
     .transition-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px}
+    .step-filter-btn{padding:6px 14px;border-radius:20px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);transition:all .15s}
+    .step-filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .step-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .step-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:#e8f0fe;color:var(--accent);white-space:nowrap}
+    /* STEP MODAL */
+    .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s;border:2px solid var(--border);background:#fff;color:var(--text-muted)}
+    .step-dot.done{background:#dcfce7;border-color:#86efac;color:#15803d}
+    .step-dot.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.2)}
+    .step-dot.upcoming{background:#fff;border-color:var(--border);color:var(--text-muted)}
+    .step-field-row{display:flex;flex-direction:column;gap:5px}
+    .step-field-row label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+    .step-field-row input,.step-field-row select,.step-field-row textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text-primary);outline:none;background:#fff;transition:border .2s;width:100%}
+    .step-field-row input:focus,.step-field-row select:focus,.step-field-row textarea:focus{border-color:var(--accent)}
+    .step-field-row textarea{resize:vertical;min-height:70px}
+    .step-info-box{background:#fff8e1;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#92400e;line-height:1.5}
+    .step-badge-lg{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700}
     .spinner{display:inline-block;width:16px;height:16px;border:2px solid #ccc;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .state-cell{text-align:center;padding:48px !important;color:var(--text-muted);font-size:13.5px}
@@ -226,23 +238,26 @@
       </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">Total Onboarding</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">Active in pipeline</div></div>
-      <div class="stat-card"><div class="stat-label">Docs Complete</div><div class="stat-value" id="statComplete" style="color:#16a34a">—</div><div class="stat-sub">All required docs submitted</div></div>
-      <div class="stat-card"><div class="stat-label">Docs Partial</div><div class="stat-value" id="statPartial" style="color:#b45309">—</div><div class="stat-sub">Some docs missing</div></div>
-      <div class="stat-card"><div class="stat-label">No Docs Yet</div><div class="stat-value" id="statEmpty" style="color:#dc2626">—</div><div class="stat-sub">Nothing submitted</div></div>
-    </div>
-
     <div class="db-card">
+      <!-- STEP FILTER BAR -->
+      <div style="display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Filter:</span>
+        <button class="step-filter-btn active" onclick="setStepFilter('all',this)">All</button>
+        <button class="step-filter-btn" onclick="setStepFilter('1',this)">📋 Step 1 — Job Offer</button>
+        <button class="step-filter-btn" onclick="setStepFilter('2',this)">🏥 Step 2 — Medical Exam</button>
+        <button class="step-filter-btn" onclick="setStepFilter('3',this)">📁 Step 3 — Documents</button>
+        <button class="step-filter-btn" onclick="setStepFilter('4',this)">🗓️ Step 4 — Orientation</button>
+        <button class="step-filter-btn" onclick="setStepFilter('5',this)">📝 Step 5 — Contract</button>
+      </div>
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>Name</th><th>PIN</th><th>Company</th><th>Position</th><th>Start Date</th><th>Email</th><th>201 Progress</th><th>Actions</th>
+              <th>Name</th><th>Step</th><th>Company</th><th>Position</th><th>Email</th><th>Contact</th><th>Start Date</th><th>201 Progress</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody">
-            <tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr>
+            <tr><td colspan="9" class="state-cell"><span class="spinner"></span> Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -330,29 +345,57 @@
 
 <!-- STATUS TRANSITION MODAL -->
 <div class="modal-overlay" id="transitionModal">
-  <div class="small-modal">
-    <div class="modal-header"><h2>Move to Next Status</h2><button class="modal-close" onclick="closeTransitionModal()">✕</button></div>
+  <div class="small-modal" style="width:520px">
+    <div class="modal-header">
+      <h2 id="transitionModalTitle">Advance Onboarding Step</h2>
+      <button class="modal-close" onclick="closeTransitionModal()">✕</button>
+    </div>
     <div class="modal-body">
-      <div class="transition-icon">🎉</div>
-      <p style="font-size:13px;color:var(--text-secondary);text-align:center;line-height:1.6">Select the next employment status for <strong id="transitionEmpName"></strong>.</p>
-      <div class="form-group">
-        <label>New Status</label>
-        <select id="transitionStatus">
-          <option value="Probationary">Probationary</option>
-          <option value="Regular">Regular</option>
-          <option value="Ongoing">Ongoing (Intern)</option>
-          <option value="Project-Based">Project-Based</option>
-          <option value="Part-time">Part-time</option>
-        </select>
+      <!-- Step progress indicator -->
+      <div id="stepProgressWrap" style="margin-bottom:4px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;gap:4px" id="stepDots"></div>
+        <div style="background:#e5e7eb;border-radius:4px;height:4px;overflow:hidden">
+          <div id="stepProgressBar" style="height:4px;border-radius:4px;background:var(--accent);transition:width .4s"></div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Start Date (optional)</label>
-        <input type="date" id="transitionStartDate">
+
+      <div id="stepCardWrap" style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 18px;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div id="stepCardIcon" style="font-size:22px"></div>
+          <div>
+            <div id="stepCardLabel" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)"></div>
+            <div id="stepCardTitle" style="font-size:15px;font-weight:700;color:var(--text-primary)"></div>
+          </div>
+        </div>
+        <div id="stepCardDesc" style="font-size:12.5px;color:var(--text-secondary);line-height:1.6"></div>
+      </div>
+
+      <!-- Step-specific fields -->
+      <div id="stepFields" style="display:flex;flex-direction:column;gap:12px;margin-top:12px"></div>
+
+      <!-- Final step: employment status -->
+      <div id="finalStepSection" style="display:none;flex-direction:column;gap:12px;margin-top:4px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;padding-bottom:6px;border-bottom:1px solid var(--border)">Move to Employment</div>
+        <div class="form-group">
+          <label>Employment Status</label>
+          <select id="transitionStatus">
+            <option value="Probationary">Probationary</option>
+            <option value="Regular">Regular</option>
+            <option value="Ongoing">Ongoing (Intern)</option>
+            <option value="Project-Based">Project-Based</option>
+            <option value="Part-time">Part-time</option>
+          </select>
+        </div>
       </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="justify-content:space-between">
       <button class="btn" onclick="closeTransitionModal()">Cancel</button>
-      <button class="btn primary" id="confirmTransitionBtn" onclick="confirmTransition()">Confirm & Move</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="prevStepBtn" onclick="navigateStep(-1)" style="display:none">← Back</button>
+        <button class="btn primary" id="confirmTransitionBtn" onclick="confirmTransition()">
+          <span id="confirmBtnLabel">Advance to Step 2</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -400,21 +443,20 @@ const REQUIRED_DOCS_201 = [
   { id:'philhealth_mdr', name:'Proof of PhilHealth PIN/MDR',  icon:'🏥', required:true },
   { id:'nbi',            name:'NBI Clearance',                icon:'🔍', required:true },
   { id:'unionbank',      name:'Unionbank Account/Card',       icon:'🏦', required:true },
-  { id:'birth_cert',     name:'PSA Birth Certificate',        icon:'📄' },
-  { id:'tor',            name:'Transcript of Records / TOR',  icon:'🎓' },
-  { id:'barangay',       name:'Barangay Clearance',           icon:'🏛️' },
-  { id:'police',         name:'Police Clearance',             icon:'👮' },
-  { id:'medical',        name:'Medical Results',              icon:'🩺' },
+  { id:'birth_cert',     name:'PSA Birth Certificate',        icon:'📄', required:true },
+  { id:'tor',            name:'Transcript of Records / TOR',  icon:'🎓', required:true },
+  { id:'barangay',       name:'Barangay Clearance',           icon:'🏛️', required:true },
+  { id:'police',         name:'Police Clearance',             icon:'👮', required:true },
+  { id:'medical',        name:'Medical Results',              icon:'🩺', required:true },
   { id:'coe',            name:'COE (Previous Employer)',      icon:'📃', group:'prev' },
   { id:'payslips',       name:'Last 2 Payslips / Contract',  icon:'💰', group:'prev' },
   { id:'bir2316',        name:'BIR Form 2316',               icon:'📑', group:'prev' },
 ];
 const REQUIRED_IDS = REQUIRED_DOCS_201.filter(d => d.required).map(d => d.id);
-const TOTAL_REQUIRED = REQUIRED_IDS.length; // 10
+const TOTAL_REQUIRED = REQUIRED_IDS.length; // 15
 
-let allEmployees = [], filteredData = [], currentPage = 1;
+let allEmployees = [], filteredData = [], currentPage = 1, currentStepFilter = 'all';
 let current201EmpId = null, current201Pin = null;
-let pendingTransitionId = null;
 let pending201Delete = { path:null, name:null, type:null };
 
 function safeParse(val){if(!val)return[];if(typeof val==='object')return Array.isArray(val)?val:[];try{return JSON.parse(val);}catch{return[];}}
@@ -443,7 +485,7 @@ function docProgressHtml(files201) {
 }
 
 async function loadEmployees() {
-  document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="state-cell"><span class="spinner"></span> Loading...</td></tr>';
+  document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="state-cell"><span class="spinner"></span> Loading...</td></tr>';
   document.getElementById('paginationBar').style.display = 'none';
   try {
     const res = await fetch(URL_GET);
@@ -457,27 +499,26 @@ async function loadEmployees() {
   }
 }
 
-function updateStats() {
-  const total = allEmployees.length;
-  let complete = 0, partial = 0, empty = 0;
-  allEmployees.forEach(e => {
-    const { count } = getDocProgress(e.files_201);
-    if (count === TOTAL_REQUIRED) complete++;
-    else if (count > 0) partial++;
-    else empty++;
-  });
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statComplete').textContent = complete;
-  document.getElementById('statPartial').textContent = partial;
-  document.getElementById('statEmpty').textContent = empty;
+function updateStats() { /* stats removed */ }
+
+function setStepFilter(step, btn) {
+  currentStepFilter = step;
+  document.querySelectorAll('.step-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterTable();
 }
 
 function filterTable() {
   const f = document.getElementById('searchInput').value.toLowerCase();
   filteredData = allEmployees.filter(emp => {
+    if (currentStepFilter !== 'all') {
+      const empStep = (emp.onboarding_step || 'Step 1');
+      const filterNum = currentStepFilter.replace('step','');
+      if (!empStep.includes(filterNum)) return false;
+    }
     if (!f) return true;
     const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ');
-    return [fn, emp.pin, emp.email, emp.role_name, emp.company].some(x => String(x||'').toLowerCase().includes(f));
+    return [fn, emp.pin, emp.email, emp.role_name, emp.company, emp.contact].some(x => String(x||'').toLowerCase().includes(f));
   });
   currentPage = 1;
   renderTable();
@@ -488,7 +529,7 @@ function getPageSize() { return parseInt(document.getElementById('pageSizeSelect
 function renderTable() {
   const data = filteredData;
   if (!data.length) {
-    document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="state-cell">No employees currently in Onboarding status.</td></tr>';
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" class="state-cell">No employees currently in Onboarding status.</td></tr>';
     document.getElementById('paginationBar').style.display = 'none';
     return;
   }
@@ -498,14 +539,15 @@ function renderTable() {
 
   document.getElementById('tableBody').innerHTML = items.map(emp => {
     const fn = [emp.fn, emp.mn, emp.ln].filter(Boolean).join(' ') || '—';
-    const pin = emp.pin ? `<span class="emp-pin">${emp.pin}</span>` : '—';
+    const stepBadge = emp.onboarding_step ? `<span class="step-badge">${emp.onboarding_step}</span>` : '<span style="font-size:12px;color:var(--text-muted)">—</span>';
     return `<tr>
       <td class="emp-name">${fn}</td>
-      <td>${pin}</td>
+      <td>${stepBadge}</td>
       <td>${v(emp.company)}</td>
       <td>${v(emp.role_name)}</td>
-      <td>${fmtDate(emp.start_date)}</td>
       <td>${v(emp.email || emp.personal_email)}</td>
+      <td>${v(emp.contact)}</td>
+      <td>${fmtDate(emp.start_date)}</td>
       <td>${docProgressHtml(emp.files_201)}</td>
       <td class="actions-cell">
         <div class="actions">
@@ -584,39 +626,252 @@ async function send201EmailFromModal() {
   finally { btn.textContent = '✉ Send 201 Link'; btn.disabled = false; }
 }
 
-// ── STATUS TRANSITION ──
+// ── ONBOARDING STEPS ──
+const ONBOARDING_STEPS = [
+  {
+    num: 1, key: 'Step 1', icon: '📋', label: 'Step 1 of 5',
+    title: 'Job Offer',
+    desc: 'Extend the formal job offer to the candidate. Record offer details and confirm acceptance.',
+    fields: [
+      { id: 'f_offer_notes', type: 'textarea', label: 'Offer Notes (optional)', placeholder: 'e.g. Salary offered, start date discussed...' }
+    ]
+  },
+  {
+    num: 2, key: 'Step 2', icon: '🏥', label: 'Step 2 of 5',
+    title: 'Medical Exam',
+    desc: 'Send the pre-employment medical exam scheduling email to the employee. They will pick their preferred slot via the scheduling page.',
+    fields: [
+      { id: 'f_medical_clinic', type: 'text', label: 'Clinic / Hospital', placeholder: 'Healthbridge Medical Services, Inc.', defaultVal: 'Healthbridge Medical Services, Inc.' },
+      { id: 'f_medical_notes', type: 'textarea', label: 'Additional Notes (optional)', placeholder: 'e.g. Any special instructions for the employee...' }
+    ],
+    emailTrigger: true,
+    hasEmailBtn: true
+  },
+  {
+    num: 3, key: 'Step 3', icon: '📁', label: 'Step 3 of 5',
+    title: 'Pre-Employment Documents',
+    desc: 'Employee submits the 18 required pre-employment documents. Track progress via the 201 Files checklist.',
+    fields: [],
+    info: 'Use the 📁 Files button to manage document submissions and send the 201 upload link.'
+  },
+  {
+    num: 4, key: 'Step 4', icon: '🗓️', label: 'Step 4 of 5',
+    title: 'Orientation',
+    desc: 'Schedule the employee orientation and confirm the official start date.',
+    fields: [
+      { id: 'f_orientation_date', type: 'date', label: 'Orientation Date' },
+      { id: 'f_start_date_final', type: 'date', label: 'Official Start Date ★', required: true },
+      { id: 'f_orientation_notes', type: 'textarea', label: 'Orientation Notes (optional)', placeholder: 'Venue, agenda, items to bring...' }
+    ]
+  },
+  {
+    num: 5, key: 'Step 5', icon: '📝', label: 'Step 5 of 5',
+    title: 'Contract Generation',
+    desc: 'Generate and send the employment contract. Once signed, move the employee to active employment.',
+    fields: [
+      { id: 'f_contract_notes', type: 'textarea', label: 'Contract Notes (optional)', placeholder: 'Contract type, special clauses...' }
+    ],
+    isFinal: true
+  }
+];
+
+let pendingTransitionId = null, currentModalStep = 1, transitionEmpName = '';
+
+function getStepIndex(emp) {
+  const s = emp?.onboarding_step || 'Step 1';
+  const match = s.match(/\d+/);
+  return match ? Math.min(parseInt(match[0]), 5) : 1;
+}
+
 function openTransitionModal(empId, name) {
   pendingTransitionId = empId;
-  document.getElementById('transitionEmpName').textContent = name;
-  document.getElementById('transitionStatus').value = 'Probationary';
-  document.getElementById('transitionStartDate').value = '';
+  transitionEmpName = name;
+  const emp = allEmployees.find(e => String(e.id) === String(empId));
+  currentModalStep = getStepIndex(emp);
   document.getElementById('transitionModal').classList.add('active');
+  document.getElementById('transitionModalTitle').textContent = `Onboarding — ${name}`;
+  renderStepModal();
 }
-function closeTransitionModal() { document.getElementById('transitionModal').classList.remove('active'); pendingTransitionId = null; }
+
+function closeTransitionModal() {
+  document.getElementById('transitionModal').classList.remove('active');
+  pendingTransitionId = null;
+}
+
+function navigateStep(dir) {
+  currentModalStep = Math.max(1, Math.min(5, currentModalStep + dir));
+  renderStepModal();
+}
+
+function renderStepModal() {
+  const step = ONBOARDING_STEPS[currentModalStep - 1];
+  const pct = ((currentModalStep - 1) / 4) * 100;
+
+  // Progress dots
+  document.getElementById('stepDots').innerHTML = ONBOARDING_STEPS.map((s, i) => {
+    const cls = i + 1 < currentModalStep ? 'done' : i + 1 === currentModalStep ? 'active' : 'upcoming';
+    const inner = i + 1 < currentModalStep ? '✓' : s.num;
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+      <div class="step-dot ${cls}">${inner}</div>
+      <div style="font-size:9px;font-weight:600;color:${i+1===currentModalStep?'var(--accent)':'var(--text-muted)'};text-align:center;white-space:nowrap;overflow:hidden;max-width:56px;text-overflow:ellipsis">${s.title}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('stepProgressBar').style.width = pct + '%';
+
+  // Card
+  document.getElementById('stepCardIcon').textContent = step.icon;
+  document.getElementById('stepCardLabel').textContent = step.label;
+  document.getElementById('stepCardTitle').textContent = step.title;
+  document.getElementById('stepCardDesc').textContent = step.desc;
+
+  // Info box
+  const fieldsEl = document.getElementById('stepFields');
+  let fieldsHtml = '';
+  if (step.info) {
+    fieldsHtml += `<div class="step-info-box">ℹ️ ${step.info}</div>`;
+  }
+  if (step.emailTrigger) {
+    fieldsHtml += `<div class="step-info-box" style="background:#f0f9ff;border-color:#bae6fd;color:#0369a1">✉️ A scheduling email will be sent to the employee when this step is confirmed.</div>`;
+  }
+  step.fields.forEach(f => {
+    const reqMark = f.required ? ' <span style="color:#dc2626">*</span>' : '';
+    if (f.type === 'textarea') {
+      fieldsHtml += `<div class="step-field-row"><label>${f.label}${reqMark}</label><textarea id="${f.id}" placeholder="${f.placeholder||''}">${f.defaultVal||''}</textarea></div>`;
+    } else {
+      fieldsHtml += `<div class="step-field-row"><label>${f.label}${reqMark}</label><input type="${f.type}" id="${f.id}" placeholder="${f.placeholder||''}" value="${f.defaultVal||''}"></div>`;
+    }
+  });
+
+  // Add Send Email button for Step 2
+  if (step.hasEmailBtn) {
+    fieldsHtml += `<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="font-size:12.5px;color:#0369a1;line-height:1.5"><strong>📧 Send Scheduling Email</strong><br><span style="font-size:11.5px">Sends the medical exam email with clinic details and booking link to the employee.</span></div>
+      <button type="button" id="sendMedEmailBtn" onclick="sendMedicalEmailNow()" style="flex-shrink:0;padding:8px 16px;border-radius:8px;border:none;background:#1565c0;color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">✉ Send Email</button>
+    </div>`;
+  }
+  fieldsEl.innerHTML = fieldsHtml;
+
+  // Final step section
+  const finalEl = document.getElementById('finalStepSection');
+  finalEl.style.display = step.isFinal ? 'flex' : 'none';
+
+  // Buttons
+  document.getElementById('prevStepBtn').style.display = currentModalStep > 1 ? 'inline-flex' : 'none';
+  const confirmBtn = document.getElementById('confirmTransitionBtn');
+  const confirmLabel = document.getElementById('confirmBtnLabel');
+  if (step.isFinal) {
+    confirmLabel.textContent = '✓ Complete Onboarding';
+    confirmBtn.style.background = '#16a34a';
+    confirmBtn.style.borderColor = '#16a34a';
+  } else {
+    confirmLabel.textContent = `Advance to Step ${currentModalStep + 1} →`;
+    confirmBtn.style.background = '';
+    confirmBtn.style.borderColor = '';
+  }
+}
+
+async function sendMedicalEmailNow() {
+  const btn    = document.getElementById('sendMedEmailBtn');
+  const clinic = document.getElementById('f_medical_clinic')?.value?.trim() || 'Healthbridge Medical Services, Inc.';
+  const notes  = document.getElementById('f_medical_notes')?.value?.trim() || null;
+
+  if (!pendingTransitionId) { showToast('No employee selected.', 'error'); return; }
+
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(URL_SEND_201_EMAIL.replace('send-201-email', 'send-medical-schedule'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        employee_id: pendingTransitionId,
+        clinic:      clinic,
+        notes:       notes
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      btn.textContent = '✅ Email Sent!';
+      btn.style.background = '#16a34a';
+      showToast('Medical scheduling email sent!', 'success');
+    } else {
+      btn.textContent = '✉ Send Email';
+      btn.disabled = false;
+      btn.style.background = '';
+      showToast(data.message || 'Failed to send email.', 'error');
+    }
+  } catch(err) {
+    btn.textContent = '✉ Send Email';
+    btn.disabled = false;
+    showToast('Network error: ' + err.message, 'error');
+  }
+}
 
 async function confirmTransition() {
   if (!pendingTransitionId) return;
-  const status = document.getElementById('transitionStatus').value;
-  const startDate = document.getElementById('transitionStartDate').value;
+  const step = ONBOARDING_STEPS[currentModalStep - 1];
   const btn = document.getElementById('confirmTransitionBtn');
-  btn.innerHTML = '<span class="spinner"></span> Saving...'; btn.disabled = true;
+
+  // Validate required fields
+  if (step.num === 4) {
+    const startDate = document.getElementById('f_start_date_final')?.value;
+    if (!startDate) { showToast('Official Start Date is required for Step 4.', 'error'); return; }
+  }
+
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px;border-width:2px"></span> Saving...';
+  btn.disabled = true;
+
   try {
     const emp = allEmployees.find(e => String(e.id) === String(pendingTransitionId));
     if (!emp) throw new Error('Employee not found');
-    const payload = { ...emp, status, id: emp.id };
-    if (startDate) payload.start_date = startDate;
-    payload.dep_id = emp.department_name || null;
-    payload.role_id = emp.role_name || null;
-    payload.dependents = JSON.stringify(safeParse(emp.dependents));
-    payload.cip_notes = JSON.stringify(safeParse(emp.cip_notes));
-    const res = await fetch(URL_UPDATE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-    if (res.ok) {
-      showToast(`Moved to ${status}!`, 'success');
+
+    const nextStep = step.isFinal ? 'Step 5' : `Step ${currentModalStep + 1}`;
+    const newStatus = step.isFinal ? (document.getElementById('transitionStatus')?.value || 'Probationary') : 'Onboarding';
+
+    const payload = {
+      ...emp,
+      id: emp.id,
+      status: newStatus,
+      onboarding_step: step.isFinal ? 'Step 5' : nextStep,
+      dep_id: emp.department_name || null,
+      role_id: emp.role_name || null,
+      dependents: JSON.stringify(safeParse(emp.dependents)),
+      cip_notes: JSON.stringify(safeParse(emp.cip_notes))
+    };
+
+    // Step-specific field saves
+    if (step.num === 4) {
+      const sd = document.getElementById('f_start_date_final')?.value;
+      if (sd) payload.start_date = sd;
+    }
+
+    const res = await fetch(URL_UPDATE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error('Update failed');
+
+    if (step.isFinal) {
+      showToast(`${transitionEmpName} moved to ${newStatus}! 🎉`, 'success');
       closeTransitionModal();
       await loadEmployees();
-    } else showToast('Failed to update status.', 'error');
-  } catch(err) { showToast('Error: ' + err.message, 'error'); }
-  finally { btn.innerHTML = 'Confirm & Move'; btn.disabled = false; }
+    } else {
+      showToast(`Advanced to Step ${currentModalStep + 1}!`, 'success');
+      // If Step 2, trigger scheduling email
+      // Email is sent via the dedicated Send Email button in the modal
+      closeTransitionModal();
+      await loadEmployees();
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    btn.innerHTML = '<span id="confirmBtnLabel">Advance</span>';
+    btn.disabled = false;
+    renderStepModal();
+  }
 }
 
 // ── 201 FILES ──
