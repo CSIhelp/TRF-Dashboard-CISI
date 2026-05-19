@@ -16,6 +16,19 @@
     }
     checkAuth();
     async function logOut() { await _supabase.auth.signOut(); window.location.replace('index.html'); }
+  async function loadUserDisplay() {
+    try {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session && session.user) {
+        const email = session.user.email;
+        const nameEl = document.getElementById('topUserName');
+        const roleEl = document.getElementById('topUserRole');
+        if (nameEl) nameEl.textContent = email;
+        if (roleEl) roleEl.textContent = 'HR Officer';
+      }
+    } catch(e) {}
+  }
+  loadUserDisplay();
   </script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -46,6 +59,7 @@
     .sub-nav-item:hover{color:var(--accent);background:var(--accent-light)}
     .sub-nav-item.active{color:var(--accent);font-weight:600;background:var(--accent-light);border-left-color:var(--accent)}
     .nav-divider{height:1px;background:var(--border);margin:12px 16px}
+    .nav-badge{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
     .nav-bottom{margin-top:auto}
     .main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
     .main::-webkit-scrollbar{width:6px}
@@ -185,7 +199,7 @@
 <header class="topbar">
   <a class="logo" href="#"><span class="logo-text"><span>CROWD</span>SOURCE</span></a>
   <div class="topbar-user">
-    <div class="topbar-user-name"><strong>HR Admin</strong><span>Human Resources</span></div>
+    <div class="topbar-user-name"><strong id="topUserName">Loading...</strong><span id="topUserRole">HR Officer</span></div>
     <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
   </div>
 </header>
@@ -218,6 +232,11 @@
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Background Investigation</a>
     <a class="nav-item" href="sil_tracker.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>SIL Dashboard</a>
     <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exit Letters</a>
+    <a class="nav-item" href="trf-approvals.html" style="position:relative">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      TRF Approvals
+      <span class="nav-badge" id="trfNavBadge" style="display:none">0</span>
+    </a>
     <div class="nav-divider"></div>
     <div class="nav-bottom">
       <a class="nav-item" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help</a>
@@ -758,7 +777,44 @@ function renderStepModal() {
       <button type="button" id="${btnId}" onclick="${btnFn}()" style="flex-shrink:0;padding:8px 16px;border-radius:8px;border:none;background:#1565c0;color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap">${btnLbl}</button>
     </div>`;
   }
+  // Add Approve & Send Meet section for Step 4
+  if (step.hasApproveBtn) {
+    fieldsHtml += `<div id="approveOrientationSection" style="display:none;margin-top:4px">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#15803d;margin-bottom:10px">📅 Pending Orientation Schedule</div>
+        <div id="pendingScheduleInfo" style="font-size:13px;color:#374151;line-height:1.8"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="flex:1;min-width:140px">
+          <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">Confirmed Date (optional override)</label>
+          <input type="date" id="f_confirmed_date" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-family:inherit;font-size:13px;outline:none">
+        </div>
+        <div style="flex:1;min-width:120px">
+          <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">Confirmed Time (optional override)</label>
+          <input type="text" id="f_confirmed_time" placeholder="e.g. 10:00 AM" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-family:inherit;font-size:13px;outline:none">
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">Google Meet Link <span style="color:#9ca3af;font-size:10px;font-weight:400">(optional — auto-generated by Calendar if blank)</span></label>
+        <input type="text" id="f_meet_link" placeholder="https://meet.google.com/xxx-xxxx-xxx" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-family:inherit;font-size:13px;outline:none">
+      </div>
+      <div style="margin-top:8px">
+        <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">Notes for Employee (optional)</label>
+        <input type="text" id="f_hr_orientation_notes" placeholder="e.g. Please be online 5 mins early" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-family:inherit;font-size:13px;outline:none">
+      </div>
+      <button type="button" onclick="approveOrientation()" id="approveOrientationBtn"
+        style="margin-top:10px;width:100%;padding:10px;border-radius:8px;border:none;background:#16a34a;color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">
+        ✅ Approve & Send Google Meet →
+      </button>
+    </div>`;
+  }
+
   fieldsEl.innerHTML = fieldsHtml;
+
+  // Load pending orientation schedule if Step 4
+  if (step.hasApproveBtn && pendingTransitionId) {
+    loadPendingOrientation(pendingTransitionId);
+  }
 
   // Final step section
   const finalEl = document.getElementById('finalStepSection');
@@ -814,6 +870,87 @@ async function sendMedicalEmailNow() {
     btn.textContent = '✉ Send Email';
     btn.disabled = false;
     showToast('Network error: ' + err.message, 'error');
+  }
+}
+
+async function loadPendingOrientation(empId) {
+  const section = document.getElementById('approveOrientationSection');
+  const info    = document.getElementById('pendingScheduleInfo');
+  if (!section || !info) return;
+  try {
+    const res  = await fetch(`https://primary-production-a810.up.railway.app/webhook/get-orientation-schedule?employee_id=${empId}`);
+    const data = await res.json();
+    const row  = Array.isArray(data) ? data[0] : data;
+    if (row && row.preferred_date && row.status === 'Submitted') {
+      const d = new Date(row.preferred_date.split('T')[0] + 'T00:00:00+08:00');
+      const dateLabel = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+      info.innerHTML = `
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="background:#e6f9f0;color:#15803d;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700">📅 ${dateLabel}</span>
+          <span style="background:#e6f9f0;color:#15803d;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700">⏰ ${row.preferred_time}</span>
+        </div>
+        ${row.notes ? `<div style="margin-top:6px;font-size:12px;color:#6b7280">Employee note: "${row.notes}"</div>` : ''}
+      `;
+      section.style.display = 'block';
+      // Pre-fill confirmed fields with employee's preferred
+      const cd = document.getElementById('f_confirmed_date');
+      const ct = document.getElementById('f_confirmed_time');
+      if (cd) cd.value = row.preferred_date.split('T')[0];
+      if (ct) ct.value = row.preferred_time;
+      // Store schedule_id
+      section.dataset.scheduleId = row.id;
+    } else if (row && row.status === 'Confirmed') {
+      info.innerHTML = `<span style="color:#15803d;font-weight:600">✅ Already confirmed — ${row.google_meet_link ? '<a href="' + row.google_meet_link + '" target="_blank">Open Meet</a>' : 'No link yet'}</span>`;
+      section.style.display = 'block';
+    } else {
+      info.innerHTML = '<span style="color:#9ca3af;font-size:12px">No schedule submitted yet. Send the scheduling email first.</span>';
+      section.style.display = 'block';
+    }
+  } catch(err) {
+    console.log('No pending orientation:', err.message);
+  }
+}
+
+async function approveOrientation() {
+  const section    = document.getElementById('approveOrientationSection');
+  const scheduleId = section?.dataset.scheduleId;
+  if (!scheduleId) { showToast('No pending schedule found. Employee must book first.', 'error'); return; }
+
+  const confirmedDate  = document.getElementById('f_confirmed_date')?.value || null;
+  const confirmedTime  = document.getElementById('f_confirmed_time')?.value?.trim() || null;
+  const hrNotes  = document.getElementById('f_hr_orientation_notes')?.value?.trim() || null;
+  const meetLink = document.getElementById('f_meet_link')?.value?.trim() || null;
+
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,.3);width:14px;height:14px;border-width:2px"></span> Sending...';
+  btn.disabled  = true;
+
+  try {
+    const res = await fetch('https://primary-production-a810.up.railway.app/webhook/confirm-orientation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schedule_id:    Number(scheduleId),
+        confirmed_date: confirmedDate,
+        confirmed_time: confirmedTime,
+        meet_link:      meetLink,
+        hr_notes:       hrNotes
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      btn.innerHTML = '✅ Confirmed & Sent!';
+      btn.style.background = '#0d47a1';
+      showToast('Orientation confirmed! Google Meet link sent to employee.', 'success');
+      setTimeout(() => { closeTransitionModal(); loadEmployees(); }, 1500);
+    } else {
+      showToast(data.message || 'Failed to confirm orientation.', 'error');
+      btn.innerHTML = '✅ Approve & Send Google Meet →';
+      btn.disabled  = false;
+    }
+  } catch(err) {
+    showToast('Network error: ' + err.message, 'error');
+    btn.innerHTML = '✅ Approve & Send Google Meet →';
+    btn.disabled  = false;
   }
 }
 
@@ -1116,6 +1253,25 @@ document.getElementById('transitionModal').addEventListener('click', e => { if(e
 document.getElementById('delete201Modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeDelete201Modal(); });
 
 window.onload = () => loadEmployees();
+
+  // ── TRF APPROVAL BADGE ──
+  (async function loadTRFBadge() {
+    try {
+      const res  = await fetch('https://primary-production-a810.up.railway.app/webhook/get-trf-approvals?role=hr');
+      const raw  = await res.json();
+      const data = Array.isArray(raw) ? raw.map(i => i.json ?? i) : [];
+      const pending = data.filter(r => r.approval_status === 'Pending').length;
+      const badge = document.getElementById('trfNavBadge');
+      if (badge) {
+        if (pending > 0) {
+          badge.textContent = pending;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    } catch(e) {}
+  })();
 </script>
 </body>
 </html>
